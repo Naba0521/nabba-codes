@@ -1,0 +1,253 @@
+*{
+box-sizing: border-box;
+margin: 0px;
+font-family: "Montserrat", sans-serif;
+}
+body{
+    background-color: hwb(0 96% 4%);
+}
+.navbar{
+    background-color:#101010;
+    height: 80px;
+    padding-top: 19px;
+}
+.navbar img{
+    height: 42px;
+    width: 50px;
+    display: block;
+    margin: auto;
+}
+.landing{
+    width: fit-content;
+    margin: auto;
+    padding-top: 120px;
+    border: 5px solid red;
+}
+.landing h1{
+    font-size: 72px;
+    font-weight: 700;
+    text-align: center;
+}
+.landing h4 {
+    font-size: 24px;
+    font-weight: 700;
+    color:#ABABAB;
+    text-transform: uppercase;
+    text-align: center;
+}
+.landing img {
+margin-top: 80px;
+width: 284px;
+height: 400px;
+}
+.landing img:first-child{
+    margin: 0;
+}
+.tours{
+    margin: auto;
+    width: fit-content;
+    border: 5px solid red;
+    position: relative;
+    margin-top: 240px;
+}
+.left{
+    border: 5px solid blue;
+    width: 358px;
+    height: 796px;
+    margin-top: 0px;
+}
+.tours h4{
+    color: #ABABAB;
+    font-size: 24px;
+    font-weight: 700;
+}
+.tours h2{
+    color: #303030;
+    font-size: 48px;
+    width: 358px;
+    height: 118px;
+    font-weight: 700;
+}
+.circlefather h5{
+    color: #777777;
+    font-size: 12px;
+    font-weight: 400;
+}
+.circlefather h3{
+    color: #000000;
+    font-size: 16px;
+    font-weight: 700;
+}
+.circle{
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color:#1D1F24;
+    color: #16A94A;
+    padding: 17.5px;
+    margin-top: 15.8px;
+    margin-right: 16px;
+}
+.circlefather > div{
+    display: inline-block;
+    vertical-align: middle;
+}
+.owoo{
+    z-index: 2;
+    position: relative;
+}
+.d1 {
+    margin-top: 80px;
+}
+.line{
+    border-left: 4px dashed black;
+    position: absolute;
+    z-index: 1;
+    left: 30px;
+    height: 350px;
+    top: 300px;
+
+}
+
+.tours > div{
+    display: inline-block;
+    vertical-align: top;
+}
+#right{
+    border: 5px solid red;
+    display: inline-block;
+    margin-left: 85px;
+}
+#rightimg{
+    width: 692px;
+    height: 845px;
+}
+
+.price{
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    margin-top: 240px;
+    border: 5px solid red;
+    position: relative;
+}
+.price h3{
+    font-size: 24px;
+    color: #ABABAB;
+}
+.price h2{
+    font-weight: 700;
+    font-size: 48px;
+}
+.pricetext{
+    border: 5px solid red;
+    text-align: center;
+}
+.songolt{
+    margin-top: 80px;
+    border: 5px solid red;
+}
+.songolt h1{
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 40px;
+}
+.songolt h4{
+    font-size: 32px;
+    font-weight: 700;
+    color:#303030;
+    width: 205px;
+    height: 39px;
+    text-align: end;
+    position: absolute;
+    bottom: 40px;
+}
+.songolt ul{
+    font-size: 20px;
+    font-weight: 500;
+    color: #777777;
+    margin-top: 24px;
+}
+.songolt li{
+    margin-top: 13px;
+}
+.songolt > div{
+    display: inline-block;
+    vertical-align: middle;
+}
+.starter{
+    background-color: #FFFFFF;
+    width: 285px;
+    height: 370px;
+    border-radius: 24px;
+    margin-left: 99.5px;
+    cursor: pointer;
+    border: 5px solid transparent;
+}
+.starter:hover{
+    border: 5px solid#16A94A;
+    transition: 1s;
+}
+.luxury{
+    background-color: #FFFFFF;
+    width: 285px;
+    height: 370px;
+    border-radius: 24px;
+    margin-left: 20px;
+    margin-right: 99.5px;
+    cursor: pointer;
+    border: 5px solid transparent;
+}
+.luxury:hover{
+    border: 5px solid#16A94A;
+}
+.order{
+    background-color:#171717;
+    height: 393px;
+    position: relative;
+}
+.order :first-child{
+    position: absolute;
+    top: 150px;
+    left: 46%;
+    font-size: 32px;
+    text-align: center;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+.order :last-child{
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: #18BA51;
+    text-align: center;
+    color: #FFFFFF;
+    padding: 10px 20px 10px 20px;
+    position: absolute;
+    top: 199px;
+    left: 48%;
+}
+.footer{
+    height: 228px;
+    border-top: 1px solid #303030;
+    background-color: #101010;
+    position: relative;
+}
+.footer :first-child{
+    position: absolute;
+    top: 80px;
+    left: 120px;
+}
+.footer :nth-child(2){
+    position: absolute;
+    top: 92px;
+    right: 311px;
+}
+.footer :last-child{
+    position: absolute;
+    right: 120px;
+    top: 92px;
+}
+a{
+    text-decoration: none;
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "dd942a58-d040-4949-91d3-8a77dc1ab518",
+    "name": "naba",
+    "email": "naba@gmail.com",
+    "password": "12345"
+  },
+  {
+    "id": "b287743b-7511-43c3-ae95-71cf5b071a1a",
+    "name": "naba",
+    "email": "baba@gmail.com",
+    "password": "12345"
+  },
+  {
+    "id": "be7684bf-a2b8-4b5b-8f53-72db52474c1b",
+    "name": "zori",
+    "email": "zori@gmail.com",
+    "password": "12345"
+  },
+  {
+    "id": "be2a64f5-4a7d-403f-8457-1c3ef5db772f",
+    "name": "Gerlee",
+    "email": "gerlee@gmail.com",
+    "password": "12345"
+  }
+]

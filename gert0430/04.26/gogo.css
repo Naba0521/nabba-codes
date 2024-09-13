@@ -1,0 +1,1379 @@
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  font-family: Arial, Helvetica, sans-serif;
+  transition: 0.5s;
+}
+
+.container {
+  background-color: black;
+  color: white;
+}
+
+.inner-container {
+  margin: auto;
+  width: 1180px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.navbar {
+  display: flex;
+  height: 88.91px;
+  align-items: center;
+  gap: 50px;
+}
+
+.gogo-logo {
+  width: 119px;
+  height: 39px;
+  cursor: pointer;
+}
+
+.navbar > :nth-child(1) {
+  margin-left: 10px;
+}
+
+.navbar > :nth-child(2) {
+  display: flex;
+  gap: 30px;
+  flex: 1;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  /* display: none; */
+  position: absolute;
+  background-color: white;
+  z-index: -1;
+  width: 150px;
+  opacity: 0;
+  transition: 5s;
+}
+
+.dropdown-content > div {
+  color: black;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+.dropdown-content > div > div:hover {
+  color: #2e62f2;
+}
+
+.dropdown:hover .dropdown-content {
+  /* display: block; */
+  opacity: 1;
+  z-index: 1;
+  transition: 1s;
+}
+
+.navbar > :nth-child(3) {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.navbar > :nth-child(3) > :first-child {
+  padding-bottom: 10px;
+  margin-top: 5px;
+}
+
+.navbar > :nth-child(3) > :first-child:hover {
+  border-top: 5px solid #8e8e8e;
+}
+
+.navbar > :nth-child(3) > div > div > :first-child {
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.highlight-news {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.highlight-news > :first-child {
+  width: 545px;
+  display: flex;
+  flex-direction: column;
+  padding-left: 40px;
+  justify-content: center;
+  background-color: #101010;
+  border-radius: 10px;
+  justify-content: space-evenly;
+  cursor: pointer;
+}
+
+.highlight-news > :first-child > :first-child {
+  border-radius: 100px;
+  font-size: 12px;
+  text-align: center;
+  color: #ffffff;
+  padding: 8px 15px;
+  width: fit-content;
+  font-weight: 700;
+  cursor: pointer;
+  background-image: linear-gradient(-120deg, #e08100, #c90027);
+  cursor: pointer;
+}
+
+.highlight-news > :first-child > :first-child:hover {
+  background-color: #dd6f12;
+  border-radius: 100px;
+  font-size: 12px;
+  text-align: center;
+  color: #ffffff;
+  width: fit-content;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 25px;
+  transition: 0.5s;
+}
+
+.highlight-news > :first-child > :nth-child(2) {
+  font-size: 26px;
+  margin: 10px;
+  font-weight: 700;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.highlight-news > :first-child > :nth-child(3) {
+  font-size: 13px;
+  margin: 10px 0px 20px;
+  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+  opacity: 0.4;
+}
+
+.highlight-news > :first-child > :last-child {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  padding: 5px 10px;
+  background-color: black;
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.highlight-news > :first-child > :last-child:hover {
+  padding: 5px 20px;
+  background-color: #101010;
+  border-radius: 100px;
+  transition: 1s;
+}
+
+.highlight-news > :first-child > :last-child:hover :first-child {
+  transform: rotate(40deg);
+  transition: 1s;
+  scale: 1.5;
+}
+
+.highlight-news > :first-child > :last-child > :last-child {
+  margin-left: 5px;
+}
+
+.highlight-news > :last-child {
+  width: 585px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.highlight-news > :last-child > img {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.highlight-news > :last-child:hover img {
+  transform: scale(1.2);
+  justify-content: center;
+  align-content: center;
+  transition: 1s;
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  transition: 1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.highlight-news > :last-child > div > p {
+  color: white;
+  font-size: large;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.highlight-news :hover .overlay {
+  opacity: 1;
+}
+
+.news {
+  display: flex;
+  gap: 15px;
+}
+
+.news > div > :first-child {
+  position: relative;
+  overflow: hidden;
+}
+
+.news > div {
+  flex: 1;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.news > div > div > img {
+  width: 100%;
+  height: 175px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.news > div > div:hover img {
+  transform: scale(1.2);
+  justify-content: center;
+  align-content: center;
+  transition: 1s;
+  border-radius: 5px;
+}
+
+.overlay-news {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  transition: 1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.news > div > div > div > p {
+  color: white;
+  font-size: large;
+  font-weight: bold;
+}
+
+.news :hover .overlay-news {
+  opacity: 1;
+  position: absolute;
+  top: 0%;
+}
+
+.news > :last-child > :last-child {
+  height: 270px;
+}
+
+.news > div > :nth-child(2) {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.news > div > :nth-child(3) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  gap: 20px;
+}
+
+.news > div > :nth-child(3) > div {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  font-size: 13px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #8e8e8e;
+  font-weight: 400;
+}
+
+.container2 {
+  margin: auto;
+  width: 1180px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.container2 > div {
+  cursor: pointer;
+}
+
+.container2 > :first-child {
+  overflow: visible;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
+}
+
+.container2 > :first-child > :first-child {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.container2 > :first-child > :last-child {
+  font-size: 18px;
+  padding: 2px 3px;
+  background-color: #00b0f4;
+  border-radius: 3px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.container2 > :last-child {
+  display: flex;
+  justify-content: space-between;
+}
+
+.container2 > :last-child > div {
+  width: 170.8px;
+  height: 235px;
+}
+
+.container2 > :last-child > div > img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.container2 > :last-child > div:hover img {
+  transform: scale(1.2);
+  justify-content: center;
+  align-content: center;
+  transition: 1s;
+}
+
+.container2 > :last-child > div {
+  position: relative;
+  overflow: hidden;
+}
+
+.container2 > :last-child > div > :last-child {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  top: 0%;
+  gap: 50px;
+  height: 100%;
+}
+
+.glogo {
+  width: fit-content;
+  font-size: 20px;
+  padding: 6px 13px;
+  background-color: #00adee;
+  color: white;
+  border-radius: 50px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.container2 > :last-child > div > div > div > div > :nth-child(1) {
+  font-size: 13px;
+  color: white;
+  bottom: 22px;
+  left: 0%;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.container2 > :last-child > div > div > div > :nth-child(1) {
+  overflow: hidden;
+  height: 31.11px;
+}
+
+.container2 > :last-child > div > div:hover div > :nth-child(1) {
+  height: 62px;
+}
+
+.container2 > :last-child > div > div > div > :nth-child(2) {
+  width: 100%;
+  height: 22px;
+  font-size: 13px;
+  color: white;
+  font-weight: 700;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.container3 {
+  display: flex;
+  margin: auto;
+  width: 1180px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+}
+
+.container3 > div {
+  cursor: pointer;
+}
+
+.container3-left {
+  flex: 3;
+  border-right: 1px solid grey;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.container3-left > div > {
+  display: flex;
+}
+
+.container3-left > :first-child > :first-child {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  color: #407ce8;
+  font-size: 16px;
+  margin-bottom: 5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.calendar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  cursor: pointer;
+  align-items: center;
+}
+
+.calendar > div {
+  border-top: 5px solid #f4f4f4;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  padding-top: 5px;
+  color: #b7b6b6;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  width: 103.81px;
+}
+
+.calendar > div:hover {
+  color: #407ce8;
+  border-top: 5px solid #407ce8;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  padding-bottom: 5px;
+}
+
+.calendar > :first-child {
+  color: #407ce8;
+  border-top: 5px solid #407ce8;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  padding-bottom: 5px;
+}
+
+.calendar > :last-child {
+  border-top: 0px;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  background-color: #efefef;
+  width: 27px;
+  height: 27px;
+  border-radius: 5px;
+}
+
+.calendar > :last-child:hover {
+  border-top: 0px;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  background-color: #407ce8;
+  width: 27px;
+  height: 27px;
+  color: #efefef;
+}
+
+.container3-left-news {
+  display: flex;
+  flex-direction: row;
+}
+
+.container3-left > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.container3-left-news > :first-child > img {
+  width: 100%;
+  height: 100%;
+}
+
+.container3-left-news > :first-child:hover img {
+  transform: scale(1.2);
+  justify-content: center;
+  align-content: center;
+  transition: 1s;
+  border-radius: 5px;
+}
+
+.container3-left-news > :first-child {
+  flex: 1;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.overlay-container3-left-news {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+}
+
+.container3-left-news > :first-child > :last-child > p {
+  font-size: large;
+  font-weight: bold;
+  color: #f4f4f4;
+  opacity: 0;
+}
+
+.container3-left-news > :first-child:hover .overlay-container3-left-news {
+  opacity: 1;
+}
+
+.container3-left-news > :first-child:hover .overlay-container3-left-news > p {
+  opacity: 1;
+}
+
+.container3-left-news > :last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 2;
+  padding-left: 30px;
+}
+
+.container3-left-news > :last-child > :first-child {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.container3-left-news > :last-child > :nth-child(2) {
+  font-size: 14px;
+  color: #888;
+  height: 31px;
+  overflow: hidden;
+}
+
+.container3-left-news > :last-child > :nth-child(3) {
+  font-size: 14px;
+  color: #888;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.container3-left-news > :last-child > :nth-child(3) > div {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.container3-left-news-fullimg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container3-left-news-fullimg > img {
+  width: 100%;
+  height: 100%;
+}
+
+.container3-left > :last-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f8f8;
+  color: black;
+  font-size: 16px;
+  padding: 20px;
+  font-weight: 700;
+  border-radius: 5px;
+}
+
+.container3-left > :last-child:hover {
+  background-color: white;
+  color: #00adee;
+  transition: 0.3s;
+}
+
+/* Chat gpt bagshiin ahcaar hiiw */
+.container3-left-news-fullimg {
+  position: relative;
+  width: 100%;
+  height: 350px;
+}
+
+.container3-left-news-fullimg img {
+  position: absolute;
+  left: 0;
+  object-fit: contain;
+}
+
+@keyframes imgFade {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.container3-left-news-fullimg img {
+  animation-name: imgFade;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 8s;
+}
+
+.container3-left-news-fullimg img:nth-of-type(1) {
+  animation-delay: 0s;
+}
+
+.container3-left-news-fullimg img:nth-of-type(2) {
+  animation-delay: 4s;
+  /* Half the duration for two images */
+}
+
+/* Chat gpt bagshiin ahcaar hiiw */
+
+.container3-right {
+  flex: 1;
+  align-items: start;
+  justify-content: start;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.container3-right > :first-child {
+  align-items: start;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 700;
+  gap: 10px;
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.container3-right-news {
+  margin-left: 20px;
+}
+
+.container3-right-news > :first-child > img {
+  width: 100%;
+  height: 100%;
+}
+
+.container3-right-news > :first-child {
+  flex: 1;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.overlay-container3-right-news {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+}
+
+.container3-right-news > :first-child > :last-child > p {
+  font-size: large;
+  font-weight: bold;
+  color: #f4f4f4;
+  opacity: 0;
+}
+
+.container3-right-news > :first-child:hover .overlay-container3-right-news {
+  opacity: 1;
+}
+
+.container3-right-news > :first-child:hover .overlay-container3-right-news > p {
+  opacity: 1;
+}
+
+.container3-right-news > :nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.container3-right-news > :nth-child(2) > :first-child {
+  font-size: 15px;
+  font-weight: 500;
+  color: #000;
+  line-height: 20px;
+  margin-top: 10px;
+}
+
+.container3-right-news > :nth-child(2) > :last-child {
+  display: flex;
+  gap: 10px;
+  color: #888;
+  font-size: 14px;
+}
+
+.container3-right-news > :nth-child(2) > :last-child > div {
+  display: flex;
+  gap: 4px;
+}
+
+.container3-right-news > :nth-child(2) > :last-child :hover {
+  display: flex;
+  gap: 10px;
+  color: #00adee;
+  font-size: 14px;
+}
+
+.container3-right-trendnews {
+  display: flex;
+  flex-direction: column;
+  background: #fcfaf4;
+}
+
+.container3-right-trendnews > :first-child {
+  font-size: 20px;
+  font-weight: 700;
+  padding: 20px 30px;
+}
+
+.trend-list {
+  display: flex;
+  gap: 10px;
+  padding: 20px 10px 20px 0px;
+  border-bottom: 0.8px solid #888;
+}
+
+.trend-list > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trend-list > div > :last-child {
+  display: flex;
+  gap: 10px;
+}
+
+.trend-list > div > :last-child > div {
+  display: flex;
+  gap: 3px;
+}
+
+.trend-list > :first-child {
+  font-size: 46px;
+  color: #e00034;
+  font-weight: 700;
+}
+
+.trend-list > :last-child > :first-child {
+  font-size: 14px;
+  color: #000;
+}
+
+.trend-list > :last-child > :last-child {
+  font-size: 12px;
+  color: #888;
+}
+
+.trend-list:hover {
+  scale: 1.05;
+}
+
+.container4 {
+  display: flex;
+  margin: auto;
+  width: 1180px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  gap: 20px;
+}
+
+.container4 > :first-child {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+}
+
+.container4 > :last-child {
+  display: flex;
+  gap: 10px;
+}
+
+.container4-left {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.container4-left img {
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.absolute-left {
+  position: absolute;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  bottom: 0px;
+  left: 0px;
+}
+
+.absolute-left > :first-child {
+  font-size: 10px;
+  color: #fff;
+  background: #407ce8;
+  text-align: center;
+  font-weight: 700;
+  padding: 2px 5px;
+  position: absolute;
+  border-radius: 5px;
+  bottom: 120px;
+  left: 20px;
+  text-transform: uppercase;
+}
+
+.absolute-left > :nth-child(2) {
+  font-size: 20px;
+  color: #fff;
+  text-align: left;
+  font-weight: 700;
+  margin-left: 20px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid white;
+}
+
+.absolute-left > :last-child {
+  display: flex;
+  font-size: 11px;
+  color: #fff;
+  text-align: left;
+  font-weight: 700;
+  margin-left: 20px;
+  padding: 20px 0px;
+  gap: 5px;
+  align-items: center;
+}
+
+.container4-left:hover img {
+  scale: 1.1;
+}
+
+.container4-left:hover .absolute-left {
+  opacity: 0.8;
+}
+
+.container4-left:hover .absolute-left > :last-child > :last-child {
+  padding-left: 10px;
+}
+
+.container4-right {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  flex: 1;
+}
+
+.container4-right > :first-child {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex: 1;
+}
+
+.container4-right > :last-child {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex: 1;
+}
+
+.container4-right > div > div {
+  flex-grow: 1;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.container4-right img {
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.absolute-right {
+  position: absolute;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  bottom: 10px;
+  left: 10px;
+}
+
+.absolute-right > :first-child {
+  font-size: 10px;
+  color: #fff;
+  background: #407ce8;
+  text-align: center;
+  font-weight: 700;
+  padding: 2px 5px;
+  width: fit-content;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+.absolute-right > :nth-child(2) {
+  font-size: 20px;
+  color: #fff;
+  text-align: left;
+  font-weight: 700;
+}
+
+.container4-right > div > div:hover img {
+  scale: 1.1;
+}
+
+.container4-right > div > div:hover .absolute-right {
+  opacity: 0.8;
+}
+
+.container5 {
+  display: flex;
+  margin: auto;
+  width: 1180px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  gap: 50px;
+}
+
+.hevmayag {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.gogo-hev {
+  overflow: visible;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
+}
+
+.gogo-hev > :first-child {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.gogo-hev > :last-child {
+  font-size: 18px;
+  padding: 2px 3px;
+  background-color: #00b0f4;
+  border-radius: 3px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.gogo-hev:hover {
+  color: #1e87f0;
+}
+
+.gogo-hev1 {
+  overflow: visible;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.gogo-hev1:hover {
+  color: #1e87f0;
+}
+
+.hevmayg-bot {
+  display: flex;
+  gap: 15px;
+}
+
+.hevmayg-bot > div > :first-child {
+  position: relative;
+  overflow: hidden;
+}
+
+.hevmayg-bot > div {
+  flex: 1;
+  border-radius: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.hevmayg-bot > div > div > img {
+  width: 100%;
+  height: 200px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hevmayg-bot > div > div {
+  border-radius: 5px;
+}
+
+.hevmayg-bot > div > div:hover img {
+  transform: scale(1.2);
+  justify-content: center;
+  align-content: center;
+  transition: 1s;
+  border-radius: 5px;
+}
+
+.overlay-hevmayg-bot {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  transition: 1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.hevmayg-bot > div > div > div > p {
+  color: white;
+  font-size: large;
+  font-weight: bold;
+}
+
+.hevmayg-bot > div > div:hover .overlay-hevmayg-bot {
+  opacity: 1;
+  position: absolute;
+  top: 0%;
+  border-radius: 5px;
+}
+
+.hevmayg-bot > div > :nth-child(2) {
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 100;
+  color: #000;
+  height: 58.5px;
+  padding: 0px 20px;
+  border-radius: 0px;
+  border: 1px solid rgb(226, 225, 225);
+  overflow: hidden;
+}
+
+.hevmayg-bot > div > :nth-child(3) {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  border: 1px solid rgb(226, 225, 225);
+  border-radius: 0;
+  align-items: center;
+  padding: 5px;
+  border-top: 0px;
+  border-radius: 5px;
+}
+
+.hevmayg-bot > div > :nth-child(3) > div {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  font-size: 13px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #8e8e8e;
+  font-weight: 400;
+}
+
+.hevmayg-bot > div > :nth-child(2):hover {
+  background-color: rgb(240, 237, 237);
+}
+
+.hevmayg-bot > div > :nth-child(3):hover {
+  background-color: rgb(226, 225, 225);
+}
+
+.container6 {
+  margin-top: 30px;
+  background-color: #1a1a1a;
+}
+
+.inner-container6 {
+  display: flex;
+  margin: auto;
+  width: 1180px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 50px 0px;
+}
+
+.vzeh {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.vzeh-play {
+  overflow: visible;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
+}
+
+.vzeh-play > :first-child {
+  font-size: 25px;
+}
+
+.vzeh-play > :last-child {
+  font-size: 18px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.vzeh-play > :last-child:hover {
+  color: #1e87f0;
+}
+
+.vzeh-bot {
+  display: flex;
+  gap: 15px;
+}
+
+.vzeh-bot > div > :first-child {
+  position: relative;
+  overflow: hidden;
+}
+
+.vzeh-bot > div {
+  flex: 1;
+  border-radius: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.vzeh-bot > div > div > img {
+  width: 100%;
+  height: 200px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.vzeh-bot > div > div {
+  border-radius: 5px;
+}
+
+.vzeh-bot > div > div:hover img {
+  transform: scale(1.2);
+  justify-content: center;
+  align-content: center;
+  transition: 1s;
+  border-radius: 5px;
+}
+
+.overlay-vzeh-bot {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  transition: 1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.vzeh-bot > div > div > div > p {
+  color: white;
+  font-size: large;
+  font-weight: bold;
+}
+
+.vzeh-bot > div > div:hover .overlay-vzeh-bot {
+  opacity: 1;
+  position: absolute;
+  top: 0%;
+  border-radius: 5px;
+}
+
+.vzeh-bot > div > :nth-child(2) {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 100;
+  color: hsla(0, 0%, 100%, 0.8);
+  height: 58.5px;
+  padding: 0px 20px;
+  border-radius: 0px;
+  overflow: hidden;
+}
+
+.vzeh-bot > div > :nth-child(3) {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  border-radius: 0;
+  align-items: center;
+  padding: 5px;
+  border-top: 0px;
+  border-radius: 5px;
+}
+
+.vzeh-bot > div > :nth-child(3) > div {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  font-size: 13px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: hsla(0, 0%, 100%, 0.8);
+  font-weight: 400;
+}
+
+.footer {
+  display: flex;
+  margin: auto;
+  width: 1180px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  gap: 50px;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-top > :last-child {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.footer-top > :last-child > div {
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+}
+
+.footer-top > :last-child > div > div {
+  color: #101010;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.footer-top > :last-child > div > img {
+  height: 20px;
+  width: 20px;
+}
+
+.footer-top > :last-child > div:hover .overlay-footer {
+  color: #00adee;
+}
+
+.footer-bot {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0px;
+}
+
+.footer-bot > :first-child {
+  font-size: 12px;
+  font-weight: 0;
+}
+
+.footer-bot > :last-child {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.footer-top > :last-child > div {
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+}
+
+.footer-bot > :last-child > div > img {
+  height: 20px;
+  width: 20px;
+  color: rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./modal1.css" />
+    <script src="https://kit.fontawesome.com/084ff913dd.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="out-container">
+        <div class="open-modal-btn-container"><button class="open-modal-btn">Add task</button></div>
+        <div class="container">
+            <div>
+                <div class="container-inner">
+                    <div class="flex">
+                        <i class="fa-solid fa-circle"
+                            style="color: rgba(217, 217, 217, 1); font-size: 16px;margin-right: 16px; margin-bottom: 5px;"></i>
+                        <h2>To Do </h2>
+                    </div>
+                    <div class="number-todo">0</div>
+                </div>
+                <div class="cards" id="todo" style="color: black;"></div>
+            </div>
+            <div>
+                <div class="container-inner">
+                    <div class="flex">
+                        <i class="fa-solid fa-circle"
+                            style="color: rgba(163, 163, 0, 1); font-size: 16px;margin-right: 16px;"></i>
+                        <h2>In Progress</h2>
+                    </div>
+                    <div class="number-inprogress">0</div>
+                </div>
+                <div class="cards" id="inprogress" style="color: black;"></div>
+            </div>
+            <div>
+                <div class="container-inner">
+                    <div class="flex">
+                        <i class="fa-solid fa-circle"
+                            style="color: rgba(0, 163, 0, 1); font-size: 16px;margin-right: 16px;"></i>
+                        <h2>Done</h2>
+                    </div>
+                    <div class="number-done">0</div>
+                </div>
+                <div class="cards" id="done" style="color: black;"></div>
+            </div>
+            <div>
+                <div class="container-inner">
+                    <div class="flex">
+                        <i class="fa-solid fa-circle"
+                            style="color: rgba(163, 0, 0, 1); font-size: 16px;margin-right: 16px;"></i>
+                        <h2>Block</h2>
+                    </div>
+                    <div class="number-block">0</div>
+                </div>
+                <div class="cards" id="block" style="color: black;"></div>
+            </div>
+        </div>
+
+        <div class="modal-container">
+            <div class="modal">
+                <form>
+                    <div class="modal-header">
+                        <h1 style="color: rgba(255, 255, 255, 1);">Add task</h1>
+                        <div class="modal-close-btn"><i class="fa-solid fa-x" style="color: #ba1212;"></i></div>
+                    </div>
+
+                    <label for="title" style="color: rgba(255, 255, 255, 1);">Title</label>
+                    <input id="title" name="title" />
+
+                    <label for="descripiton" style="color: rgba(255, 255, 255, 1);">Description</label>
+                    <textarea id="descripiton" name="descripiton" rows="4"></textarea>
+
+                    <select name="rank" id="rank">
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <select name="choose" id="choose">
+                        <option value="To do">To do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Done">Done</option>
+                        <option value="Block">Block</option>
+                    </select>
+                    <button type="submit">Add task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="./modal1.js"></script>
+</body>
+
+</html>

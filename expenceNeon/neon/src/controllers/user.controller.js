@@ -1,0 +1,10 @@
+export const getMe = async (req, res) => {
+  try {
+    const user = req.user; //req dotorh useriig awahiin tuld middleware bichsen bga
+
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
