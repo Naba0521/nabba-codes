@@ -5,7 +5,7 @@ import { ProfileIcon } from "@/assets/ProfileIcon";
 
 export const HeaderDashboard = () => {
   return (
-    <div className="w-full bg-black h-[48px] justify-center flex items-center">
+    <div className="w-full bg-black py-2 justify-center flex items-center">
       <div className="flex w-[1440px] justify-between px-6">
         <div className="">
           <Logo />
