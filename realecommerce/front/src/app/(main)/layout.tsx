@@ -9,7 +9,8 @@ export default function MainLayout({
   return (
     <div>
       <Header />
-      {children}
+      <div className="min-h-[60vh]">{children}</div>
+
       <Footer />
     </div>
   );
