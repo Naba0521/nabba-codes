@@ -6,6 +6,7 @@ import {
   orderRouter,
   productRouter,
   reviewRouter,
+  userRouter,
 } from "./routes";
 
 connectToDataBase();
@@ -19,6 +20,7 @@ app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
 app.use("/review", reviewRouter);
+app.use("/user", userRouter);
 app.listen(3001, () => {
   console.log("Server running http://localhost:3001");
 });

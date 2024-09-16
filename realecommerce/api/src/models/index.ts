@@ -2,3 +2,4 @@ export * from "./category.schema"; //daraa n import hiihdee modelsiin indexees l
 export * from "./product.schema";
 export * from "./order.schema";
 export * from "./review.schema";
+export * from "./user.schema";
