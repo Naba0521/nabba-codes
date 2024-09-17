@@ -55,8 +55,17 @@ export default function Home() {
   interface ProductsResponse {
     products: product[];
   }
+  interface category {
+    categoryName: string;
+  }
+  interface CategoriesResponse {
+    categories: category[];
+  }
   const [savedHearts, setSavedHearts] = useState<number[]>([]);
   const [productsa, setproductsa] = useState<ProductsResponse | null>(null);
+  const [categoriesa, setCategoriesa] = useState<CategoriesResponse | null>(
+    null
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const toggleHeart = (index: number) => {
@@ -74,12 +83,21 @@ export default function Home() {
       console.error("Error fetching products:", error);
     }
   };
+  const getCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/category");
+      setCategoriesa(response.data);
+    } catch (error) {
+      console.log("category awahad aldaa garlaa");
+    }
+  };
   const filteredCategoryProducts = productsa?.products.filter((product) => {
     if (selectedCategory === "") return true;
     return product.category.includes(selectedCategory);
   });
   useEffect(() => {
     getProducts();
+    getCategories();
   }, []);
   return (
     <div className="py-4 px-6 flex justify-center w-full">
@@ -93,7 +111,7 @@ export default function Home() {
               Ангилал
             </div>
             <div className="flex flex-col">
-              {categoryData.map((item, index) => {
+              {categoriesa?.categories.map((item, index) => {
                 return (
                   <div
                     onClick={() => setSelectedCategory(item.categoryName)}
