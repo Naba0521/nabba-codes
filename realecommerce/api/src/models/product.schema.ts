@@ -26,7 +26,7 @@ const productSchema = new Schema({
     required: true,
     default: "10XL",
   },
-  images: {
+  image: {
     type: [String],
     required: true,
     default: "/img1.png",

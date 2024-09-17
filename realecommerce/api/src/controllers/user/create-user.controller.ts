@@ -8,5 +8,12 @@ export const createUserController: RequestHandler = async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-  } catch (error) {}
+    return res.status(200).json({
+      message: "User nemegdsen",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "User neg l buruu l nemeed bndaa",
+    });
+  }
 };

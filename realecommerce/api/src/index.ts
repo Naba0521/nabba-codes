@@ -8,6 +8,13 @@ import {
   reviewRouter,
   userRouter,
 } from "./routes";
+import dotenv from "dotenv";
+import Multer, { memoryStorage } from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import { configDotenv } from "dotenv";
+import { upload } from "./config/multer";
+import { createCloudinaryController } from "./controllers";
+dotenv.config();
 
 connectToDataBase();
 const app = express();
@@ -21,6 +28,14 @@ app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
 app.use("/review", reviewRouter);
 app.use("/user", userRouter);
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
+app.post("/upload", upload.single("image"), createCloudinaryController); //upload.single("image"), ene bol middleware function
+
 app.listen(3001, () => {
   console.log("Server running http://localhost:3001");
 });
