@@ -1,9 +1,10 @@
 "use client";
 
 import { BHeart } from "@/assets/BHeart";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const data = [
   { img: "/2.png", title: "The Prompt Magazine", price: 120000 },
@@ -22,9 +23,41 @@ const data = [
   { img: "/15.png", title: "Independent Corners Tee", price: 120000 },
   { img: "/15.png", title: "Independent Corners Tee", price: 120000 },
 ];
-
+const categoryData = [
+  {
+    categoryName: "Малгай",
+  },
+  {
+    categoryName: "Усны сав",
+  },
+  {
+    categoryName: "T-shirt",
+  },
+  {
+    categoryName: "Hoodie",
+  },
+  {
+    categoryName: "Tee",
+  },
+  {
+    categoryName: "Цүнх",
+  },
+];
 export default function Home() {
+  interface product {
+    id: string;
+    productName: string;
+    price: number;
+    category: string[];
+    size: string[];
+    image: string[];
+  }
+  interface ProductsResponse {
+    products: product[];
+  }
   const [savedHearts, setSavedHearts] = useState<number[]>([]);
+  const [productsa, setproductsa] = useState<ProductsResponse | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const toggleHeart = (index: number) => {
     if (savedHearts.includes(index)) {
@@ -33,20 +66,44 @@ export default function Home() {
       setSavedHearts([...savedHearts, index]);
     }
   };
-
+  const getProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/product");
+      setproductsa(response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  const filteredCategoryProducts = productsa?.products.filter((product) => {
+    if (selectedCategory === "") return true;
+    return product.category.includes(selectedCategory);
+  });
+  useEffect(() => {
+    getProducts();
+  }, []);
   return (
     <div className="py-4 px-6 flex justify-center w-full">
       <div className=" w-[1440px] px-[200px] py-16 flex gap-5  ">
         <div className="w-[245px] flex flex-col gap-12">
           <div className="flex flex-col gap-4">
-            <div className="font-bold">Ангилал</div>
+            <div
+              className="font-bold cursor-pointer"
+              onClick={() => setSelectedCategory("")}
+            >
+              Ангилал
+            </div>
             <div className="flex flex-col">
-              <div>Малгай </div>
-              <div>Усны сав</div>
-              <div>T-shirt</div>
-              <div>Hoodie</div>
-              <div>Tee</div>
-              <div>Цүнх</div>
+              {categoryData.map((item, index) => {
+                return (
+                  <div
+                    onClick={() => setSelectedCategory(item.categoryName)}
+                    key={index}
+                    className="cursor-pointer"
+                  >
+                    {item.categoryName}
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="flex flex-col gap-4">
@@ -63,7 +120,7 @@ export default function Home() {
           </div>
         </div>
         <div className="flex-1 grid grid-cols-3 grid-rows-5 gap-x-5 gap-y-12">
-          {data.map((item, index) => {
+          {filteredCategoryProducts?.map((item, index) => {
             const isHearted = savedHearts.includes(index);
 
             return (
@@ -77,7 +134,7 @@ export default function Home() {
                 >
                   <Image
                     quality={100}
-                    src={item.img}
+                    src={item.image[0]}
                     fill
                     alt="a"
                     className="object-cover rounded-2xl transition-transform duration-700 group-hover:scale-125"
@@ -90,7 +147,7 @@ export default function Home() {
                   <BHeart bgColor={isHearted ? "black" : "none"} />
                 </div>
                 <div className="flex flex-col relative">
-                  <div>{item.title}</div>
+                  <div>{item.productName}</div>
                   <div className="font-bold">{item.price}₮</div>
                 </div>
               </div>

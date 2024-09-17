@@ -4,7 +4,17 @@ import Image from "next/image";
 import { useState } from "react";
 type MainProductCardProps = {
   index: number;
-  item: { img: string; title: string; price: number };
+  item: {
+    id: number;
+    productName: string;
+    price: number;
+    image: string[];
+    category: string;
+    size: string[];
+    quantity: number;
+    saledCount: number;
+    salePercent: number;
+  };
 };
 export const MainProductCard = ({ item, index }: MainProductCardProps) => {
   const [savedHeart, setSavedHeart] = useState(false);
@@ -14,7 +24,7 @@ export const MainProductCard = ({ item, index }: MainProductCardProps) => {
       <div className={`relative h-[80%] overflow-hidden rounded-2xl `}>
         <Image
           quality={100}
-          src={item.img}
+          src={item.image[0]}
           fill
           alt="a"
           className="object-cover rounded-2xl transition-transform duration-700 group-hover:scale-125"
@@ -27,8 +37,8 @@ export const MainProductCard = ({ item, index }: MainProductCardProps) => {
         <BHeart bgColor={savedHeart === true ? "black" : "none"} />
       </div>
       <div className="flex flex-col relative">
-        <div>{item.title}</div>
-        <div className="font-bold">{item.price}</div>
+        <div>{item.productName}</div>
+        <div className="font-bold">{item.price}₮</div>
       </div>
     </div>
   );
