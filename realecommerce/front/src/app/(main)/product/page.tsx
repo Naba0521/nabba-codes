@@ -5,50 +5,14 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+const sizeData = ["Free", "S", "M", "L", "XL", "2XL", "3XL", "10XL"];
 
-const data = [
-  { img: "/2.png", title: "The Prompt Magazine", price: 120000 },
-  { img: "/3.png", title: "Chunky Glyph Tee", price: 120000 },
-  { img: "/4.png", title: "All Smiles Nalgene", price: 120000 },
-  { img: "/5.png", title: "Wildflower Hoodie", price: 120000 },
-  { img: "/6.png", title: "Inkblot Tee", price: 120000 },
-  { img: "/7.png", title: "Gestures Longsleeve", price: 120000 },
-  { img: "/8.png", title: "Chunky Glyph Cap", price: 120000 },
-  { img: "/9.png", title: "Local Styles Crewneck", price: 120000 },
-  { img: "/8.png", title: "Chunky Glyph Cap", price: 120000 },
-  { img: "/11.png", title: "Doodle Hoodie", price: 120000 },
-  { img: "/3.png", title: "Chunky Glyph Tee", price: 120000 },
-  { img: "/4.png", title: "All Smiles Nalgene", price: 120000 },
-  { img: "/2.png", title: "The Prompt Magazine", price: 120000 },
-  { img: "/15.png", title: "Independent Corners Tee", price: 120000 },
-  { img: "/15.png", title: "Independent Corners Tee", price: 120000 },
-];
-const categoryData = [
-  {
-    categoryName: "Малгай",
-  },
-  {
-    categoryName: "Усны сав",
-  },
-  {
-    categoryName: "T-shirt",
-  },
-  {
-    categoryName: "Hoodie",
-  },
-  {
-    categoryName: "Tee",
-  },
-  {
-    categoryName: "Цүнх",
-  },
-];
 export default function Home() {
   interface product {
-    id: string;
+    _id: string;
     productName: string;
     price: number;
-    category: string[];
+    category: category[];
     size: string[];
     image: string[];
   }
@@ -56,16 +20,19 @@ export default function Home() {
     products: product[];
   }
   interface category {
+    id: string;
     categoryName: string;
   }
   interface CategoriesResponse {
     categories: category[];
   }
+
   const [savedHearts, setSavedHearts] = useState<number[]>([]);
   const [productsa, setproductsa] = useState<ProductsResponse | null>(null);
   const [categoriesa, setCategoriesa] = useState<CategoriesResponse | null>(
     null
   );
+  const [size, setSize] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const toggleHeart = (index: number) => {
@@ -79,6 +46,7 @@ export default function Home() {
     try {
       const response = await axios.get("http://localhost:3001/product");
       setproductsa(response.data);
+      console.log("asdasdasd", response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -91,10 +59,18 @@ export default function Home() {
       console.log("category awahad aldaa garlaa");
     }
   };
-  const filteredCategoryProducts = productsa?.products.filter((product) => {
-    if (selectedCategory === "") return true;
-    return product.category.includes(selectedCategory);
-  });
+
+  const filteredCategoryProducts = productsa?.products
+    .filter((product) => {
+      if (selectedCategory === "") return true; // Show all products if no category is selected
+      return product.category.some(
+        (cat) => cat.categoryName === selectedCategory
+      );
+    })
+    .filter((product) => {
+      if (size === "" || size === null) return true;
+      return product.size.includes(size);
+    });
   useEffect(() => {
     getProducts();
     getCategories();
@@ -116,7 +92,9 @@ export default function Home() {
                   <div
                     onClick={() => setSelectedCategory(item.categoryName)}
                     key={index}
-                    className="cursor-pointer"
+                    className={`cursor-pointer hover:text-green-400  hover:font-semibold duration-1000 ${
+                      selectedCategory === item.categoryName ? "underline" : ""
+                    }`}
                   >
                     {item.categoryName}
                   </div>
@@ -125,29 +103,39 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            <div className="font-bold">Хэмжээ</div>
+            <div
+              className="cursor-pointer font-bold"
+              onClick={() => setSize("")}
+            >
+              Хэмжээ
+            </div>
             <div className="flex flex-col">
-              <div>Free </div>
-              <div>S</div>
-              <div>M</div>
-              <div>L</div>
-              <div>XL</div>
-              <div>2XL</div>
-              <div>3XL</div>
+              {sizeData.map((item, index) => {
+                return (
+                  <div
+                    onClick={() => setSize(sizeData[index])}
+                    className={`cursor-pointer hover:text-green-400  hover:font-semibold duration-1000 ${
+                      size === sizeData[index] ? "underline" : ""
+                    }`}
+                    key={index}
+                  >
+                    {sizeData[index]}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
         <div className="flex-1 grid grid-cols-3 grid-rows-5 gap-x-5 gap-y-12">
           {filteredCategoryProducts?.map((item, index) => {
             const isHearted = savedHearts.includes(index);
-
             return (
               <div
                 key={index}
                 className={`relative flex flex-col gap-2 group h-[400px]`}
               >
                 <Link
-                  href={`/product/id`}
+                  href={`/product/${item._id}`}
                   className={`relative h-[80%] overflow-hidden rounded-2xl `}
                 >
                   <Image

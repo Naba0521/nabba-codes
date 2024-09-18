@@ -1,9 +1,14 @@
 import { Router } from "express";
-import { createProductController, getProductsController } from "../controllers";
+import {
+  createProductController,
+  getOneProductController,
+  getProductsController,
+} from "../controllers";
 
 const productRouter = Router();
 productRouter
   .post("/", createProductController)
-  .get("/", getProductsController);
+  .get("/", getProductsController)
+  .get("/:id", getOneProductController);
 
 export { productRouter };

@@ -3,8 +3,24 @@ import { BHeart } from "@/assets/BHeart";
 import { HalfStar } from "@/assets/HalfStar";
 import { Heart } from "@/assets/Heart";
 import { Star } from "@/assets/Star";
+import axios from "axios";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import Image from "next/image";
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+type ParamsType = {
+  id: string;
+};
+type ProductType = {
+  productName: string;
+  price: string;
+  description: string;
+  size: string[];
+  image: string[];
+};
+
 const data1 = ["/2.png", "/3.png", "/4.png", "/5.png"];
 const sizeData = ["S", "M", "L", "XL", "2XL"];
 const commentData = [
@@ -48,6 +64,23 @@ export default function Home() {
   const [hidebox, setHideBox] = useState(false);
   const [hideComment, setHideComment] = useState(false);
 
+  const [product, setProduct] = useState<ProductType>();
+
+  const { id } = useParams<ParamsType>();
+
+  const getOneProduct = async (id: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/product/${id}`);
+      setProduct(response.data.product);
+      console.log("product data", response.data);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+
+  useEffect(() => {
+    getOneProduct(id);
+  }, []);
   return (
     <div className="py-4 px-6 flex justify-center w-full min-h-screen">
       <div className=" w-[1440px] px-[200px] pb-16  gap-20 flex flex-col  ">
@@ -82,12 +115,14 @@ export default function Home() {
                     шинэ
                   </div>
                   <div className="flex gap-2 items-center">
-                    <div className="font-bold text-2xl">Wildflower Hoodie</div>
+                    <div className="font-bold text-2xl">
+                      {product?.productName}
+                    </div>
                     <div>
                       <BHeart bgColor="none" />
                     </div>
                   </div>
-                  <div>Зэрлэг цэцгийн зурагтай даавуун материалтай цамц</div>
+                  <div>{product?.description}</div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="text-sm underline">Хэмжээний заавар</div>
@@ -128,7 +163,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-xl font-bold">120’000₮</div>
+                <div className="text-xl font-bold">{product?.price}₮</div>
                 <button className="h-9 w-[175px] text-white bg-[#2563EB] rounded-[20px]">
                   Сагсанд нэмэх
                 </button>
