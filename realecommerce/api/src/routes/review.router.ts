@@ -1,6 +1,13 @@
 import { Router } from "express";
-import { createReviewController, getReviewController } from "../controllers";
+import {
+  createReviewController,
+  getProductIdReviewController,
+  getReviewController,
+} from "../controllers";
 
 const reviewRouter = Router();
-reviewRouter.get("/", getReviewController).post("/", createReviewController);
+reviewRouter
+  .get("/", getReviewController)
+  .post("/", createReviewController)
+  .get("/:id", getProductIdReviewController);
 export { reviewRouter };

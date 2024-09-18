@@ -1,6 +1,7 @@
 "use client";
 import { BHeart } from "@/assets/BHeart";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 type MainProductCardProps = {
   index: number;
@@ -21,7 +22,10 @@ export const MainProductCard = ({ item, index }: MainProductCardProps) => {
 
   return (
     <div key={index} className={`relative flex flex-col gap-2 group h-[400px]`}>
-      <div className={`relative h-[80%] overflow-hidden rounded-2xl `}>
+      <Link
+        href={`/product/${item._id}`}
+        className={`relative h-[80%] overflow-hidden rounded-2xl `}
+      >
         <Image
           quality={100}
           src={item.image[0]}
@@ -29,7 +33,8 @@ export const MainProductCard = ({ item, index }: MainProductCardProps) => {
           alt="a"
           className="object-cover rounded-2xl transition-transform duration-700 group-hover:scale-125"
         />
-      </div>
+      </Link>
+
       <div
         onClick={() => setSavedHeart(!savedHeart)}
         className="absolute top-4 right-4"
