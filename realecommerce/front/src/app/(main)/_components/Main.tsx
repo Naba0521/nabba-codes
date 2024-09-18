@@ -27,7 +27,7 @@ const data = [
 
 export const Main = () => {
   interface Product {
-    id: number;
+    _id: number;
     productName: string;
     price: number;
     image: string[];

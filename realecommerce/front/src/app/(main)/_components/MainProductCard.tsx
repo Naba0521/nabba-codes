@@ -5,7 +5,7 @@ import { useState } from "react";
 type MainProductCardProps = {
   index: number;
   item: {
-    id: number;
+    _id: number;
     productName: string;
     price: number;
     image: string[];

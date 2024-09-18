@@ -9,20 +9,33 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { MainProductCard } from "../../_components/MainProductCard";
 
 type ParamsType = {
   id: string;
 };
 type ProductType = {
   productName: string;
-  price: string;
+  price: number;
   description: string;
   size: string[];
   image: string[];
 };
+interface Product {
+  _id: number;
+  productName: string;
+  price: number;
+  image: string[];
+  category: string;
+  size: string[];
+  quantity: number;
+  saledCount: number;
+  salePercent: number;
+}
 
-const data1 = ["/2.png", "/3.png", "/4.png", "/5.png"];
-const sizeData = ["S", "M", "L", "XL", "2XL"];
+interface ProductsResponse {
+  products: Product[]; // This represents the `products.products` structure
+}
 const commentData = [
   {
     userName: "Saraa",
@@ -58,44 +71,58 @@ const commentData = [
   },
 ];
 export default function Home() {
-  const [imgIndex, setImgIndex] = useState(data1[0]);
+  const [savedHeart, setSavedHeart] = useState(false);
+
   const [size, setSize] = useState(0);
-  const [productNumber, setProductNumber] = useState(0);
+  const [productNumber, setProductNumber] = useState(1);
   const [hidebox, setHideBox] = useState(false);
   const [hideComment, setHideComment] = useState(false);
 
   const [product, setProduct] = useState<ProductType>();
 
   const { id } = useParams<ParamsType>();
+  const [productsa, setProductsa] = useState<ProductsResponse | null>(null);
+
+  const getProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/product");
+      setProductsa(response.data);
+      console.log("1111asdsasd", response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   const getOneProduct = async (id: string) => {
     try {
       const response = await axios.get(`http://localhost:3001/product/${id}`);
       setProduct(response.data.product);
-      console.log("product data", response.data);
+      console.log("product data", response.data?.image);
     } catch (error) {
       console.error("Error fetching product:", error);
     }
   };
 
+  const [imgIndex, setImgIndex] = useState<number>(0);
   useEffect(() => {
     getOneProduct(id);
+    getProducts();
   }, []);
   return (
     <div className="py-4 px-6 flex justify-center w-full min-h-screen">
-      <div className=" w-[1440px] px-[200px] pb-16  gap-20 flex flex-col  ">
+      <div className=" w-[1440px] px-[200px] pb-16  gap-[120px] flex flex-col  ">
         <div className="flex gap-5">
           <div className="flex-1 flex gap-5  h-[520px] sticky top-0 pt-16">
             <div className="w-[67px] flex flex-col gap-2 justify-center">
-              {data1.map((item, index) => {
+              {product?.image.map((item, index) => {
                 return (
                   <div
                     key={index}
                     onClick={() => {
-                      setImgIndex(item);
+                      setImgIndex(index);
                     }}
                     className={`relative w-full h-[67px] rounded overflow-hidden ${
-                      item === imgIndex ? " border-[2px] border-[#09090B]" : ""
+                      index === imgIndex ? " border-[2px] border-[#09090B]" : ""
                     }`}
                   >
                     <Image src={item} fill alt="asd" className="" />
@@ -104,7 +131,18 @@ export default function Home() {
               })}
             </div>
             <div className="flex-1 relative rounded-2xl h-[521px]">
-              <Image src={imgIndex} className="rounded-2xl" fill alt="asd" />
+              {product?.image ? (
+                <Image
+                  src={product.image[imgIndex]}
+                  className="rounded-2xl"
+                  fill
+                  alt="Product Image"
+                />
+              ) : (
+                <div className="rounded-2xl bg-gray-200 h-full flex items-center justify-center">
+                  <p>Loading...</p>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex-1 flex flex-col pt-[164px]  gap-6">
@@ -127,7 +165,7 @@ export default function Home() {
                 <div className="flex flex-col gap-2">
                   <div className="text-sm underline">Хэмжээний заавар</div>
                   <div className="flex gap-1 text-xs">
-                    {sizeData.map((item, index) => {
+                    {product?.size.map((item, index) => {
                       return (
                         <div
                           key={index}
@@ -145,7 +183,7 @@ export default function Home() {
                 <div className="flex">
                   <button
                     onClick={() =>
-                      setProductNumber((prev) => (prev === 0 ? 0 : prev - 1))
+                      setProductNumber((prev) => (prev === 1 ? 1 : prev - 1))
                     }
                     className="w-8 h-8 border rounded-2xl"
                   >
@@ -163,7 +201,12 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-xl font-bold">{product?.price}₮</div>
+                <div className="text-xl font-bold">
+                  {product?.price
+                    ? product.price * productNumber
+                    : "Loading..."}
+                  ₮{" "}
+                </div>
                 <button className="h-9 w-[175px] text-white bg-[#2563EB] rounded-[20px]">
                   Сагсанд нэмэх
                 </button>
@@ -260,7 +303,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div></div>
+        <div className="flex flex-col gap-5">
+          <div className="text-2xl font-bold">Холбоотой бараа</div>
+          <div className="grid grid-cols-4 gap-x-4 gap-y-4">
+            {productsa?.products.slice(1, 9).map((item, index) => {
+              return <MainProductCard key={index} item={item} index={index} />;
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
