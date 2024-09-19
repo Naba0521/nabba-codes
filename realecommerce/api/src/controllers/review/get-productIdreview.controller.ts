@@ -8,7 +8,9 @@ export const getProductIdReviewController: RequestHandler = async (
   const { productId } = req.params;
 
   try {
-    const reviews = await reviewModel.find({ productId });
+    const reviews = await reviewModel
+      .find({ productId })
+      .populate("userId", { userName: 1 });
     if (!reviews || reviews.length === 0) {
       return res.status(404).json({
         message: "No reviews found for this product",

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { mainModule } from "process";
 const { Schema, model } = mongoose;
 const productSchema = new Schema({
   category: {
@@ -49,10 +50,14 @@ const productSchema = new Schema({
   averageRating: {
     type: Number,
     required: false,
+    default: 0,
+    min: 0,
+    max: 5,
   },
   reviewCount: {
     type: Number,
     required: false,
+    default: 0,
   },
   createdAt: {
     type: Date,

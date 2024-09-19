@@ -10,6 +10,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { MainProductCard } from "../../_components/MainProductCard";
+import { FaStar } from "react-icons/fa";
 
 type ParamsType = {
   id: string;
@@ -20,6 +21,8 @@ type ProductType = {
   description: string;
   size: string[];
   image: string[];
+  averageRating: number;
+  reviewCount: number;
 };
 interface Product {
   _id: number;
@@ -32,44 +35,32 @@ interface Product {
   saledCount: number;
   salePercent: number;
 }
+type reviewResponse = {
+  _id: string;
+  productId: string;
+  userId: userIdResponse;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+};
+type userIdResponse = {
+  _id: string;
+  userName: string;
+};
 
 interface ProductsResponse {
   products: Product[]; // This represents the `products.products` structure
 }
-const commentData = [
-  {
-    userName: "Saraa",
-    comment: "Ваав материал ёстой гоё  байна 😍",
-  },
-  {
-    userName: "Saraa",
-    comment: "🔥🔥🔥",
-  },
-  {
-    userName: "Saraa",
-    comment: "Ваав материал ёстой гоё  байна",
-  },
-  {
-    userName: "Saraa",
-    comment: "Ваав материал ёстой гоё  байна 🔥🔥🔥",
-  },
-  {
-    userName: "Saraa",
-    comment: "Ваав материал ёстой гоё  байна🔥🔥🔥",
-  },
-  {
-    userName: "Saraa",
-    comment: "Ваав материал ёстой гоё  байна",
-  },
-  {
-    userName: "Saraa",
-    comment: "Ваав материал ёстой гоё  байна 🔥🔥🔥",
-  },
-  {
-    userName: "Saraa",
-    comment: "Ваав материал ёстой гоё  байна🔥🔥🔥",
-  },
-];
+type addCommentType = {
+  comment: string;
+};
+type addReviewType = {
+  productId: string;
+  userId: string;
+  comment: string;
+  rating: number;
+};
 export default function Home() {
   const [savedHeart, setSavedHeart] = useState(false);
 
@@ -79,15 +70,20 @@ export default function Home() {
   const [hideComment, setHideComment] = useState(false);
 
   const [product, setProduct] = useState<ProductType>();
+  const [reviews, setReviews] = useState<reviewResponse[]>([]);
+  const [ratingSelect, setRatingSelect] = useState<number>(0);
 
   const { id } = useParams<ParamsType>();
   const [productsa, setProductsa] = useState<ProductsResponse | null>(null);
+
+  const [addComment, setAddComment] = useState<addCommentType>({
+    comment: "",
+  });
 
   const getProducts = async () => {
     try {
       const response = await axios.get("http://localhost:3001/product");
       setProductsa(response.data);
-      console.log("1111asdsasd", response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -97,17 +93,38 @@ export default function Home() {
     try {
       const response = await axios.get(`http://localhost:3001/product/${id}`);
       setProduct(response.data.product);
-      console.log("product data", response.data?.image);
     } catch (error) {
       console.error("Error fetching product:", error);
     }
   };
-
+  const getOneReview = async (id: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/review/${id}`);
+      setReviews(response.data.reviews);
+      console.log("1111asdsasd", response.data.reviews);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+  const createReview = async (addReview: addReviewType) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/review",
+        addReview
+      );
+      getOneReview(id);
+      getOneProduct(id);
+    } catch (error) {
+      console.error("Error add review:", error);
+    }
+  };
   const [imgIndex, setImgIndex] = useState<number>(0);
   useEffect(() => {
     getOneProduct(id);
+    getOneReview(id);
     getProducts();
   }, []);
+
   return (
     <div className="py-4 px-6 flex justify-center w-full min-h-screen">
       <div className=" w-[1440px] px-[200px] pb-16  gap-[120px] flex flex-col  ">
@@ -223,15 +240,27 @@ export default function Home() {
                 </button>
               </div>
               <div className="flex">
-                <div className="flex">
-                  <Star />
-                  <Star />
-                  <Star />
-                  <Star />
-                  <HalfStar />
+                <div className="flex gap-1 text-xl">
+                  {Array(5)
+                    .fill(null)
+                    .map((item, index) => {
+                      return (
+                        <FaStar
+                          className={`text-xl ${
+                            (product?.averageRating ?? 0) > index
+                              ? "text-[#FDE047]"
+                              : "text-gray-300"
+                          }`}
+                        />
+                      );
+                    })}
                 </div>
-                <div className="font-bold text-sm">4.6</div>
-                <div className="text-sm text-[#71717A]">(24)</div>
+                <div className="font-bold text-sm">
+                  {product?.averageRating}
+                </div>
+                <div className="text-sm text-[#71717A]">
+                  ({product?.reviewCount})
+                </div>
               </div>
             </div>
             <div
@@ -249,12 +278,23 @@ export default function Home() {
                     Одоор үнэлэх:
                   </div>
                   <div>
-                    <div className="flex">
-                      <Star />
-                      <Star />
-                      <Star />
-                      <Star />
-                      <HalfStar />
+                    <div className="flex gap-1">
+                      {Array(5)
+                        .fill(null)
+                        .map((item, index) => {
+                          return (
+                            <FaStar
+                              className={`text-xl ${
+                                ratingSelect > index
+                                  ? "text-[#FDE047]"
+                                  : "text-gray-300"
+                              }`}
+                              onClick={() => {
+                                setRatingSelect(index + 1);
+                              }}
+                            />
+                          );
+                        })}
                     </div>
                   </div>
                 </div>
@@ -263,12 +303,24 @@ export default function Home() {
                     Сэтгэгдэл үлдээх:
                   </div>
                   <input
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setAddComment({
+                        ...addComment,
+                        comment: event.target.value,
+                      })
+                    }
                     placeholder="Энд бичнэ үү"
                     className="bg-[#FFFFFF] w-full pb-[94px] pt-2 flex justify-start items-start rounded-md px-3"
                   ></input>
                 </div>
                 <button
                   onClick={() => {
+                    createReview({
+                      productId: id,
+                      rating: ratingSelect,
+                      comment: addComment.comment,
+                      userId: "66e8dee21af9722ca42e9a96",
+                    });
                     setHideComment(!hideComment);
                   }}
                   className="text-white text-sm font-medium bg-[#2563EB] rounded-[20px] py-2 px-9 w-fit"
@@ -277,20 +329,28 @@ export default function Home() {
                 </button>
               </div>
               <div className="flex flex-col gap-5 [&>div:nth-child(1)]:border-none">
-                {commentData.map((item, index) => {
+                {reviews.map((item, index) => {
                   return (
                     <div
                       key={index}
                       className="flex flex-col gap-1 border-t border-dashed"
                     >
                       <div className="flex gap-1 pt-4">
-                        <div>{item.userName}</div>
-                        <div className="flex">
-                          <Star />
-                          <Star />
-                          <Star />
-                          <Star />
-                          <HalfStar />
+                        <div>{item?.userId.userName}</div>
+                        <div className="flex gap-1 items-center">
+                          {Array(5)
+                            .fill(null)
+                            .map((_, index) => {
+                              return (
+                                <FaStar
+                                  className={`text-xl ${
+                                    item.rating > index
+                                      ? "text-[#FDE047]"
+                                      : "text-gray-300"
+                                  }`}
+                                />
+                              );
+                            })}
                         </div>
                       </div>
                       <div className="text-sm text-[#71717A]">

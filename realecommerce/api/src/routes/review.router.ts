@@ -9,5 +9,5 @@ const reviewRouter = Router();
 reviewRouter
   .get("/", getReviewController)
   .post("/", createReviewController)
-  .get("/:id", getProductIdReviewController);
+  .get("/:productId", getProductIdReviewController);
 export { reviewRouter };
