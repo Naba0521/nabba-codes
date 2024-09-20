@@ -303,7 +303,7 @@ export default function Home() {
                     Сэтгэгдэл үлдээх:
                   </div>
                   <input
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    onChange={(event) =>
                       setAddComment({
                         ...addComment,
                         comment: event.target.value,
