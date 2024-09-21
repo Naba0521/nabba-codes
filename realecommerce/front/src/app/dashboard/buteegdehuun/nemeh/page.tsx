@@ -10,7 +10,10 @@ import {
 } from "@/components/ui/select";
 import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
 type addProductType = {
   productName: string;
   description: string;
@@ -18,6 +21,7 @@ type addProductType = {
   quantity: number;
   category: string;
   image: string[];
+  size: string[];
 };
 interface category {
   _id: string;
@@ -30,14 +34,17 @@ export default function home() {
   const [addQuantity, setAddQuantity] = useState<number>(0);
   const [category, setCategory] = useState<category[] | null>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
 
   const [loading, setLoading] = useState(false);
   const [uploadedUrl, setUploadedUrl] = useState<string[]>([]);
   const [image, setImage] = useState<File | null>(null);
+  const [isUploaded, setIsUploaded] = useState(false); // Track if the upload is done
 
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
     if (files) setImage(files[0]);
+    setIsUploaded(false); // Reset upload status when a new file is selected
   };
 
   const handleUpload = async () => {
@@ -58,6 +65,7 @@ export default function home() {
     console.log(uploadedUrl);
 
     setLoading(false);
+    setIsUploaded(true); // Mark upload as complete
   };
 
   const getCategories = async () => {
@@ -86,7 +94,9 @@ export default function home() {
     <div className="flex-1 flex flex-col gap-8">
       <div className="flex gap-4 items-center p-4 bg-white">
         <div className="">
-          <LeftDirectionArrow />
+          <Link href={`/dashboard/buteegdehuun`}>
+            <LeftDirectionArrow />
+          </Link>
         </div>
         <div>Бүтээгдэхүүн нэмэх</div>
       </div>
@@ -127,20 +137,46 @@ export default function home() {
                   "No image"
                 )}
               </div>
-              <div className="flex-1 border-2 rounded-lg border-dashed h-[124px] relative">
-                {uploadedUrl.length > 1 && (
+              <div className="flex-1 border-2 rounded-lg border-dashed h-[124px] relative flex justify-center items-center">
+                {uploadedUrl.length > 1 ? (
                   <Image alt="Uploaded image" fill src={uploadedUrl[1]} />
+                ) : (
+                  "No image"
                 )}
               </div>
-              <div className="flex-1 border-2 rounded-lg border-dashed h-[124px] relative">
-                {uploadedUrl.length > 2 && (
+              <div className="flex-1 border-2 rounded-lg border-dashed h-[124px] relative flex justify-center items-center">
+                {uploadedUrl.length > 2 ? (
                   <Image alt="Uploaded image" fill src={uploadedUrl[2]} />
+                ) : (
+                  "No image"
                 )}
               </div>
-              {/* <div className="flex-1 flex justify-center items-center">
-                <Plus />
-              </div> */}
-              <div className="flex flex-col w-[160px] justify-center">
+
+              <div className="flex flex-col w-[160px] justify-center items-center">
+                <input
+                  type="file"
+                  className="hidden"
+                  id="fileInput"
+                  multiple // Allow multiple file selection
+                  onChange={handleChangeFile}
+                />
+                <label htmlFor="fileInput" className="cursor-pointer">
+                  <div className="w-16 h-16 flex justify-center items-center bg-gray-200 rounded-full">
+                    <Plus /> {/* Your Plus icon */}
+                  </div>
+                </label>
+                <button onClick={handleUpload}>
+                  {loading
+                    ? "Uploading..."
+                    : isUploaded
+                    ? "Add picture"
+                    : image
+                    ? "Click to Upload"
+                    : "Add picture"}
+                </button>
+              </div>
+
+              {/* <div className="flex flex-col w-[160px] justify-center">
                 <input
                   type="file"
                   placeholder="+"
@@ -149,7 +185,7 @@ export default function home() {
                 <button onClick={handleUpload}>
                   {loading ? "Uploading..." : "Upload"}
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="flex  p-6 gap-4 bg-white rounded-lg">
@@ -199,20 +235,30 @@ export default function home() {
             </div>
           </div>
           <div className="bg-white rounded-lg w-full flex flex-col gap-6 p-6">
-            <div className="font-semibold">Төрөл</div>
+            <div className="font-semibold">Хэмжээ сонгох</div>
             <div className="flex flex-col gap-2">
               <div className="flex gap-6">
-                <div>Хэмжээ</div>
-                <div>
+                <ToggleGroup
+                  onValueChange={(value) => setSelectedSizes(value)}
+                  type="multiple"
+                >
+                  <ToggleGroupItem value="S">S</ToggleGroupItem>
+                  <ToggleGroupItem value="M">M</ToggleGroupItem>
+                  <ToggleGroupItem value="XL">XL</ToggleGroupItem>
+                  <ToggleGroupItem value="2XL">2XL</ToggleGroupItem>
+                  <ToggleGroupItem value="3XL">3XL</ToggleGroupItem>
+                  <ToggleGroupItem value="10XL">10XL</ToggleGroupItem>
+                </ToggleGroup>
+                {/* <div>
                   <Plus />
-                </div>
+                </div> */}
               </div>
             </div>
-            <div className="border rounded-lg text-sm font-semibold w-fit py-2 px-3">
+            {/* <div className="border rounded-lg text-sm font-semibold w-fit py-2 px-3">
               Төрөл нэмэх
-            </div>
+            </div> */}
           </div>
-          <div className="bg-white rounded-lg w-full flex flex-col gap-2 px-6 py-5">
+          {/* <div className="bg-white rounded-lg w-full flex flex-col gap-2 px-6 py-5">
             <div className="font-semibold">Таг</div>
             <textarea
               placeholder="Таг нэмэх..."
@@ -221,12 +267,12 @@ export default function home() {
             <div className="text-sm text-[#5E6166]">
               Санал болгох: Гутал , Цүнх , Эмэгтэй{" "}
             </div>
-          </div>
-          <div className="w-full flex justify-end">
+          </div> */}
+          <div className="w-full flex justify-center">
             <div className="flex gap-6">
-              <div className="border bg-white font-semibold rounded-lg w-fit px-5 py-4 text-lg">
+              {/* <div className="border bg-white font-semibold rounded-lg w-fit px-5 py-4 text-lg">
                 Ноорог
-              </div>
+              </div> */}
               <div
                 onClick={() => {
                   createProduct({
@@ -236,11 +282,12 @@ export default function home() {
                     quantity: addQuantity,
                     category: selectedCategory,
                     image: uploadedUrl,
+                    size: selectedSizes,
                   });
                 }}
                 className="bg-black text-white font-semibold cursor-pointer rounded-lg w-fit px-5 py-4 text-lg"
               >
-                Нийтлэх
+                Бараа нэмэх
               </div>
             </div>
           </div>
