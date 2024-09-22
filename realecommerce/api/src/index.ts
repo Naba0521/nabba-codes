@@ -6,6 +6,7 @@ import {
   orderRouter,
   productRouter,
   reviewRouter,
+  savedProductsRouter,
   userRouter,
 } from "./routes";
 import dotenv from "dotenv";
@@ -28,6 +29,7 @@ app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
 app.use("/review", reviewRouter);
 app.use("/user", userRouter);
+app.use("/savedProducts", savedProductsRouter);
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,

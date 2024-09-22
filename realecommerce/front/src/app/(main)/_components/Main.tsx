@@ -7,17 +7,20 @@ import axios from "axios";
 
 export const Main = () => {
   interface Product {
-    _id: number;
+    _id: string;
     productName: string;
     price: number;
     image: string[];
-    category: string;
+    category: category[];
     size: string[];
     quantity: number;
     saledCount: number;
     salePercent: number;
   }
-
+  interface category {
+    id: string;
+    categoryName: string;
+  }
   interface ProductsResponse {
     products: Product[]; // This represents the `products.products` structure
   }
@@ -28,7 +31,6 @@ export const Main = () => {
     try {
       const response = await axios.get("http://localhost:3001/product");
       setProductsa(response.data);
-      console.log("1111asdsasd", response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }

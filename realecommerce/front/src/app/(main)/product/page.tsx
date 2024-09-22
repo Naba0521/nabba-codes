@@ -5,6 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { MainProductCard } from "../_components/MainProductCard";
 const sizeData = ["Free", "S", "M", "L", "XL", "2XL", "3XL", "10XL"];
 
 export default function Home() {
@@ -12,9 +13,12 @@ export default function Home() {
     _id: string;
     productName: string;
     price: number;
+    image: string[];
     category: category[];
     size: string[];
-    image: string[];
+    quantity: number;
+    saledCount: number;
+    salePercent: number;
   }
   interface ProductsResponse {
     products: product[];
@@ -126,38 +130,10 @@ export default function Home() {
           </div>
         </div>
         <div className="flex-1 grid grid-cols-3 grid-rows-5 gap-x-5 gap-y-12">
-          {filteredCategoryProducts?.map((item, index) => {
-            const isHearted = savedHearts.includes(index);
-            return (
-              <div
-                key={index}
-                className={`relative flex flex-col gap-2 group h-[400px]`}
-              >
-                <Link
-                  href={`/product/${item._id}`}
-                  className={`relative h-[80%] overflow-hidden rounded-2xl `}
-                >
-                  <Image
-                    quality={100}
-                    src={item.image[0]}
-                    fill
-                    alt="a"
-                    className="object-cover rounded-2xl transition-transform duration-700 group-hover:scale-125"
-                  />
-                </Link>
-                <div
-                  onClick={() => toggleHeart(index)}
-                  className="absolute top-4 right-4 cursor-pointer"
-                >
-                  <BHeart bgColor={isHearted ? "black" : "none"} />
-                </div>
-                <div className="flex flex-col relative">
-                  <div>{item.productName}</div>
-                  <div className="font-bold">{item.price}₮</div>
-                </div>
-              </div>
-            );
-          })}
+          {productsa?.products &&
+            filteredCategoryProducts?.map((item, index) => {
+              return <MainProductCard key={index} item={item} index={index} />;
+            })}
         </div>
       </div>
     </div>

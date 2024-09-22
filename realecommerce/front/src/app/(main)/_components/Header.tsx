@@ -56,12 +56,16 @@ export const Header = () => {
             <ProfileIcon />
           </Link>
           <div className="flex gap-2 text-white">
-            <button className="bg-black border border-[#2563EB] py-2 px-3 rounded-md font-medium">
-              Бүртгүүлэх
-            </button>
-            <button className="bg-[#2563EB] py-2 px-3 rounded-md font-medium">
-              Нэвтрэх
-            </button>
+            <Link href={`/signUp`}>
+              <button className="bg-black border border-[#2563EB] py-2 px-3 rounded-md font-medium">
+                Бүртгүүлэх
+              </button>
+            </Link>
+            <Link href={`/logIn`}>
+              <button className="bg-[#2563EB] py-2 px-3 rounded-md font-medium">
+                Нэвтрэх
+              </button>
+            </Link>
           </div>
         </div>
       </div>
