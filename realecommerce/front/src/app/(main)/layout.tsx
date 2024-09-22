@@ -7,7 +7,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div className="">
       <Header />
       <div className="min-h-[60vh]">{children}</div>
 

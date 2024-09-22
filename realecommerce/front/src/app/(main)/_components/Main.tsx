@@ -4,26 +4,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { MainProductCard } from "./MainProductCard";
 import axios from "axios";
-const data = [
-  { image: "/2.png", productName: "The Prompt Magazine", price: 120000 },
-  { image: "/3.png", productName: "Chunky Glyph Tee", price: 120000 },
-  { image: "/4.png", productName: "All Smiles Nalgene", price: 120000 },
-  { image: "/5.png", productName: "Wildflower Hoodie", price: 120000 },
-  { image: "/6.png", productName: "Inkblot Tee", price: 120000 },
-  { image: "/7.png", productName: "Gestures Longsleeve", price: 120000 },
-  { image: "/8.png", productName: "Chunky Glyph Cap", price: 120000 },
-  { image: "/9.png", productName: "Local Styles Crewneck", price: 120000 },
-  { image: "/8.png", productName: "Chunky Glyph Cap", price: 120000 },
-  { image: "/11.png", productName: "Doodle Hoodie", price: 120000 },
-  { image: "/3.png", productName: "Chunky Glyph Tee", price: 120000 },
-  { image: "/4.png", productName: "All Smiles Nalgene", price: 120000 },
-  { image: "/2.png", productName: "The Prompt Magazine", price: 120000 },
-  { image: "/15.png", productName: "Independent Corners Tee", price: 120000 },
-  { image: "/15.png", productName: "Independent Corners Tee", price: 120000 },
-  { image: "/2.png", productName: "The Prompt Magazine", price: 120000 },
-  { image: "/3.png", productName: "Chunky Glyph Tee", price: 120000 },
-  { image: "/4.png", productName: "All Smiles Nalgene", price: 120000 },
-];
 
 export const Main = () => {
   interface Product {
@@ -82,9 +62,6 @@ export const Main = () => {
       </div>
 
       <div className="grid grid-cols-4 grid-rows-6 w-[1040px]  gap-x-5 gap-y-12 [&>div:nth-child(7)]:col-span-2 [&>div:nth-child(7)]:row-span-2 [&>div:nth-child(7)]:h-[113%] [&>div:nth-child(8)]:col-span-2 [&>div:nth-child(8)]:row-span-2 [&>div:nth-child(8)]:h-[113.5%]">
-        {/* {data.map((item, index) => (
-          <MainProductCard key={index} item={item} index={index} />
-        ))} */}
         {productsa?.products.slice(1, 19).map((item, index) => {
           return <MainProductCard key={index} item={item} index={index} />;
         })}

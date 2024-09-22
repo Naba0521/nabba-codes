@@ -46,10 +46,14 @@ export default function Home() {
     <div className="flex-1">
       <div className="flex flex-col w-full gap-6">
         <div className="flex border-b">
-          <div className="px-4 text-sm font-semibold border-b-2 border-black py-4">
-            Бүтээгдэхүүн
-          </div>
-          <div className="px-4 text-sm text-[#3F4145] py-4">Ангилал</div>
+          <Link href={`/dashboard/buteegdehuun`}>
+            <div className="px-4 text-sm font-semibold border-b-2 border-black py-4">
+              Бүтээгдэхүүн
+            </div>
+          </Link>
+          <Link href={`/dashboard/buteegdehuun/angilalnemeh`}>
+            <div className="px-4 text-sm text-[#3F4145] py-4">Ангилал</div>
+          </Link>
         </div>
         <div className="text-white flex gap-2 bg-black px-12 py-2 items-center rounded-xl w-fit font-semibold">
           <WhitePlusIcon />

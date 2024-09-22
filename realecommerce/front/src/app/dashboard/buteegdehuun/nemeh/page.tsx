@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { CategoryNemeh } from "../../_components/CateogryNemeh";
 
 type addProductType = {
   productName: string;
@@ -230,6 +231,7 @@ export default function home() {
                       </SelectItem>
                     );
                   })}
+                  <CategoryNemeh getCategories={getCategories} />
                 </SelectContent>
               </Select>
             </div>
