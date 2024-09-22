@@ -24,12 +24,16 @@ type ProductType = {
   averageRating: number;
   reviewCount: number;
 };
+interface category {
+  id: string;
+  categoryName: string;
+}
 interface Product {
-  _id: number;
+  _id: string;
   productName: string;
   price: number;
   image: string[];
-  category: string;
+  category: category[];
   size: string[];
   quantity: number;
   saledCount: number;
