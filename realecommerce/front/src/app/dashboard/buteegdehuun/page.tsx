@@ -10,6 +10,16 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Value } from "@radix-ui/react-select";
 
 type ProductType = {
   productName: string;
@@ -25,9 +35,22 @@ type ProductType = {
   createdAt: Date;
   _id: string;
 };
-
+interface category {
+  _id: string;
+  categoryName: string;
+}
+interface CategoriesResponse {
+  categories: category[];
+}
 export default function Home() {
   const [product, setProduct] = useState<ProductType[]>([]); // Changed to an array of products
+  const [categoriesa, setCategoriesa] = useState<CategoriesResponse | null>(
+    null
+  );
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [priceSort, setPriceSort] = useState<string>("");
+  const [dateSort, setDateSort] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>("");
 
   const getProducts = async () => {
     try {
@@ -37,9 +60,53 @@ export default function Home() {
       console.error("Error fetching products:", error);
     }
   };
+  const filteredProducts = product
+    .filter((product) => {
+      // Filter by category
+      if (
+        selectedCategory &&
+        !product.category.some((cat) => cat.categoryName === selectedCategory)
+      ) {
+        return false;
+      }
+      // Filter by search input
+      const productNameMatch = product.productName
+        .toLowerCase()
+        .includes(searchInput.toLowerCase());
+      return productNameMatch; // Return true if product name matches search input
+    })
+    .sort((a, b) => {
+      // Sort by price
+      if (priceSort === "Үнэтэй нь эхэндээ") {
+        return b.price - a.price;
+      } else if (priceSort === "Хямд нь эхэндээ") {
+        return a.price - b.price;
+      }
+      // Sort by date
+      if (dateSort === "Шинэ нь эхэндээ") {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      } else if (dateSort === "Хуучин нь эхэндээ") {
+        return (
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      }
+      return 0; // No sorting
+    });
+
+  const getCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/category");
+      setCategoriesa(response.data);
+    } catch (error) {
+      console.log("category awahad aldaa garlaa");
+    }
+  };
 
   useEffect(() => {
     getProducts();
+    getCategories();
   }, []);
 
   return (
@@ -63,27 +130,69 @@ export default function Home() {
         </div>
         <div className="flex justify-between h-10 pr-9">
           <div className="flex gap-3">
-            <div className="flex items-center gap-2 font-semibold px-3 bg-white rounded-lg">
-              <AngilalIcon />
-              <div className="text-[#3F4145]">Ангилал</div>
-              <DooshooSum />
-            </div>
-            <div className="flex items-center gap-2 font-semibold px-3 bg-white rounded-lg">
-              <div>$</div>
-              <div className="text-[#3F4145]">Үнэ</div>
-              <DooshooSum />
-            </div>
-            <div className="flex items-center gap-2 font-semibold px-3 bg-white rounded-lg">
-              <CalendarIcon />
-              <div className="text-[#3F4145]">Сараар</div>
-              <DooshooSum />
-            </div>
+            <Select
+              onValueChange={(value) =>
+                setSelectedCategory(value === "clear" ? "" : value)
+              }
+            >
+              <SelectTrigger className="w-[220px] bg-white rounded-lg h-10">
+                <div className="flex items-center gap-2 font-semibold px-3 ">
+                  <AngilalIcon />
+                  <div className="text-[#3F4145]">Ангилал</div>
+                </div>
+                <SelectValue placeholder="Бүгд" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {/* Clear option */}
+                  <SelectItem value="clear">Бүгд</SelectItem>
+                  {categoriesa?.categories.map((item, index) => {
+                    return (
+                      <SelectItem key={index} value={item.categoryName}>
+                        {item.categoryName}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select onValueChange={(value) => setPriceSort(value)}>
+              <SelectTrigger className="w-[180px] bg-white rounded-lg h-10">
+                <SelectValue placeholder="$ Үнэ" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Үнэтэй нь эхэндээ">
+                  Үнэтэй нь эхэндээ
+                </SelectItem>
+                <SelectItem value="Хямд нь эхэндээ">Хямд нь эхэндээ</SelectItem>
+                <SelectItem value="Сортлохгүй">Сортлохгүй</SelectItem>
+                {/* Optional: for no sorting */}
+              </SelectContent>
+            </Select>
+            <Select onValueChange={(value) => setDateSort(value)}>
+              <SelectTrigger className="w-[260px] bg-white rounded-lg h-10">
+                <div className="flex items-center gap-2 font-semibold px-3 ">
+                  <CalendarIcon />
+                  <div className="text-[#3F4145]">Сараар</div>
+                </div>
+                <SelectValue placeholder="сонгох" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Хуучин нь эхэндээ">
+                  Хуучин нь эхэндээ
+                </SelectItem>
+                <SelectItem value="Шинэ нь эхэндээ">Шинэ нь эхэндээ</SelectItem>
+                <SelectItem value="Сортлохгүй">Сортлохгүй</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex items-center gap-2 bg-white rounded-lg px-4 py-2">
             <BlackSearchIcon />
             <input
               className="outline-none w-[360px]"
-              placeholder="Бүтээгдэхүүний нэр, SKU, UPC"
+              placeholder="Бүтээгдэхүүний нэр"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
         </div>
@@ -97,7 +206,7 @@ export default function Home() {
             <div className="flex-1 pr-[100px]">Нэмсэн огноо</div>
           </div>
 
-          {product.slice(0, 11).map((item, index) => (
+          {filteredProducts.slice(0, 11).map((item, index) => (
             <div key={index} className="flex border-t h-[72px] text-sm">
               <div className="flex-[2] flex items-center gap-[80px] justify-center pl-4">
                 <input

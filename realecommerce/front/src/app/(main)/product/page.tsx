@@ -59,7 +59,6 @@ export default function Home() {
       console.log("category awahad aldaa garlaa");
     }
   };
-
   const filteredCategoryProducts = productsa?.products
     .filter((product) => {
       if (selectedCategory === "") return true; // Show all products if no category is selected

@@ -4,45 +4,82 @@ import Link from "next/link";
 import {
   Table,
   TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
   TableHeader,
+  TableHead,
   TableRow,
+  TableCell,
 } from "@/components/ui/table";
 import { CategoryNemeh } from "../../_components/CateogryNemeh";
 import { useEffect, useState } from "react";
 import axios from "axios";
-interface category {
+
+interface Category {
   _id: string;
   categoryName: string;
 }
-export default function home() {
-  const [category, setCategory] = useState<category[] | null>([]);
+
+type ProductType = {
+  productName: string;
+  price: number;
+  description: string;
+  size: string[];
+  image: string[];
+  averageRating: number;
+  reviewCount: number;
+  category: [{ categoryName: string }];
+  quantity: number;
+  saledCount: number;
+  createdAt: Date;
+  _id: string;
+};
+
+export default function Home() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<ProductType[]>([]);
+
   const getCategories = async () => {
     try {
       const response = await axios.get("http://localhost:3001/category");
-      setCategory(response.data.categories);
+      setCategories(response.data.categories);
     } catch (error) {
-      console.log("category awahad aldaa garlaa");
+      console.error("Error fetching categories:", error);
     }
   };
+
+  const getProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/product");
+      setProducts(response.data.products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
   useEffect(() => {
     getCategories();
+    getProducts();
   }, []);
+
+  // Count products per category
+  const categoryProductCount = categories.map((category) => {
+    const count = products.filter((product) =>
+      product.category.some((cat) => cat.categoryName === category.categoryName)
+    ).length;
+    return { ...category, count };
+  });
+
   return (
     <div className="flex-1">
       <div className="flex flex-col w-full gap-6">
         <div className="flex border-b">
           <Link href={`/dashboard/buteegdehuun`}>
-            <div className="px-4    py-4">Бүтээгдэхүүн</div>
+            <div className="px-4 py-4">Бүтээгдэхүүн</div>
           </Link>
-          <div className="px-4  py-4 border-black border-b-2 text-sm font-semibold">
+          <div className="px-4 py-4 border-black border-b-2 text-sm font-semibold">
             Ангилал
           </div>
         </div>
         <Table>
-          {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px] text-center">№</TableHead>
@@ -52,17 +89,17 @@ export default function home() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {category?.map((item, index) => {
-              return (
-                <TableRow key={index}>
-                  <TableCell className="text-center">{index + 1}</TableCell>
-                  <TableCell className="font-medium">{item._id}</TableCell>
-                  <TableCell className="font-medium">
-                    {item.categoryName}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {categoryProductCount.map((item, index) => (
+              <TableRow key={item._id}>
+                <TableCell className="text-center">{index + 1}</TableCell>
+                <TableCell className="font-medium">{item._id}</TableCell>
+                <TableCell className="font-medium">
+                  {item.categoryName}
+                </TableCell>
+                <TableCell className="text-center">{item.count}</TableCell>{" "}
+                {/* Display the count */}
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
         <CategoryNemeh getCategories={getCategories} />
