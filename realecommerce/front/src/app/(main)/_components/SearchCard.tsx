@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type ProductType = {
@@ -57,15 +58,21 @@ export const SearchCard = ({ searchTerm }: SearchCardProps) => {
       {/* Display filtered products */}
       {filteredProducts.length > 0 ? (
         filteredProducts.map((item, index) => (
-          <div key={index} className="flex gap-6 text-sm">
-            <div className="relative h-[60px] w-[60px] rounded-full overflow-hidden">
-              <Image src={item.image[0]} fill alt={item.productName} />
+          <Link
+            key={index}
+            href={`/product/${item._id}`}
+            className="w-[500px] border-t"
+          >
+            <div className="flex gap-6 text-sm ">
+              <div className="relative h-[60px] w-[60px] rounded-full overflow-hidden">
+                <Image src={item.image[0]} fill alt={item.productName} />
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className="font-semibold text-sm">{item.productName}</div>
+                <div className="flex-1">{item.price}₮</div>
+              </div>
             </div>
-            <div className="flex flex-col gap-4">
-              <div className="font-semibold text-sm">{item.productName}</div>
-              <div className="flex-1">{item.price}₮</div>
-            </div>
-          </div>
+          </Link>
         ))
       ) : (
         <p>No products found</p>

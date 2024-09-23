@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { mainModule } from "process";
 const { Schema, model } = mongoose;
 const productSchema = new Schema({
   category: {

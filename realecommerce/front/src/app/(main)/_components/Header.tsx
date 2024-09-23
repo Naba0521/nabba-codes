@@ -72,7 +72,7 @@ export const Header = () => {
 
       {/* Conditionally render SearchCard based on searchTerm */}
       {searchTerm && (
-        <div className="bg-white flex absolute top-20 rounded-lg w-[30%] h-fit z-50 p-8 border">
+        <div className="bg-white flex absolute top-20 rounded-lg w-[30%] h-fit justify-center z-50 p-8 border">
           <SearchCard searchTerm={searchTerm} />
         </div>
       )}
