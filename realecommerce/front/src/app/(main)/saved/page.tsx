@@ -41,6 +41,7 @@ export default function Home() {
     try {
       const response = await axios.get("http://localhost:3001/savedProducts");
       setSavedProductData(response.data.savedProducts);
+      console.log(response.data.savedProducts);
     } catch (error) {
       console.error("Error fetching user's saved products:", error);
     } finally {

@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { connectToDataBase } from "./database";
 import {
+  authRouter,
   categoryRouter,
   orderRouter,
   productRouter,
@@ -30,6 +31,7 @@ app.use("/order", orderRouter);
 app.use("/review", reviewRouter);
 app.use("/user", userRouter);
 app.use("/savedProducts", savedProductsRouter);
+app.use("/auth", authRouter);
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
