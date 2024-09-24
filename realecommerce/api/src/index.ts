@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import { connectToDataBase } from "./database";
 import {
-  authRouter,
   categoryRouter,
+  getMeRouter,
   orderRouter,
   productRouter,
   reviewRouter,
@@ -16,6 +16,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { configDotenv } from "dotenv";
 import { upload } from "./config/multer";
 import { createCloudinaryController } from "./controllers";
+import authMiddleware from "./controllers/middleware/auth.middleware";
 dotenv.config();
 
 connectToDataBase();
@@ -25,13 +26,15 @@ app.use(express.json());
 app.get("/", (_req, res) => {
   res.json("Hello world");
 });
+app.use(authMiddleware);
+
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
 app.use("/review", reviewRouter);
-app.use("/user", userRouter);
+app.use("/auth", userRouter);
+app.use("/users", getMeRouter);
 app.use("/savedProducts", savedProductsRouter);
-app.use("/auth", authRouter);
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
