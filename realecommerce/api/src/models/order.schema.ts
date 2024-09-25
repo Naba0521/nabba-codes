@@ -5,10 +5,10 @@ const orderSchema = new Schema({
   status: {
     type: String,
     required: true,
-    default: "New",
+    default: "Sags",
   },
-  productIds: {
-    type: [Schema.Types.ObjectId],
+  productId: {
+    type: Schema.Types.ObjectId,
     ref: "Product",
     required: false,
   },
@@ -16,6 +16,21 @@ const orderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
     required: false,
+  },
+  count: {
+    type: Number,
+    required: true,
+    default: 1,
+  },
+  size: {
+    type: String,
+    required: true,
+    default: "10XL",
+  },
+  price: {
+    type: Number,
+    required: true,
+    default: 0,
   },
   createdAt: {
     type: Date,

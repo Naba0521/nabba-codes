@@ -69,9 +69,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   >([]);
   const userId = userMe?.id || ""; // Use userMe ID
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
   const getMe = async () => {
+    const token = localStorage.getItem("token");
+
     try {
       const response = await axios.get("http://localhost:3001/users/me", {
         headers: {
@@ -79,13 +81,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         },
       });
       setUserMe(response.data);
-      console.log("User data:", response.data);
     } catch (error) {
       console.log("Error fetching user data", error);
     }
   };
 
   const getToSavedProduct = async () => {
+    const token = localStorage.getItem("token");
+
     setLoading(true);
     try {
       const response = await axios.get("http://localhost:3001/savedProducts", {
@@ -94,7 +97,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         },
       });
       setSavedProductData(response.data.savedProducts);
-      console.log(response.data.savedProducts);
     } catch (error) {
       console.error("Error fetching user's saved products:", error);
     } finally {
@@ -103,6 +105,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const createToSavedProduct = async (productId: string) => {
+    const token = localStorage.getItem("token");
+
     const addUserToSavedProduct: addUserToSavedProduct = { productId, userId };
     setLoading(true);
     try {
@@ -115,8 +119,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           },
         }
       );
-      console.log("Product saved:", response.data);
-      // Update saved product data after saving
       await getToSavedProduct();
     } catch (error) {
       console.error("Error adding product to saved:", error);
@@ -126,6 +128,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const deleteToSavedProduct = async (productId: string) => {
+    const token = localStorage.getItem("token");
+
     const deleteUserToSavedProduct = { productId, userId };
 
     setLoading(true); // Set loading state

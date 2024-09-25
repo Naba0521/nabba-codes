@@ -1,47 +1,83 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { DeliverCard } from "../_components/DeliverCard";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { DeleteIcon } from "@/assets/DeleteIcon";
+import Image from "next/image";
+
+type orderDataResponse = {
+  _id: string; // Add this line
+  productId: ProductResponse;
+  userId: string;
+  size: string;
+  count: number;
+  price: number;
+}[];
+
+type ProductResponse = {
+  _id: string;
+  productName: string;
+  image: string[];
+  price: number;
+};
 
 export default function Home() {
-  const initialData = [
-    {
-      img: "/2.png",
-      name: "Chunky Glyph Tee",
-      price: 120000,
-      count: 1,
-    },
-    {
-      img: "/3.png",
-      name: "Chunky Glyph Tee",
-      price: 120000,
-      count: 1,
-    },
-    {
-      img: "/4.png",
-      name: "Chunky Glyph Tee",
-      price: 120000,
-      count: 1,
-    },
-  ];
+  const [orderData, setOrderData] = useState<orderDataResponse>([]);
+  const [notification, setNotification] = useState("");
 
-  const [items, setItems] = useState(initialData);
+  const getOrder = async () => {
+    const token = localStorage.getItem("token");
 
-  // Calculate total sum
-  const totalSum = items.reduce(
-    (total, item) => total + item.price * item.count,
+    try {
+      const response = await axios.get("http://localhost:3001/order", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrderData(response.data.orders);
+      console.log(response.data.orders);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteOrder = async (_id: string) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.delete("http://localhost:3001/order", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: { _id }, // Pass _id in the request body
+      });
+      setNotification("Амжилттай хасагдлаа");
+      setTimeout(() => {
+        setNotification("");
+      }, 2000);
+      getOrder();
+    } catch (error) {
+      console.error("Error removing product from saved:", error);
+    }
+  };
+
+  useEffect(() => {
+    getOrder();
+  }, []);
+
+  const totalSum = orderData.reduce(
+    (acc, item) => acc + item.price * item.count,
     0
   );
 
-  const updateItemCount = (index: number, count: number) => {
-    setItems((prevItems) =>
-      prevItems.map((item, i) => (i === index ? { ...item, count } : item))
-    );
-  };
-
   return (
     <div className="py-4 px-6 flex justify-center w-full bg-[#F4F4F5]">
-      <div className=" w-[1440px] px-[200px] py-16 flex flex-col justify-center items-center gap-16  ">
+      <div className="w-[1440px] px-[200px] py-16 flex flex-col justify-center items-center gap-16">
+        {notification && (
+          <div className="bg-green-500 text-white p-4 rounded-md mb-4 w-[200px] absolute top-[10px] right-[30px]">
+            {notification}
+          </div>
+        )}
         <div className="flex items-center justify-center">
           <div className="w-8 h-8 bg-[#2563EB] rounded-2xl flex justify-center items-center text-white">
             1
@@ -61,17 +97,54 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <div className="flex">
               <div className="font-bold text-xl">1. Сагс</div>
-              <div className="text-xl text-[#71717A]">({items.length})</div>
+              <div className="text-xl text-[#71717A]">({orderData.length})</div>
             </div>
             <div className="flex flex-col gap-4">
-              {items.map((item, index) => (
-                <DeliverCard
-                  key={index}
-                  item={item}
-                  index={index}
-                  updateItemCount={updateItemCount}
-                />
-              ))}
+              {orderData.length > 0 ? (
+                orderData.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between border rounded-2xl p-4"
+                  >
+                    <div className="flex gap-6">
+                      <div className="relative w-[120px] h-[120px]">
+                        <Image
+                          src={item.productId.image[0]}
+                          fill
+                          alt={item.productId.productName}
+                          className="rounded-2xl object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-between">
+                        <div className="flex flex-col">
+                          <div>{item.productId.productName}</div>
+                          <div className="flex">
+                            <button className="w-8 h-8 border rounded-2xl bg-white">
+                              -
+                            </button>
+                            <div className="w-8 h-8 flex justify-center items-center">
+                              {item.count}
+                            </div>
+                            <button className="w-8 h-8 border rounded-2xl bg-white">
+                              +
+                            </button>
+                          </div>
+                        </div>
+                        <div className="font-bold">
+                          {item.price * item.count}₮
+                        </div>
+                      </div>
+                    </div>
+                    <div onClick={() => deleteOrder(item._id)}>
+                      <DeleteIcon />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-500">
+                  Сагс хоосон байна.
+                </div>
+              )}
             </div>
             <div className="flex justify-between border-t-[2px] border-dashed border-b-[2px] py-[24px]">
               <div>Үнийн дүн:</div>

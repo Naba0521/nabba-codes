@@ -66,8 +66,16 @@ type addReviewType = {
   comment: string;
   rating: number;
 };
+interface AddOrderResponse {
+  productId: string;
+  userId: string;
+  count: number;
+  price: number;
+  size: string;
+}
 export default function Home() {
   const { userMe } = useAuthContext(); // Access userMe from AuthContext
+  const token = localStorage.getItem("token");
 
   const [savedHeart, setSavedHeart] = useState(false);
 
@@ -86,7 +94,8 @@ export default function Home() {
   const [addComment, setAddComment] = useState<addCommentType>({
     comment: "",
   });
-  const token = localStorage.getItem("token");
+
+  const [notification, setNotification] = useState("");
 
   const getProducts = async () => {
     try {
@@ -105,6 +114,7 @@ export default function Home() {
       console.error("Error fetching product:", error);
     }
   };
+
   const getOneReview = async (id: string) => {
     try {
       const response = await axios.get(`http://localhost:3001/review/${id}`, {
@@ -135,6 +145,26 @@ export default function Home() {
       console.error("Error adding review:", error);
     }
   };
+  const createOrder = async (addOrder: AddOrderResponse) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/order",
+        addOrder, // Pass the review data as the second parameter
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the token in the headers
+          },
+        }
+      );
+      setNotification("Захиалга амжилттай нэмэгдлээ"); // Set notification message
+      // Clear notification after 3 seconds
+      setTimeout(() => {
+        setNotification("");
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const [imgIndex, setImgIndex] = useState<number>(0);
   useEffect(() => {
@@ -146,6 +176,11 @@ export default function Home() {
   return (
     <div className="py-4 px-6 flex justify-center w-full min-h-screen">
       <div className=" w-[1440px] px-[200px] pb-16  gap-[120px] flex flex-col  ">
+        {notification && (
+          <div className="bg-green-500 text-white p-4 rounded-md mb-4 w-[200px] absolute top-[50px] right-[540px]">
+            {notification}
+          </div>
+        )}
         <div className="flex gap-5">
           <div className="flex-1 flex gap-5  h-[520px] sticky top-0 pt-16">
             <div className="w-[67px] flex flex-col gap-2 justify-center">
@@ -242,7 +277,20 @@ export default function Home() {
                     : "Loading..."}
                   ₮{" "}
                 </div>
-                <button className="h-9 w-[175px] text-white bg-[#2563EB] rounded-[20px]">
+                <button
+                  className="h-9 w-[175px] text-white bg-[#2563EB] rounded-[20px]"
+                  onClick={() => {
+                    if (userMe?.id) {
+                      createOrder({
+                        userId: userMe.id,
+                        count: productNumber,
+                        productId: id,
+                        size: product?.size[size] ?? "",
+                        price: product?.price ?? 0, // price нь undefined байвал 0
+                      });
+                    }
+                  }}
+                >
                   Сагсанд нэмэх
                 </button>
               </div>

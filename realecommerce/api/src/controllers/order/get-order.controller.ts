@@ -3,7 +3,7 @@ import { orderModel } from "../../models";
 
 export const getOrderController: RequestHandler = async (req, res) => {
   try {
-    const orders = await orderModel.find({});
+    const orders = await orderModel.find({}).populate("productId");
     return res.status(200).json({
       orders,
     });
