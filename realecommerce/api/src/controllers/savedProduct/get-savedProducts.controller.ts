@@ -5,8 +5,7 @@ export const getSavedProductsController: RequestHandler = async (req, res) => {
   try {
     const savedProducts = await savedProductsModel
       .find({})
-      .populate("productId") // Populate productId with Product documents
-      .populate("userId"); // Populate userId with User documents
+      .populate("productId"); // Populate productId with Product documents
 
     return res.status(200).json({
       savedProducts,

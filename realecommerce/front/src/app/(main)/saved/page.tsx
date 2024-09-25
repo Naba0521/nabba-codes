@@ -1,62 +1,21 @@
 "use client";
+
 import { BHeart } from "@/assets/BHeart";
-import axios from "axios";
+import { useAuthContext } from "@/components/ui/utils/authProvider";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-
-interface Product {
-  _id: string;
-  productName: string;
-  price: number;
-  image: string[];
-  category: Category[];
-  size: string[];
-  quantity: number;
-  saledCount: number;
-  salePercent: number;
-}
-
-interface Category {
-  id: string;
-  categoryName: string;
-}
-
-type User = {
-  _id: string;
-};
-
-type SavedProductDataResponse = {
-  productId: Product;
-  userId: User;
-};
 
 export default function Home() {
-  const [savedProductData, setSavedProductData] = useState<
-    SavedProductDataResponse[]
-  >([]);
-  const [loading, setLoading] = useState(true);
+  const { userMe, savedProductData, loading } = useAuthContext();
 
-  const getToSavedProduct = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("http://localhost:3001/savedProducts");
-      setSavedProductData(response.data.savedProducts);
-      console.log(response.data.savedProducts);
-    } catch (error) {
-      console.error("Error fetching user's saved products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getToSavedProduct();
-  }, []);
+  // Filter saved products based on userId
+  const filteredSavedProducts = savedProductData.filter(
+    (savedProduct) => savedProduct.userId === userMe?.id
+  );
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading...
+        <div>Loading...</div>
       </div>
     ); // Show a loading state
   }
@@ -67,11 +26,11 @@ export default function Home() {
         <div className="flex gap-1">
           <div className="font-bold text-[20px]">Хадгалсан бараа</div>
           <div className="font-medium text-xl text-[#5E6166]">
-            ({savedProductData.length})
+            ({filteredSavedProducts.length}) {/* Show filtered count */}
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          {savedProductData.map((item, index) => (
+          {filteredSavedProducts.map((item, index) => (
             <div
               key={index}
               className="flex p-4 bg-white rounded-2xl justify-between"
@@ -79,7 +38,7 @@ export default function Home() {
               <div className="flex gap-6">
                 <div className="relative w-[100px] h-[100px] rounded-2xl overflow-hidden">
                   <Image
-                    src={item.productId.image[0]}
+                    src={item.productId.image[0] || "/placeholder.jpg"}
                     className="object-contain"
                     fill
                     alt={item.productId.productName}
@@ -96,7 +55,7 @@ export default function Home() {
                 </div>
               </div>
               <div>
-                <BHeart bgColor="black" />
+                <BHeart bgColor="red" />
               </div>
             </div>
           ))}

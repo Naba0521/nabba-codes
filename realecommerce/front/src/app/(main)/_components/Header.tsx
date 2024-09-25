@@ -1,4 +1,5 @@
 "use client";
+
 import { Heart } from "@/assets/Heart";
 import { Logo } from "@/assets/logo";
 import { ProfileIcon } from "@/assets/ProfileIcon";
@@ -7,9 +8,11 @@ import { Tereg } from "@/assets/Tereg";
 import Link from "next/link";
 import { SearchCard } from "./SearchCard";
 import { useState } from "react";
+import { useAuthContext } from "@/components/ui/utils/authProvider"; // Import the useAuthContext hook
 
 export const Header = () => {
   const [searchTerm, setSearchTerm] = useState<string>(""); // User input for search
+  const { userMe } = useAuthContext(); // Access userMe from AuthContext
 
   return (
     <div className="py-4 px-6 bg-black flex flex-col items-center justify-center w-full relative">
@@ -20,8 +23,9 @@ export const Header = () => {
               <Logo />
             </div>
           </Link>
-
-          <div>ECOMMERCE</div>
+          <Link href={`/`}>
+            <div>ECOMMERCE</div>
+          </Link>
           <Link href={`/product`}>
             <div>Ангилал</div>
           </Link>
@@ -55,18 +59,26 @@ export const Header = () => {
           <Link href={`/userInfo1`}>
             <ProfileIcon />
           </Link>
-          <div className="flex gap-2 text-white">
-            <Link href={`/signUp`}>
-              <button className="bg-black border border-[#2563EB] py-2 px-3 rounded-md font-medium">
-                Бүртгүүлэх
-              </button>
-            </Link>
-            <Link href={`/logIn`}>
-              <button className="bg-[#2563EB] py-2 px-3 rounded-md font-medium">
-                Нэвтрэх
-              </button>
-            </Link>
-          </div>
+
+          {/* Conditionally show login/signup buttons or user information */}
+          {!userMe?.userName ? (
+            <div className="flex gap-2 text-white">
+              <Link href={`/signUp`}>
+                <button className="bg-black border border-[#2563EB] py-2 px-3 rounded-md font-medium">
+                  Бүртгүүлэх
+                </button>
+              </Link>
+              <Link href={`/logIn`}>
+                <button className="bg-[#2563EB] py-2 px-3 rounded-md font-medium">
+                  Нэвтрэх
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <div className="text-white">
+              Сайн байна уу, {userMe.userName} {/* Show the user name */}
+            </div>
+          )}
         </div>
       </div>
 

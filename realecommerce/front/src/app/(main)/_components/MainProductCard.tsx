@@ -1,5 +1,6 @@
 "use client";
 import { BHeart } from "@/assets/BHeart";
+import { useAuthContext } from "@/components/ui/utils/authProvider";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,73 +29,36 @@ type MainProductCardProps = {
   item: Product;
 };
 
-type addUserToSavedProduct = {
-  productId: string;
-  userId: string;
-};
-
-type deleteUserToSavedProduct = {
-  productId: string;
-  userId: string;
-};
-type getUserToSavedProduct = {
-  productId: Product;
-  userId: string;
-};
-
 export const MainProductCard = ({ item, index }: MainProductCardProps) => {
+  const {
+    userMe,
+    createToSavedProduct,
+    deleteToSavedProduct,
+    savedProductData,
+  } = useAuthContext();
+
   const [savedHeart, setSavedHeart] = useState(false);
 
-  const userId = "66e8dee21af9722ca42e9a96"; // Your default user ID
-
-  const createToSavedProduct = async (productId: string) => {
-    const addUserToSavedProduct: addUserToSavedProduct = { productId, userId };
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/savedProducts",
-        addUserToSavedProduct
-      );
-      console.log("Product saved:", response.data);
-      setSavedHeart(true);
-    } catch (error) {
-      console.error("Error adding product to saved:", error);
-    }
-  };
-
-  const getToSavedProduct = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/savedProducts");
-      const isSaved = response.data.savedProducts.some(
-        (savedProduct: getUserToSavedProduct) =>
-          savedProduct.productId._id === item._id
-      );
-      setSavedHeart(isSaved);
-    } catch (error) {
-      console.error("Error fetching user's saved products:", error);
-    }
-  };
-
-  const deleteToSavedProduct = async (productId: string) => {
-    const deleteUserToSavedProduct: deleteUserToSavedProduct = {
-      productId,
-      userId,
-    };
-    try {
-      const response = await axios.delete(
-        "http://localhost:3001/savedProducts",
-        { data: deleteUserToSavedProduct } // Include data in the correct format
-      );
-      console.log("Product removed:", response.data);
-      setSavedHeart(false);
-    } catch (error) {
-      console.error("Error removing product from saved:", error);
-    }
-  };
-
   useEffect(() => {
-    getToSavedProduct();
-  }, []);
+    const filteredSavedProducts = savedProductData.filter(
+      (savedProduct) => savedProduct.userId === userMe?.id
+    );
+
+    const isSaved = filteredSavedProducts.some(
+      (savedProduct) => savedProduct.productId._id === item._id
+    );
+
+    setSavedHeart(isSaved);
+  }, [item._id, savedProductData, userMe]);
+
+  const handleHeartClick = () => {
+    if (savedHeart) {
+      deleteToSavedProduct(item._id);
+    } else {
+      createToSavedProduct(item._id);
+    }
+    setSavedHeart((prev) => !prev); // Toggle savedHeart state
+  };
 
   return (
     <div key={index} className={`relative flex flex-col gap-2 group h-[400px]`}>
@@ -112,17 +76,10 @@ export const MainProductCard = ({ item, index }: MainProductCardProps) => {
       </Link>
 
       <div
-        onClick={() => {
-          if (savedHeart) {
-            deleteToSavedProduct(item._id); // Call delete function if already saved
-          } else {
-            createToSavedProduct(item._id); // Call save function if not saved
-          }
-          setSavedHeart((prev) => !prev); // Toggle the heart state
-        }}
-        className="absolute top-4 right-4 cursor-pointer"
+        onClick={handleHeartClick}
+        className={`absolute top-4 right-4 cursor-pointer`}
       >
-        <BHeart bgColor={savedHeart ? "black" : "none"} />
+        <BHeart bgColor={savedHeart ? "red" : "#D3D3D3"} />
       </div>
 
       <div className="flex flex-col relative">

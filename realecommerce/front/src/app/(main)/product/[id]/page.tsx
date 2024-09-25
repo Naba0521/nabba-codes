@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { MainProductCard } from "../../_components/MainProductCard";
 import { FaStar } from "react-icons/fa";
+import { useAuthContext } from "@/components/ui/utils/authProvider"; // Import the useAuthContext hook
 
 type ParamsType = {
   id: string;
@@ -66,6 +67,8 @@ type addReviewType = {
   rating: number;
 };
 export default function Home() {
+  const { userMe } = useAuthContext(); // Access userMe from AuthContext
+
   const [savedHeart, setSavedHeart] = useState(false);
 
   const [size, setSize] = useState(0);
@@ -83,6 +86,7 @@ export default function Home() {
   const [addComment, setAddComment] = useState<addCommentType>({
     comment: "",
   });
+  const token = localStorage.getItem("token");
 
   const getProducts = async () => {
     try {
@@ -103,7 +107,11 @@ export default function Home() {
   };
   const getOneReview = async (id: string) => {
     try {
-      const response = await axios.get(`http://localhost:3001/review/${id}`);
+      const response = await axios.get(`http://localhost:3001/review/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token in the headers
+        },
+      });
       setReviews(response.data.reviews);
       console.log("1111asdsasd", response.data.reviews);
     } catch (error) {
@@ -114,14 +122,20 @@ export default function Home() {
     try {
       const response = await axios.post(
         "http://localhost:3001/review",
-        addReview
+        addReview, // Pass the review data as the second parameter
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the token in the headers
+          },
+        }
       );
-      getOneReview(id);
-      getOneProduct(id);
+      getOneReview(id); // Refresh the reviews after posting
+      getOneProduct(id); // Optionally refresh the product details
     } catch (error) {
-      console.error("Error add review:", error);
+      console.error("Error adding review:", error);
     }
   };
+
   const [imgIndex, setImgIndex] = useState<number>(0);
   useEffect(() => {
     getOneProduct(id);
@@ -319,13 +333,15 @@ export default function Home() {
                 </div>
                 <button
                   onClick={() => {
-                    createReview({
-                      productId: id,
-                      rating: ratingSelect,
-                      comment: addComment.comment,
-                      userId: "66e8dee21af9722ca42e9a96",
-                    });
-                    setHideComment(!hideComment);
+                    if (userMe?.id) {
+                      createReview({
+                        productId: id,
+                        rating: ratingSelect,
+                        comment: addComment.comment,
+                        userId: userMe.id, // This will now be safe
+                      });
+                      setHideComment(!hideComment);
+                    }
                   }}
                   className="text-white text-sm font-medium bg-[#2563EB] rounded-[20px] py-2 px-9 w-fit"
                 >
