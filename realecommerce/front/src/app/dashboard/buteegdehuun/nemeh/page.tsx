@@ -134,7 +134,12 @@ export default function Home() {
                   key={index}
                   className="flex-1 border-2 rounded-lg border-dashed h-[124px] relative flex justify-center items-center"
                 >
-                  <Image alt="Uploaded image" fill src={url} />
+                  <Image
+                    alt="Uploaded image"
+                    fill
+                    src={url}
+                    className="object-contain"
+                  />
                 </div>
               ))}
               <div className="flex flex-col w-[160px] justify-center items-center">

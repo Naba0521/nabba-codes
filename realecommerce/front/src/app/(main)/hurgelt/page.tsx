@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { DeleteIcon } from "@/assets/DeleteIcon";
 import Image from "next/image";
+import { useAuthContext } from "@/components/ui/utils/authProvider";
 
 type orderDataResponse = {
-  _id: string; // Add this line
+  _id: string;
   productId: ProductResponse;
   userId: string;
   size: string;
@@ -22,6 +23,8 @@ type ProductResponse = {
 };
 
 export default function Home() {
+  const { userMe } = useAuthContext(); // Access userMe from AuthContext
+
   const [orderData, setOrderData] = useState<orderDataResponse>([]);
   const [notification, setNotification] = useState("");
 
@@ -40,7 +43,9 @@ export default function Home() {
       console.log(error);
     }
   };
-
+  const filteredOrderData = orderData.filter(
+    (orderData) => orderData.userId === userMe?.id
+  );
   const deleteOrder = async (_id: string) => {
     const token = localStorage.getItem("token");
 
@@ -49,7 +54,7 @@ export default function Home() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        data: { _id }, // Pass _id in the request body
+        data: { _id },
       });
       setNotification("Амжилттай хасагдлаа");
       setTimeout(() => {
@@ -61,11 +66,25 @@ export default function Home() {
     }
   };
 
+  const incrementCount = (index: number) => {
+    const updatedOrderData = [...filteredOrderData];
+    updatedOrderData[index].count += 1;
+    setOrderData(updatedOrderData);
+  };
+
+  const decrementCount = (index: number) => {
+    const updatedOrderData = [...filteredOrderData];
+    if (updatedOrderData[index].count > 1) {
+      updatedOrderData[index].count -= 1;
+      setOrderData(updatedOrderData);
+    }
+  };
+
   useEffect(() => {
     getOrder();
   }, []);
 
-  const totalSum = orderData.reduce(
+  const totalSum = filteredOrderData.reduce(
     (acc, item) => acc + item.price * item.count,
     0
   );
@@ -97,11 +116,13 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <div className="flex">
               <div className="font-bold text-xl">1. Сагс</div>
-              <div className="text-xl text-[#71717A]">({orderData.length})</div>
+              <div className="text-xl text-[#71717A]">
+                ({filteredOrderData.length})
+              </div>
             </div>
             <div className="flex flex-col gap-4">
-              {orderData.length > 0 ? (
-                orderData.map((item, index) => (
+              {filteredOrderData.length > 0 ? (
+                filteredOrderData.map((item, index) => (
                   <div
                     key={index}
                     className="flex justify-between border rounded-2xl p-4"
@@ -116,16 +137,23 @@ export default function Home() {
                         />
                       </div>
                       <div className="flex flex-col justify-between">
-                        <div className="flex flex-col">
+                        <div className="flex flex-col gap-2">
                           <div>{item.productId.productName}</div>
+                          <div>Size:{item.size}</div>
                           <div className="flex">
-                            <button className="w-8 h-8 border rounded-2xl bg-white">
+                            <button
+                              className="w-8 h-8 border rounded-2xl bg-white"
+                              onClick={() => decrementCount(index)}
+                            >
                               -
                             </button>
                             <div className="w-8 h-8 flex justify-center items-center">
                               {item.count}
                             </div>
-                            <button className="w-8 h-8 border rounded-2xl bg-white">
+                            <button
+                              className="w-8 h-8 border rounded-2xl bg-white"
+                              onClick={() => incrementCount(index)}
+                            >
                               +
                             </button>
                           </div>
@@ -135,7 +163,10 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    <div onClick={() => deleteOrder(item._id)}>
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => deleteOrder(item._id)}
+                    >
                       <DeleteIcon />
                     </div>
                   </div>

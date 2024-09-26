@@ -162,7 +162,15 @@ export default function Home() {
         setNotification("");
       }, 3000);
     } catch (error) {
-      console.log(error);
+      // Check if the error response exists and has a status code of 409
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        setNotification("Энэ бүтээгдэхүүн сагсанд нэмэгдсэн байна");
+        setTimeout(() => {
+          setNotification("");
+        }, 3000);
+      } else {
+        console.log(error); // Log other errors
+      }
     }
   };
 
@@ -195,7 +203,7 @@ export default function Home() {
                       index === imgIndex ? " border-[2px] border-[#09090B]" : ""
                     }`}
                   >
-                    <Image src={item} fill alt="asd" className="" />
+                    <Image src={item} fill alt="asd" className="object-cover" />
                   </div>
                 );
               })}

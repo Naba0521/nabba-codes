@@ -9,7 +9,9 @@ export default function MainLayout({
   return (
     <div className="">
       <Header />
-      <div className="min-h-[60vh]">{children}</div>
+      <div style={{ minHeight: "calc(100vh - 320.5px - 70px)" }}>
+        {children}
+      </div>
 
       <Footer />
     </div>
