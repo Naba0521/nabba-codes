@@ -74,7 +74,12 @@ interface AddOrderResponse {
   size: string;
 }
 export default function Home() {
-  const { userMe } = useAuthContext(); // Access userMe from AuthContext
+  const {
+    userMe,
+    createToSavedProduct,
+    deleteToSavedProduct,
+    savedProductData,
+  } = useAuthContext(); // Access userMe from AuthContext
   const token = localStorage.getItem("token");
 
   const [savedHeart, setSavedHeart] = useState(false);
@@ -174,6 +179,26 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const filteredSavedProducts = savedProductData.filter(
+      (savedProduct) => savedProduct.userId === userMe?.id
+    );
+
+    const isSaved = filteredSavedProducts.some(
+      (savedProduct) => savedProduct.productId._id === id
+    );
+
+    setSavedHeart(isSaved);
+  }, [id, savedProductData, userMe]);
+
+  const handleHeartClick = () => {
+    if (savedHeart) {
+      deleteToSavedProduct(id);
+    } else {
+      createToSavedProduct(id);
+    }
+    setSavedHeart((prev) => !prev); // Toggle savedHeart state
+  };
   const [imgIndex, setImgIndex] = useState<number>(0);
   useEffect(() => {
     getOneProduct(id);
@@ -234,8 +259,8 @@ export default function Home() {
                     <div className="font-bold text-2xl">
                       {product?.productName}
                     </div>
-                    <div>
-                      <BHeart bgColor="none" />
+                    <div className="cursor-pointer" onClick={handleHeartClick}>
+                      <BHeart bgColor={savedHeart ? "red" : "#D3D3D3"} />
                     </div>
                   </div>
                   <div>{product?.description}</div>
