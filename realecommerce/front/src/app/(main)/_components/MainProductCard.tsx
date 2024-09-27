@@ -20,7 +20,7 @@ interface Product {
 }
 
 interface Category {
-  id: string;
+  _id: string;
   categoryName: string;
 }
 
