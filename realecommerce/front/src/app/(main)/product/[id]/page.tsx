@@ -26,7 +26,7 @@ type ProductType = {
   reviewCount: number;
 };
 interface category {
-  id: string;
+  _id: string;
   categoryName: string;
 }
 interface Product {

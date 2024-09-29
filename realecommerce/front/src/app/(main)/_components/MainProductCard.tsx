@@ -12,14 +12,14 @@ interface Product {
   productName: string;
   price: number;
   image: string[];
-  category: Category[];
+  category: category[];
   size: string[];
   quantity: number;
   saledCount: number;
   salePercent: number;
 }
 
-interface Category {
+interface category {
   _id: string;
   categoryName: string;
 }

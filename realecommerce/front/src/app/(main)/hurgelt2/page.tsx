@@ -1,7 +1,38 @@
+"use client";
 import { Check } from "@/assets/Check";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useEffect, useState } from "react";
+interface category {
+  _id: string;
+  categoryName: string;
+}
+interface Product {
+  _id: string;
+  productName: string;
+  price: number;
+  image: string[];
+  category: category[];
+  size: string[];
+  quantity: number;
+  saledCount: number;
+  salePercent: number;
+}
+type orderDataResponse = {
+  _id: string;
+  productId: Product;
+  userId: string;
+  size: string;
+  count: number;
+  price: number;
+}[];
+type orderPackDataResponse = {
+  orderId: orderDataResponse[];
+  userId: string;
+  orderPackPrice: number;
+  status: string;
+};
 export default function home() {
   const initialData = [
     {
@@ -23,7 +54,19 @@ export default function home() {
       count: 1,
     },
   ];
-  const totalPrice = initialData.reduce((acc, item) => acc + item.price, 0);
+  const [orderPackData, setOrderPackData] = useState<orderPackDataResponse>();
+  const getOrderPack = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/orderPack");
+      setOrderPackData(response.data.orderPacks);
+      console.log(response.data.orderPacks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getOrderPack();
+  }, []);
   return (
     <div className="py-4 px-6 flex justify-center w-full bg-[#f7f7f7]">
       <div className=" w-[1440px] px-[200px] py-16 flex flex-col  items-center gap-8  ">
@@ -48,12 +91,12 @@ export default function home() {
           <div className="py-8 px-6 flex flex-col flex-1 gap-4 bg-white rounded-xl h-fit">
             <div>Сагс (4)</div>
             <div className="flex flex-col gap-4">
-              {initialData.map((item, index) => {
+              {orderPackData?.map((item, index) => {
                 return (
                   <div key={index} className="flex gap-4 ">
                     <div className="relative w-[80px] h-20">
                       <Image
-                        src={item.img}
+                        src={item.orderId.productId.image[0]}
                         fill
                         alt="aa"
                         className="rounded-2xl"
@@ -73,7 +116,7 @@ export default function home() {
             </div>
             <div className="flex justify-between border-t-2 border-dashed pt-[16px]">
               <div>Нийт төлөх дүн:</div>
-              <div className="font-bold">{totalPrice}</div>
+              <div className="font-bold">totalPrice</div>
             </div>
           </div>
           <div className="flex-[2] flex flex-col p-8 rounded-2xl bg-white gap-9">

@@ -21,12 +21,28 @@ type ProductResponse = {
   image: string[];
   price: number;
 };
-
+type addOrderPackResponse = {
+  orderId: string[];
+  userId: string;
+  orderPackPrice: number;
+  status: string;
+};
 export default function Home() {
   const { userMe } = useAuthContext(); // Access userMe from AuthContext
 
   const [orderData, setOrderData] = useState<orderDataResponse>([]);
   const [notification, setNotification] = useState("");
+
+  const createOrderPack = async (addOrderPack: addOrderPackResponse) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/orderPack",
+        addOrderPack
+      );
+    } catch (error) {
+      console.log("Error adding orderPack:", error);
+    }
+  };
 
   const getOrder = async () => {
     const token = localStorage.getItem("token");
@@ -183,7 +199,22 @@ export default function Home() {
             </div>
           </div>
           <Link href={`/hurgelt2`} className="self-end">
-            <div className="text-white bg-[#2563EB] px-9 py-2 text-sm rounded-2xl w-fit self-end">
+            <div
+              onClick={() => {
+                if (userMe?.id) {
+                  const orderIds = filteredOrderData.map((item) => item._id); // _id утгыг массив болгож ялгаж авах
+                  createOrderPack({
+                    userId: userMe.id, // Хэрэглэгчийн ID-г дамжуулна
+                    orderPackPrice: totalSum,
+                    orderId: orderIds, // Order _id утгуудыг дамжуулна
+                    status: "new",
+                  });
+                } else {
+                  console.error("User ID is undefined");
+                }
+              }}
+              className="text-white bg-[#2563EB] px-9 py-2 text-sm rounded-2xl w-fit self-end"
+            >
               Худалдан авах
             </div>
           </Link>

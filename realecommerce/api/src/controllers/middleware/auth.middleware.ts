@@ -13,7 +13,8 @@ const authMiddleware = (
   if (
     req.path.startsWith("/auth") ||
     req.path.startsWith("/product") ||
-    req.path.startsWith("/category")
+    req.path.startsWith("/category") ||
+    req.path.startsWith("/orderPack")
   ) {
     return next(); // Skip authentication for these routes
   } //user path deer token shalgahgvi

@@ -4,6 +4,7 @@ import { connectToDataBase } from "./database";
 import {
   categoryRouter,
   getMeRouter,
+  orderPackRouter,
   orderRouter,
   productRouter,
   reviewRouter,
@@ -35,6 +36,7 @@ app.use("/review", reviewRouter);
 app.use("/auth", userRouter);
 app.use("/users", getMeRouter);
 app.use("/savedProducts", savedProductsRouter);
+app.use("/orderPack", orderPackRouter);
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
