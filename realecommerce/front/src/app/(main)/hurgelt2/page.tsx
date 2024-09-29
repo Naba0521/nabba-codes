@@ -26,13 +26,13 @@ type orderDataResponse = {
   size: string;
   count: number;
   price: number;
-}[];
+};
 type orderPackDataResponse = {
   orderId: orderDataResponse[];
   userId: string;
   orderPackPrice: number;
   status: string;
-};
+}[];
 export default function home() {
   const initialData = [
     {
@@ -89,34 +89,43 @@ export default function home() {
         </div>
         <div className="flex gap-5 w-full ">
           <div className="py-8 px-6 flex flex-col flex-1 gap-4 bg-white rounded-xl h-fit">
-            <div>Сагс (4)</div>
+            <div>
+              Сагс ({orderPackData && orderPackData[0]?.orderId.length})
+            </div>
             <div className="flex flex-col gap-4">
-              {orderPackData?.map((item, index) => {
+              {orderPackData?.map((pack, index) => {
                 return (
-                  <div key={index} className="flex gap-4 ">
-                    <div className="relative w-[80px] h-20">
-                      <Image
-                        src={item.orderId.productId.image[0]}
-                        fill
-                        alt="aa"
-                        className="rounded-2xl"
-                      />
-                    </div>
-                    <div className="flex flex-col ">
-                      <div>{item.name}</div>
-                      <div className="flex">
-                        <div>{item.count}x</div>
-                        <div> {item.price}₮ </div>
+                  <div key={index} className="flex flex-col gap-4 ">
+                    {pack.orderId.map((orderItem, idx) => (
+                      <div key={idx} className="flex gap-4 ">
+                        <div className="relative w-[80px] h-20">
+                          <Image
+                            src={orderItem.productId.image[0]} // Зураг
+                            fill
+                            alt={orderItem.productId.productName} // Барааны нэрийг alt-д ашиглаж болно
+                            className="rounded-2xl"
+                          />
+                        </div>
+                        <div className="flex flex-col ">
+                          <div>{orderItem.productId.productName}</div>{" "}
+                          {/* Барааны нэр */}
+                          <div className="flex">
+                            <div>{orderItem.count}x</div> {/* Тоо ширхэг */}
+                            <div>{orderItem.price}₮</div> {/* Үнэ */}
+                          </div>
+                          <div className="font-bold">{orderItem.price}₮</div>
+                        </div>
                       </div>
-                      <div className="font-bold">{item.price}</div>
-                    </div>
+                    ))}
                   </div>
                 );
               })}
             </div>
             <div className="flex justify-between border-t-2 border-dashed pt-[16px]">
               <div>Нийт төлөх дүн:</div>
-              <div className="font-bold">totalPrice</div>
+              <div className="font-bold">
+                {orderPackData && orderPackData[0]?.orderPackPrice}
+              </div>
             </div>
           </div>
           <div className="flex-[2] flex flex-col p-8 rounded-2xl bg-white gap-9">
