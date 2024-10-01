@@ -1,9 +1,8 @@
 import { Router } from "express";
 import {
-  createCategoryController,
   CreateSavedProductsController,
   DeleteSavedProductController,
-  getCategoriesController,
+  getOneUsersavedProduct,
   getSavedProductsController,
 } from "../controllers";
 
@@ -12,6 +11,7 @@ const savedProductsRouter = Router();
 savedProductsRouter
   .post("/", CreateSavedProductsController)
   .get("/", getSavedProductsController)
-  .delete("/", DeleteSavedProductController);
+  .delete("/", DeleteSavedProductController)
+  .get("/oneUser", getOneUsersavedProduct);
 
 export { savedProductsRouter };
