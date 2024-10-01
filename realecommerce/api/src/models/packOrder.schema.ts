@@ -6,22 +6,32 @@ const orderPackSchema = new Schema({
     required: true,
     default: "Shine",
   },
-  orderPackPrice: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  orderId: {
-    type: [Schema.Types.ObjectId],
-    ref: "Order",
-    required: true,
-  },
-
+  products: [
+    {
+      product: {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+      count: {
+        type: Number,
+        required: true,
+      },
+      price: {
+        type: Number,
+        required: true,
+      },
+      selectedSize: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   createdAt: {
     type: Date,
     required: true,

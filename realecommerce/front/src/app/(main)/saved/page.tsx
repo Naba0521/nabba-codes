@@ -4,7 +4,8 @@ import { BHeart } from "@/assets/BHeart";
 import { useAuthContext } from "@/components/ui/utils/authProvider";
 import axios from "axios";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useState } from "react";
 
 interface AddOrderResponse {
   productId: string;
@@ -18,9 +19,12 @@ export default function Home() {
   const { userMe, savedProductData, loading, deleteToSavedProduct } =
     useAuthContext();
   const [notification, setNotification] = useState("");
+  const [productNumbers, setProductNumbers] = useState<{
+    [key: string]: number;
+  }>({}); // Track product quantities
   const [selectedSizes, setSelectedSizes] = useState<{
     [key: string]: string | null;
-  }>({}); // Use an object to hold sizes for each product
+  }>({}); // Track selected sizes for each product
 
   // Filter saved products based on userId
   const filteredSavedProducts = savedProductData.filter(
@@ -53,14 +57,13 @@ export default function Home() {
         setNotification("");
       }, 3000);
     } catch (error) {
-      // Check if the error response exists and has a status code of 409
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         setNotification("Энэ бүтээгдэхүүн сагсанд нэмэгдсэн байна");
         setTimeout(() => {
           setNotification("");
         }, 3000);
       } else {
-        console.log(error); // Log other errors
+        console.log(error);
       }
     }
   };
@@ -86,14 +89,16 @@ export default function Home() {
               className="flex p-4 bg-white rounded-2xl justify-between"
             >
               <div className="flex gap-6">
-                <div className="relative w-[100px] h-[100px] rounded-2xl overflow-hidden">
-                  <Image
-                    src={item.productId.image[0] || "/placeholder.jpg"}
-                    className="object-contain"
-                    fill
-                    alt={item.productId.productName}
-                  />
-                </div>
+                <Link href={`/product/${item.productId._id}`}>
+                  <div className="relative w-[100px] h-[100px] rounded-2xl overflow-hidden">
+                    <Image
+                      src={item.productId.image[0] || "/placeholder.jpg"}
+                      className="object-contain"
+                      fill
+                      alt={item.productId.productName}
+                    />
+                  </div>
+                </Link>
                 <div className="flex flex-col gap-1">
                   <div>{item.productId.productName}</div>
                   <div className="flex gap-2">
@@ -121,10 +126,12 @@ export default function Home() {
                   </div>
                   <div
                     onClick={() => {
+                      const selectedCount =
+                        productNumbers[item.productId._id] || 1; // Default count is 1 if not set
                       if (userMe?.id && selectedSizes[item.productId._id]) {
                         createOrder({
                           userId: userMe.id,
-                          count: 1,
+                          count: selectedCount, // Use the selected product count
                           productId: item.productId._id,
                           size: selectedSizes[item.productId._id], // Use the selected size for this product
                           price: item?.productId.price ?? 0,
@@ -142,11 +149,44 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div
-                className="cursor-pointer"
-                onClick={() => deleteToSavedProduct(item.productId._id)}
-              >
-                <BHeart bgColor="red" />
+              <div className="flex flex-col gap-2 items-center">
+                <div
+                  className="cursor-pointer"
+                  onClick={() => deleteToSavedProduct(item.productId._id)}
+                >
+                  <BHeart bgColor="red" />
+                </div>
+                <div className="flex">
+                  <button
+                    onClick={() =>
+                      setProductNumbers((prev) => ({
+                        ...prev,
+                        [item.productId._id]: Math.max(
+                          (prev[item.productId._id] || 1) - 1,
+                          1
+                        ),
+                      }))
+                    }
+                    className="w-8 h-8 border rounded-2xl"
+                  >
+                    -
+                  </button>
+                  <div className="w-8 h-8 flex justify-center items-center">
+                    {productNumbers[item.productId._id] || 1}
+                  </div>
+                  <button
+                    onClick={() =>
+                      setProductNumbers((prev) => ({
+                        ...prev,
+                        [item.productId._id]:
+                          (prev[item.productId._id] || 1) + 1,
+                      }))
+                    }
+                    className="w-8 h-8 border rounded-2xl"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             </div>
           ))}

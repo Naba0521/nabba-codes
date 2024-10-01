@@ -14,6 +14,8 @@ type UserMeResponse = {
   id: string;
   userName: string;
   email: string;
+  phone: string;
+  address: string;
 };
 type deleteUserToSavedProduct = {
   productId: string;

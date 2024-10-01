@@ -22,9 +22,13 @@ type ProductResponse = {
   price: number;
 };
 type addOrderPackResponse = {
-  orderId: string[];
   userId: string;
-  orderPackPrice: number;
+  products: {
+    product: string;
+    price: number;
+    count: number;
+    selectedSize: string;
+  }[];
   status: string;
 };
 export default function Home() {
@@ -79,20 +83,6 @@ export default function Home() {
       getOrder();
     } catch (error) {
       console.error("Error removing product from saved:", error);
-    }
-  };
-
-  const incrementCount = (index: number) => {
-    const updatedOrderData = [...filteredOrderData];
-    updatedOrderData[index].count += 1;
-    setOrderData(updatedOrderData);
-  };
-
-  const decrementCount = (index: number) => {
-    const updatedOrderData = [...filteredOrderData];
-    if (updatedOrderData[index].count > 1) {
-      updatedOrderData[index].count -= 1;
-      setOrderData(updatedOrderData);
     }
   };
 
@@ -157,19 +147,13 @@ export default function Home() {
                           <div>{item.productId.productName}</div>
                           <div>Size:{item.size}</div>
                           <div className="flex">
-                            <button
-                              className="w-8 h-8 border rounded-2xl bg-white"
-                              onClick={() => decrementCount(index)}
-                            >
+                            <button className="w-8 h-8 border rounded-2xl bg-white">
                               -
                             </button>
                             <div className="w-8 h-8 flex justify-center items-center">
                               {item.count}
                             </div>
-                            <button
-                              className="w-8 h-8 border rounded-2xl bg-white"
-                              onClick={() => incrementCount(index)}
-                            >
+                            <button className="w-8 h-8 border rounded-2xl bg-white">
                               +
                             </button>
                           </div>
@@ -202,12 +186,17 @@ export default function Home() {
             <div
               onClick={() => {
                 if (userMe?.id) {
-                  const orderIds = filteredOrderData.map((item) => item._id); // _id утгыг массив болгож ялгаж авах
+                  const products = filteredOrderData.map((item) => ({
+                    product: item.productId._id, // Pass only the product ID (string)
+                    price: item.price, // Use the updated price
+                    count: item.count, // Use the updated count
+                    selectedSize: item.size, // Pass the selected size
+                  }));
+
                   createOrderPack({
-                    userId: userMe.id, // Хэрэглэгчийн ID-г дамжуулна
-                    orderPackPrice: totalSum,
-                    orderId: orderIds, // Order _id утгуудыг дамжуулна
-                    status: "new",
+                    userId: userMe.id, // Pass the user ID
+                    status: "new", // Order status
+                    products, // Array of products with updated count
                   });
                 } else {
                   console.error("User ID is undefined");

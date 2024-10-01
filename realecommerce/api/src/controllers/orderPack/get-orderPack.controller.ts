@@ -4,8 +4,8 @@ import { orderPackModel } from "../../models";
 export const getOrderPackController: RequestHandler = async (req, res) => {
   try {
     const orderPacks = await orderPackModel.find({}).populate({
-      path: "orderId",
-      populate: { path: "productId" }, // productId-г мөн populate хийж байна
+      path: "products.product", // Populate the product field within the products array
+      model: "Product", // Ensure you reference the correct model
     });
 
     return res.status(200).json({
@@ -13,7 +13,7 @@ export const getOrderPackController: RequestHandler = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: "OrderPacks awahad aldaa garlaa",
+      message: "Order packs авахад алдаа гарлаа",
     });
   }
 };
