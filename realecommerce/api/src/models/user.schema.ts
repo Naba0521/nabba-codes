@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
 const userSchema = new Schema({
+  owog: {
+    type: String,
+    required: true,
+    default: "No Owog",
+  },
   userName: {
     type: String,
     required: true,

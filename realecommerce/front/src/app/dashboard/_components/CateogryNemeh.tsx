@@ -29,7 +29,7 @@ export const CategoryNemeh = ({ getCategories }: CategoryNemehProps) => {
         addCategory
       );
       getCategories();
-      console.log("Category created:", response.data);
+      window.location.reload();
     } catch (error) {
       console.error("Error adding category:", error);
     }

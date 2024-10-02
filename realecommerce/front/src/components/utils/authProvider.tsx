@@ -8,7 +8,6 @@ import {
   useEffect,
 } from "react";
 import axios from "axios";
-import { log } from "console";
 
 // Define your types in a separate file for better organization
 type UserMeResponse = {
@@ -17,6 +16,7 @@ type UserMeResponse = {
   email: string;
   phone: string;
   address: string;
+  owog: string;
 };
 type deleteUserToSavedProduct = {
   productId: string;

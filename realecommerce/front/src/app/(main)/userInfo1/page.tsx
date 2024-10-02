@@ -1,8 +1,11 @@
 "use client";
 import { DeesheeSum } from "@/assets/DeesheeSum";
 import { DooshooSum } from "@/assets/DooshooSum";
+import { useAuthContext } from "@/components/utils/authProvider";
+import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
+
 const dataDeliver = [
   {
     name: "Chunky Glyph Tee",
@@ -35,10 +38,53 @@ const priceSum = dataDeliver.reduce(
   0
 );
 export default function Home() {
+  const { userMe } = useAuthContext();
   const [hideOrder, setHideOrder] = useState("Хэрэглэгчийн хэсэг");
   const [deeshee, setDeeshee] = useState(false);
+  const [addNewOwog, setAddNewOwog] = useState<string>("");
+  const [addNewUserName, setAddNewUserName] = useState<string>("");
+  const [addNewPhone, setAddNewPhone] = useState<string>("");
+  const [addNewEmail, setAddNewEmail] = useState<string>("");
+  const [addNewAddress, setAddNewAddress] = useState<string>("");
+
+  const editUserData = async ({
+    _id,
+    newOwog,
+    newUserName,
+    newPhone,
+    newEmail,
+    newAddress,
+  }: {
+    _id: string;
+    newOwog: string;
+    newUserName: string;
+    newPhone: string;
+    newEmail: string;
+    newAddress: string;
+  }) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      await axios.put(
+        "http://localhost:3001/auth/edit",
+        { _id, newOwog, newUserName, newPhone, newEmail, newAddress },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Error editing userData", error);
+    }
+  };
+
   return (
-    <div className=" bg-white flex justify-center items-center " style={{ minHeight: "calc(100vh - 320.5px - 74px)" }}>
+    <div
+      className=" bg-white flex justify-center items-center "
+      style={{ minHeight: "calc(100vh - 320.5px - 74px)" }}
+    >
       <div className="px-[278px] pt-[100px] w-[1440px] pb-[76px] flex gap-5">
         <div className="flex flex-col w-[240px gap-1]">
           <button
@@ -157,14 +203,20 @@ export default function Home() {
             <div className="flex flex-col gap-2">
               <div className="text-[#09090B] text-sm font-medium">Овог:</div>
               <input
+                placeholder={userMe?.owog}
                 className="w-full rounded-md border h-[28px] shadow-sm px-2"
+                value={addNewOwog}
+                onChange={(e) => setAddNewOwog(e.target.value)}
                 type="text"
               ></input>
             </div>
             <div className="flex flex-col gap-2">
               <div className="text-[#09090B] text-sm font-medium">Нэр:</div>
               <input
+                placeholder={userMe?.userName}
                 className="w-full rounded-md border h-[28px] shadow-sm px-2"
+                value={addNewUserName}
+                onChange={(e) => setAddNewUserName(e.target.value)}
                 type="text"
               ></input>
             </div>
@@ -173,8 +225,11 @@ export default function Home() {
                 Утасны дугаар:
               </div>
               <input
+                placeholder={userMe?.phone}
                 className="w-full rounded-md border h-[28px] shadow-sm px-2"
-                type="number"
+                type="text"
+                value={addNewPhone}
+                onChange={(e) => setAddNewPhone(e.target.value)}
               ></input>
             </div>
             <div className="flex flex-col gap-2">
@@ -182,17 +237,38 @@ export default function Home() {
                 Имэйл хаяг:
               </div>
               <input
+                placeholder={userMe?.email}
                 className="w-full rounded-md border h-[28px] shadow-sm px-2"
                 type="e-mail"
+                value={addNewEmail}
+                onChange={(e) => setAddNewEmail(e.target.value)}
               ></input>
             </div>
             <div className="flex flex-col gap-2">
               <div className="text-[#09090B] text-sm font-medium">Хаяг</div>
               <input
+                placeholder={userMe?.address}
                 className="w-full rounded-md border h-[94px] shadow-sm px-2"
                 type="text"
+                value={addNewAddress}
+                onChange={(e) => setAddNewAddress(e.target.value)}
               ></input>
             </div>
+          </div>
+          <div
+            className="mt-6 self-end font-medium bg-[#2563EB] text-white rounded-2xl py-2 px-9 cursor-pointer"
+            onClick={() =>
+              editUserData({
+                _id: userMe?.id || "", // Хэрвээ _id байхгүй бол алдаа гарахаас сэргийлэх
+                newOwog: addNewOwog,
+                newUserName: addNewUserName,
+                newPhone: addNewPhone,
+                newEmail: addNewEmail,
+                newAddress: addNewAddress,
+              })
+            }
+          >
+            Мэдээлэл шинэчлэх
           </div>
         </div>
       </div>

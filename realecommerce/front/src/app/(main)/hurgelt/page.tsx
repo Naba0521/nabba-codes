@@ -38,10 +38,17 @@ export default function Home() {
         },
       });
       setOrderData(response.data.orders);
-      const initialCounts = response.data.orders.reduce((acc, order) => {
-        acc[order._id] = order.count;
-        return acc;
-      }, {});
+      const initialCounts = response.data.orders.reduce(
+        (
+          acc: { [key: string]: number },
+          order: { _id: string; count: number }
+        ) => {
+          acc[order._id] = order.count;
+          return acc;
+        },
+        {} as { [key: string]: number }
+      );
+
       setCounts(initialCounts);
     } catch (error) {
       console.log(error);
@@ -208,6 +215,12 @@ export default function Home() {
             <div>Нийт дүн:</div>
             <div>{totalSum}₮</div>
           </div>
+          <Link
+            href={`/hurgelt2`}
+            className="self-end font-medium bg-[#2563EB] text-white rounded-2xl py-2 px-9"
+          >
+            <div>Худалдан авах</div>
+          </Link>
         </div>
       </div>
     </div>

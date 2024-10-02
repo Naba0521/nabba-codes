@@ -5,39 +5,42 @@ import axios from "axios"; // Axios-г импортолдож, HTTP хүсэлт
 import Image from "next/image"; // Next.js-ийн Image компонентыг импортолдож, зураг оруулахад ашиглана
 import Link from "next/link"; // Link компонентыг импортолдож, хуудас хооронд шилжихэд ашиглана
 import { useEffect, useState } from "react"; // React-ийн useEffect болон useState функцүүдийг импортолдож, компонентын төрлийг удирдахад ашиглана
-
+type addOrderPackResponse = {
+  userId: string;
+  products: {
+    product: string;
+    price: number;
+    count: number;
+    selectedSize: string;
+  }[];
+  status: string;
+  orderPackAdress: string;
+  orderPackDetail: string;
+};
+type orderDataResponse = {
+  _id: string;
+  productId: ProductResponse;
+  userId: string;
+  size: string;
+  count: number;
+  price: number;
+}[];
+type ProductResponse = {
+  _id: string;
+  productName: string;
+  image: string[];
+  price: number;
+};
 // Home компонент
 export default function Home() {
   const { userMe } = useAuthContext(); // Access userMe from AuthContext
   const [orderData, setOrderData] = useState<orderDataResponse>([]);
   const [notification, setNotification] = useState("");
-  type addOrderPackResponse = {
-    userId: string;
-    products: {
-      product: string;
-      price: number;
-      count: number;
-      selectedSize: string;
-    }[];
-    status: string;
-  };
-  type orderDataResponse = {
-    _id: string;
-    productId: ProductResponse;
-    userId: string;
-    size: string;
-    count: number;
-    price: number;
-  }[];
-  type ProductResponse = {
-    _id: string;
-    productName: string;
-    image: string[];
-    price: number;
-  };
+  const [addOrderPackAdress, setAddOrderPackAdress] = useState<string>("");
+  const [addOrderPackDetail, setAddOrderPackDetail] = useState<string>("");
+
   const deleteAllOrder = async (userId: string) => {
     const token = localStorage.getItem("token");
-
     try {
       // Send DELETE request to remove all orders
       const response = await axios.delete("http://localhost:3001/order/all", {
@@ -211,11 +214,17 @@ export default function Home() {
                     "Хүргэлт хийгдэх хаягийг дэлгэрэнгүй оруулна уу."
                   }
                   className="rounded-[18px] border w-full min-h-[52px] pl-2 pt-2 text-[14px]"
+                  value={addOrderPackAdress} // `value` нь хувьсагч байна
+                  onChange={(e) => setAddOrderPackAdress(e.target.value)} // `onChange` нь текст оролтыг засах үед ажиллана
                 />
               </div>
               <div className="flex flex-col gap-2">
                 <div className="font-medium text-[14px]">Нэмэлт мэдээлэл:</div>
-                <textarea className="rounded-[18px] border w-full min-h-[66px] pt-2 pl-2 text-[14px]" />
+                <textarea
+                  className="rounded-[18px] border w-full min-h-[66px] pt-2 pl-2 text-[14px]"
+                  value={addOrderPackDetail}
+                  onChange={(e) => setAddOrderPackDetail(e.target.value)}
+                />
                 <div className="text-xs text-[#71717A]">
                   Хүргэлттэй холбоотой нэмэлт мэдээлэл үлдээгээрэй
                 </div>
@@ -240,8 +249,10 @@ export default function Home() {
 
                       createOrderPack({
                         userId: userMe.id, // Pass the user ID
-                        status: "new", // Order status
+                        status: "Төлбөр төлөгдсөн", // Order status
                         products, // Array of products with updated count
+                        orderPackAdress: addOrderPackAdress,
+                        orderPackDetail: addOrderPackDetail,
                       });
                     } else {
                       console.error("User ID is undefined");

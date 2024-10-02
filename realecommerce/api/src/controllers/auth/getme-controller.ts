@@ -21,6 +21,7 @@ export const getMe = async (req: CustomRequest, res: Response) => {
       email: user.email,
       phone: user.phone,
       address: user.address,
+      owog: user.owog,
       // Avahiig hussen datagaa bicij bolno
     };
 
