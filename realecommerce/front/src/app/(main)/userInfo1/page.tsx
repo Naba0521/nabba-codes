@@ -4,41 +4,37 @@ import { DooshooSum } from "@/assets/DooshooSum";
 import { useAuthContext } from "@/components/utils/authProvider";
 import axios from "axios";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const dataDeliver = [
-  {
-    name: "Chunky Glyph Tee",
-    count: 1,
-    img: "/2.png",
-    price: 120000,
-  },
-  {
-    name: "Chunky Glyph Tee",
-    count: 6,
-    img: "/1.png",
-    price: 120000,
-  },
-  {
-    name: "Chunky Glyph Tee",
-    count: 1,
-    img: "/3.png",
-    price: 120000,
-  },
-  {
-    name: "Chunky Glyph Tee",
-    count: 3,
-    img: "/4.png",
-    price: 120000,
-  },
-];
+type orderPackDataResponse = {
+  _id: string;
+  orderPackAdress: string;
+  orderPackDetail: string;
+  status: string;
+  createdAt: Date;
+  products: productsResponse[];
+};
 
-const priceSum = dataDeliver.reduce(
-  (acc, item) => acc + item.price * item.count,
-  0
-);
+type productsResponse = {
+  count: number;
+  price: number;
+  selectedSize: string;
+  product: ProductResponse;
+};
+
+type ProductResponse = {
+  _id: string;
+  productName: string;
+  image: string[];
+  price: number;
+};
+
 export default function Home() {
   const { userMe } = useAuthContext();
+  const [orderPackData, setOrderPackData] = useState<orderPackDataResponse[]>(
+    []
+  );
+
   const [hideOrder, setHideOrder] = useState("Хэрэглэгчийн хэсэг");
   const [deeshee, setDeeshee] = useState(false);
   const [addNewOwog, setAddNewOwog] = useState<string>("");
@@ -80,6 +76,24 @@ export default function Home() {
     }
   };
 
+  const getOrderPack = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get("http://localhost:3001/orderPack", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrderPackData(response.data.orderPacks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getOrderPack();
+  }, []);
+
   return (
     <div
       className=" bg-white flex justify-center items-center "
@@ -104,6 +118,8 @@ export default function Home() {
             Захиалгын түүх
           </button>
         </div>
+
+        {/* Захиалгын түүх хэсэг */}
         <div
           className={`flex-1  flex-col ${
             hideOrder === "Захиалгын түүх" ? "flex" : "hidden"
@@ -116,27 +132,32 @@ export default function Home() {
             <div className="h-[1px] w-full bg-[#E4E4E7] "></div>
           </div>
           <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-4 bg-[#F4F4F5] rounded-2xl">
-              <div className="w-full py-8 px-6 flex flex-col gap-4">
-                <div className="flex justify-between">
-                  <div className="flex gap-2 ">
-                    <div className="font-bold">2024-09-03 15:34 </div>
-                    <div className="text-white bg-[#2563EB] text-[12px] rounded-full font-semibold px-[10px] py-1">
-                      хүргэлтэнд гарсан
+            {orderPackData?.map((order, index) => (
+              <div
+                key={index}
+                className="flex flex-col gap-4 bg-[#F4F4F5] rounded-2xl"
+              >
+                <div className="w-full py-8 px-6 flex flex-col gap-4">
+                  <div className="flex justify-between">
+                    <div className="flex gap-2">
+                      <div className="font-bold">
+                        {new Date(order.createdAt).toLocaleString()}
+                      </div>
+                      <div className="text-white bg-[#2563EB] text-[12px] rounded-full font-semibold px-[10px] py-1">
+                        {order.status}
+                      </div>
                     </div>
+                    <button
+                      onClick={() => setDeeshee(!deeshee)}
+                      className="flex justify-center items-center"
+                    >
+                      {deeshee === false ? <DeesheeSum /> : <DooshooSum />}
+                    </button>
                   </div>
-                  <button
-                    onClick={() => setDeeshee(!deeshee)}
-                    className="flex justify-center items-center"
-                  >
-                    {deeshee === false ? <DeesheeSum /> : <DooshooSum />}
-                  </button>
-                </div>
-                <div className="flex flex-col gap-2 pb-4">
-                  {dataDeliver.map((item, index) => {
-                    return (
+                  <div className="flex flex-col gap-2 pb-4">
+                    {order.products.map((product, prodIndex) => (
                       <div
-                        key={index}
+                        key={prodIndex}
                         className={` justify-between ${
                           deeshee === false ? "flex" : "hidden"
                         }`}
@@ -145,47 +166,38 @@ export default function Home() {
                           <div className="relative w-9 h-9 flex justify-center items-center">
                             <Image
                               fill
-                              src={`${item.img}`}
-                              alt="aa"
+                              src={`${product.product.image[0]}`}
+                              alt="Product Image"
                               className="rounded-md"
                             />
                           </div>
-                          <div className=" flex flex-col text-xs">
-                            <div>{item.name}</div>
+                          <div className="flex flex-col text-xs">
+                            <div>{product.product.productName}</div>
                             <div className="flex">
-                              <div>{item.count} x </div>
-                              <div>{item.price}₮</div>
+                              <div>{product.count} x </div>
+                              <div>{product.price}₮</div>
                             </div>
                           </div>
                         </div>
                         <div className="font-bold text-xs flex items-center">
-                          {item.count * item.price}₮
+                          {product.count * product.price}₮
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-                <div className="flex justify-between pt-4 border-t-[2px] border-dashed">
-                  <div>Үнийн дүн:</div>
-                  <div className="font-bold text-lg">{priceSum}₮</div>
-                </div>
-              </div>
-            </div>
-            <div className="w-full py-8 px-6 flex flex-col gap-4 bg-[#F4F4F5] rounded-2xl">
-              <div className="flex justify-between">
-                <div className="flex gap-2 ">
-                  <div className="font-bold">2024-08-23 15:34 </div>
-                  <div className="text-[#2563EB] bg-blue-100 border border-[#2563EB] text-[12px] rounded-full font-semibold px-[10px] py-1">
-                    дууссан
+                    ))}
+                  </div>
+                  <div className="flex justify-between pt-4 border-t-[2px] border-dashed">
+                    <div>Үнийн дүн:</div>
+                    <div className="font-bold text-lg">
+                      {order.products.reduce(
+                        (acc, item) => acc + item.count * item.price,
+                        0
+                      )}
+                      ₮
+                    </div>
                   </div>
                 </div>
-                <div>Icon</div>
               </div>
-              <div className="flex justify-between pt-4 border-t-[2px] border-dashed">
-                <div>Үнийн дүн:</div>
-                <div className="font-bold text-lg">120’000₮</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
         <div
