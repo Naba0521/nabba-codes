@@ -8,7 +8,7 @@ import { Tereg } from "@/assets/Tereg";
 import Link from "next/link";
 import { SearchCard } from "./SearchCard";
 import { useState } from "react";
-import { useAuthContext } from "@/components/ui/utils/authProvider"; // Import the useAuthContext hook
+import { useAuthContext } from "@/components/utils/authProvider"; // Import the useAuthContext hook
 
 export const Header = () => {
   const [searchTerm, setSearchTerm] = useState<string>(""); // User input for search

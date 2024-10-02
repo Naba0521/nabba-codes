@@ -8,6 +8,7 @@ import {
   useEffect,
 } from "react";
 import axios from "axios";
+import { log } from "console";
 
 // Define your types in a separate file for better organization
 type UserMeResponse = {
@@ -45,6 +46,7 @@ type SavedProductDataResponse = {
 
 type AuthContextType = {
   userMe: UserMeResponse | undefined;
+  setUserMe: (userMe: UserMeResponse | undefined) => void; // Change null to undefined
   loading: boolean;
   savedProductData: SavedProductDataResponse[];
   createToSavedProduct: (productId: string) => Promise<void>; // Add this line
@@ -88,16 +90,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  // const getToSavedProduct = async () => {
+  //   const token = localStorage.getItem("token");
+
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get("http://localhost:3001/savedProducts", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     setSavedProductData(response.data.savedProducts);
+  //   } catch (error) {
+  //     console.error("Error fetching user's saved products:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  console.log("asdaasd", userMe);
+
   const getToSavedProduct = async () => {
     const token = localStorage.getItem("token");
 
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3001/savedProducts", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:3001/savedProducts/oneUser",
+        {
+          params: { userId },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setSavedProductData(response.data.savedProducts);
     } catch (error) {
       console.error("Error fetching user's saved products:", error);
@@ -161,8 +186,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
-    getMe();
     getToSavedProduct();
+  }, [userMe]);
+
+  useEffect(() => {
+    getMe();
   }, []);
 
   return (
@@ -173,6 +201,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         savedProductData,
         createToSavedProduct,
         deleteToSavedProduct,
+        setUserMe,
       }}
     >
       {children}

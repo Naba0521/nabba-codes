@@ -1,73 +1,118 @@
 "use client"; // Next.js-д 'client component'-ийг зааж өгдөг
 import { Check } from "@/assets/Check"; // Check компонентыг импортолдог
-import { useAuthContext } from "@/components/ui/utils/authProvider";
+import { useAuthContext } from "@/components/utils/authProvider";
 import axios from "axios"; // Axios-г импортолдож, HTTP хүсэлтүүдийг хийхэд ашиглана
 import Image from "next/image"; // Next.js-ийн Image компонентыг импортолдож, зураг оруулахад ашиглана
 import Link from "next/link"; // Link компонентыг импортолдож, хуудас хооронд шилжихэд ашиглана
 import { useEffect, useState } from "react"; // React-ийн useEffect болон useState функцүүдийг импортолдож, компонентын төрлийг удирдахад ашиглана
 
-// Ангиллын интерфэйс
-interface category {
-  _id: string; // Ангиллын ID
-  categoryName: string; // Ангиллын нэр
-}
-
-// Барааны интерфэйс
-interface Product {
-  _id: string; // Барааны ID
-  productName: string; // Барааны нэр
-  price: number; // Барааны үнэ
-  image: string[]; // Барааны зургийн массив
-  category: category[]; // Барааны ангилал
-  size: string[]; // Барааны хэмжээ
-  quantity: number; // Барааны тоо хэмжээ
-  saledCount: number; // Зарагдсан тоо
-  salePercent: number; // Хямдралын хувь
-}
-
-// Захиалгын багцын хариу интерфэйс
-type orderPackDataResponse = {
-  products: {
-    product: Product; // Бараа
-    price: number; // Үнэ
-    count: number; // Тоо
-    selectedSize: string; // Сонгосон хэмжээ
-  }[];
-  userId: string; // Хэрэглэгчийн ID
-  status: string; // Статус
-}[];
-
 // Home компонент
 export default function Home() {
   const { userMe } = useAuthContext(); // Access userMe from AuthContext
+  const [orderData, setOrderData] = useState<orderDataResponse>([]);
+  const [notification, setNotification] = useState("");
+  type addOrderPackResponse = {
+    userId: string;
+    products: {
+      product: string;
+      price: number;
+      count: number;
+      selectedSize: string;
+    }[];
+    status: string;
+  };
+  type orderDataResponse = {
+    _id: string;
+    productId: ProductResponse;
+    userId: string;
+    size: string;
+    count: number;
+    price: number;
+  }[];
+  type ProductResponse = {
+    _id: string;
+    productName: string;
+    image: string[];
+    price: number;
+  };
+  const deleteAllOrder = async (userId: string) => {
+    const token = localStorage.getItem("token");
 
-  const [orderPackData, setOrderPackData] = useState<orderPackDataResponse>(); // Захиалгын багцын мэдээллийг хадгалах state
-
-  // Захиалгын багцын мэдээллийг авах функц
-  const getOrderPack = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/orderPack"); // Захиалгын багцын мэдээллийг авах
-      setOrderPackData(response.data.orderPacks); // Хариуг state-д хадгална
-      console.log(response.data.orderPacks); // Консолд мэдээллийг хэвлэнэ
+      // Send DELETE request to remove all orders
+      const response = await axios.delete("http://localhost:3001/order/all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: { userId }, // Make sure the backend expects this data
+      });
+
+      console.log("Delete all orders response:", response.data); // Log the response for debugging
+
+      // Optionally display a success message
+      setNotification("Бүх захиалга амжилттай устгагдлаа.");
+      setTimeout(() => {
+        setNotification("");
+      }, 2000);
+
+      // Fetch the updated order data to refresh the UI
+      getOrder();
     } catch (error) {
-      console.log(error); // Алдаа гарах үед консолд хэвлэнэ
+      console.error("Error removing all orders:", error);
     }
   };
+  const createOrderPack = async (addOrderPack: addOrderPackResponse) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/orderPack",
+        addOrderPack
+      );
 
+      // Log the full response for debugging
+      console.log("Order pack creation response:", response);
+
+      // After successfully creating the order pack, check if the message indicates success
+      if (response.data.message === "orderPack Nemegdlee") {
+        try {
+          await deleteAllOrder(addOrderPack.userId);
+          setNotification("Амжилттай үүсгэгдэж, сагс хоослогдлоо");
+        } catch (deleteError) {
+          console.error("Error deleting all orders:", deleteError); // Log deletion errors
+        }
+      } else {
+        console.error("Unexpected response:", response);
+      }
+    } catch (error) {
+      console.error("Error adding orderPack:", error); // Log order creation errors
+    }
+  };
+  const getOrder = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get("http://localhost:3001/order", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrderData(response.data.orders);
+      console.log(response.data.orders);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const filteredOrderData = orderData.filter(
+    (orderData) => orderData.userId === userMe?.id
+  );
   // Компонент анхдагчаар ачааллах үед getOrderPack функцыг дуудаж байна
   useEffect(() => {
-    getOrderPack();
+    getOrder();
   }, []);
 
   // Бүх барааны нийт үнийг тооцоолох функц
   const calculateTotalPrice = () => {
-    return orderPackData?.reduce((total, pack) => {
-      return (
-        total +
-        pack.products.reduce((packTotal, orderItem) => {
-          return packTotal + orderItem.price * orderItem.count; // Барааны үнэ * Тоо
-        }, 0)
-      );
+    return filteredOrderData.reduce((total, pack) => {
+      return total + pack.price * pack.count; // Барааны үнэ * Тоо
     }, 0);
   };
 
@@ -93,53 +138,43 @@ export default function Home() {
         </div>
         <div className="flex gap-5 w-full">
           <div className="py-8 px-6 flex flex-col flex-1 gap-4 bg-white rounded-xl h-fit">
-            <div>
-              Сагс ({orderPackData && orderPackData[0]?.products.length})
-            </div>{" "}
+            <div>Сагс ({filteredOrderData.length})</div>{" "}
             {/* Сагсны барааны тоо */}
             <div className="flex flex-col gap-4">
-              {orderPackData?.map(
+              {filteredOrderData?.map(
                 (
                   pack,
                   index // Захиалгын багцын мэдээллийг давтах
                 ) => (
                   <div key={index} className="flex flex-col gap-4">
-                    {pack.products.map(
-                      (
-                        orderItem,
-                        idx // Бараа мэдээллийг давтах
-                      ) => (
-                        <div key={idx} className="flex gap-4">
-                          <div className="relative w-[80px] h-20">
-                            <Image
-                              src={orderItem.product.image[0]} // Барааны зургийг гаргах
-                              fill
-                              alt={orderItem.product.productName} // Барааны нэрийг alt-д ашиглаж болно
-                              className="rounded-2xl"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <div>{orderItem.product.productName}</div>{" "}
-                            {/* Барааны нэр */}
-                            <div className="flex">
-                              <div>{orderItem.count}x</div> {/* Тоо ширхэг */}
-                              <div>{orderItem.price}₮</div> {/* Үнэ */}
-                            </div>
-                            <div className="font-bold">
-                              {orderItem.price * orderItem.count}₮
-                            </div>{" "}
-                            {/* Нийт үнэ */}
-                          </div>
+                    <div className="flex gap-4">
+                      <div className="relative w-[80px] h-20">
+                        <Image
+                          src={pack.productId.image[0]} // Барааны зургийг гаргах
+                          fill
+                          alt={pack.productId.productName} // Барааны нэрийг alt-д ашиглаж болно
+                          className="rounded-2xl"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <div>{pack.productId.productName}</div>{" "}
+                        {/* Барааны нэр */}
+                        <div className="flex">
+                          <div>{pack.count}x</div> {/* Тоо ширхэг */}
+                          <div>{pack.price}₮</div> {/* Үнэ */}
                         </div>
-                      )
-                    )}
+                        <div className="font-bold">
+                          {pack.price * pack.count}₮ {/* Нийт үнэ */}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )
               )}
             </div>
             <div className="flex justify-between border-t-2 border-dashed pt-[16px]">
               <div>Нийт төлөх дүн:</div>
-              <div className="font-bold">{calculateTotalPrice()}₮</div>{" "}
+              <div className="font-bold">{calculateTotalPrice()}₮</div>
               {/* Нийт дүнг тооцоолно */}
             </div>
           </div>
@@ -172,7 +207,7 @@ export default function Home() {
                 <div className="font-medium text-[14px]">Хаяг:</div>
                 <textarea
                   placeholder={
-                    userMe?.phone ||
+                    userMe?.address ||
                     "Хүргэлт хийгдэх хаягийг дэлгэрэнгүй оруулна уу."
                   }
                   className="rounded-[18px] border w-full min-h-[52px] pl-2 pt-2 text-[14px]"
@@ -193,7 +228,27 @@ export default function Home() {
                 </div>
               </Link>
               <Link href={`/hurgelt3`}>
-                <div className="border py-2 px-9 flex justify-center items-center rounded-2xl bg-[#2563EB] text-white text-[14px]">
+                <div
+                  onClick={() => {
+                    if (userMe?.id) {
+                      const products = filteredOrderData.map((item) => ({
+                        product: item.productId._id, // Pass only the product ID (string)
+                        price: item.price, // Use the updated price
+                        count: item.count, // Use the updated count
+                        selectedSize: item.size, // Pass the selected size
+                      }));
+
+                      createOrderPack({
+                        userId: userMe.id, // Pass the user ID
+                        status: "new", // Order status
+                        products, // Array of products with updated count
+                      });
+                    } else {
+                      console.error("User ID is undefined");
+                    }
+                  }}
+                  className="border py-2 px-9 flex justify-center items-center rounded-2xl bg-[#2563EB] text-white text-[14px]"
+                >
                   Төлбөр төлөх
                 </div>
               </Link>

@@ -3,33 +3,7 @@ import { productModel } from "../../models";
 
 export const createProductController: RequestHandler = async (req, res) => {
   try {
-    // const {
-    //   productName,
-    //   category,
-    //   price,
-    //   description,
-    //   size,
-    //   images,
-    //   quantity,
-    //   saledCount,
-    //   salePercent,
-    //   averageRating,
-    //   reviewCount,
-    // } = req.body;
-
     await productModel.create({
-      // productName,
-      // category,
-      // price,
-      // description,
-      // size,
-      // images,
-      // quantity,
-      // saledCount,
-      // salePercent,
-      // averageRating,
-      // reviewCount,
-
       ...req.body,
       createdAt: new Date(),
       updatedAt: new Date(),

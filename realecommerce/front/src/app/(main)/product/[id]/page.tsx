@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { MainProductCard } from "../../_components/MainProductCard";
 import { FaStar } from "react-icons/fa";
-import { useAuthContext } from "@/components/ui/utils/authProvider"; // Import the useAuthContext hook
+import { useAuthContext } from "@/components/utils/authProvider"; // Import the useAuthContext hook
 
 type ParamsType = {
   id: string;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthContext } from "@/components/utils/authProvider";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,6 +14,8 @@ export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const { setUserMe } = useAuthContext(); // Access userMe from AuthContext
+
   const router = useRouter();
 
   const logIn = async (addUser: AddUserResponse) => {
@@ -21,9 +24,8 @@ export default function Home() {
         "http://localhost:3001/auth/login",
         addUser
       );
-
-      // Store the token in localStorage (or sessionStorage)
       localStorage.setItem("token", response.data.token);
+      setUserMe(response.data.user);
 
       // Redirect the user after successful login
       router.push("/");

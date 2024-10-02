@@ -1,7 +1,7 @@
 "use client";
 
 import { BHeart } from "@/assets/BHeart";
-import { useAuthContext } from "@/components/ui/utils/authProvider";
+import { useAuthContext } from "@/components/utils/authProvider";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,9 +27,9 @@ export default function Home() {
   }>({}); // Track selected sizes for each product
 
   // Filter saved products based on userId
-  const filteredSavedProducts = savedProductData.filter(
-    (savedProduct) => savedProduct.userId === userMe?.id
-  );
+  // const filteredSavedProducts = savedProductData.filter(
+  //   (savedProduct) => savedProduct.userId === userMe?.id
+  // );
 
   if (loading) {
     return (
@@ -79,11 +79,11 @@ export default function Home() {
         <div className="flex gap-1">
           <div className="font-bold text-[20px]">Хадгалсан бараа</div>
           <div className="font-medium text-xl text-[#5E6166]">
-            ({filteredSavedProducts.length}) {/* Show filtered count */}
+            ({savedProductData.length}) {/* Show filtered count */}
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          {filteredSavedProducts.map((item, index) => (
+          {savedProductData.map((item, index) => (
             <div
               key={index}
               className="flex p-4 bg-white rounded-2xl justify-between"

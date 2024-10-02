@@ -1,6 +1,6 @@
 "use client";
 import { BHeart } from "@/assets/BHeart";
-import { useAuthContext } from "@/components/ui/utils/authProvider";
+import { useAuthContext } from "@/components/utils/authProvider";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";

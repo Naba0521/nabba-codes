@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { DeleteIcon } from "@/assets/DeleteIcon";
 import Image from "next/image";
-import { useAuthContext } from "@/components/ui/utils/authProvider";
+import { useAuthContext } from "@/components/utils/authProvider";
 
 type orderDataResponse = {
   _id: string;
@@ -21,32 +21,12 @@ type ProductResponse = {
   image: string[];
   price: number;
 };
-type addOrderPackResponse = {
-  userId: string;
-  products: {
-    product: string;
-    price: number;
-    count: number;
-    selectedSize: string;
-  }[];
-  status: string;
-};
+
 export default function Home() {
   const { userMe } = useAuthContext(); // Access userMe from AuthContext
-
   const [orderData, setOrderData] = useState<orderDataResponse>([]);
+  const [counts, setCounts] = useState<{ [key: string]: number }>({});
   const [notification, setNotification] = useState("");
-
-  const createOrderPack = async (addOrderPack: addOrderPackResponse) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/orderPack",
-        addOrderPack
-      );
-    } catch (error) {
-      console.log("Error adding orderPack:", error);
-    }
-  };
 
   const getOrder = async () => {
     const token = localStorage.getItem("token");
@@ -58,19 +38,42 @@ export default function Home() {
         },
       });
       setOrderData(response.data.orders);
-      console.log(response.data.orders);
+      const initialCounts = response.data.orders.reduce((acc, order) => {
+        acc[order._id] = order.count;
+        return acc;
+      }, {});
+      setCounts(initialCounts);
     } catch (error) {
       console.log(error);
     }
   };
+
   const filteredOrderData = orderData.filter(
     (orderData) => orderData.userId === userMe?.id
   );
+
+  const editOrderCount = async (_id: string, newCount: number) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.put(
+        "http://localhost:3001/order",
+        { _id, newCount },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error editing order count:", error);
+    }
+  };
+
   const deleteOrder = async (_id: string) => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.delete("http://localhost:3001/order", {
+      await axios.delete("http://localhost:3001/order", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,8 +93,24 @@ export default function Home() {
     getOrder();
   }, []);
 
+  const handleIncrement = (id: string) => {
+    setCounts((prev) => {
+      const updatedCount = (prev[id] || 0) + 1; // Increment the count
+      editOrderCount(id, updatedCount); // Update the backend
+      return { ...prev, [id]: updatedCount }; // Update the local state
+    });
+  };
+
+  const handleDecrement = (id: string) => {
+    setCounts((prev) => {
+      const updatedCount = Math.max((prev[id] || 1) - 1, 1); // Ensure count doesn't go below 1
+      editOrderCount(id, updatedCount); // Update the backend
+      return { ...prev, [id]: updatedCount }; // Update the local state
+    });
+  };
+
   const totalSum = filteredOrderData.reduce(
-    (acc, item) => acc + item.price * item.count,
+    (acc, item) => acc + item.price * (counts[item._id] || item.count),
     0
   );
 
@@ -128,9 +147,9 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-4">
               {filteredOrderData.length > 0 ? (
-                filteredOrderData.map((item, index) => (
+                filteredOrderData.map((item) => (
                   <div
-                    key={index}
+                    key={item._id}
                     className="flex justify-between border rounded-2xl p-4"
                   >
                     <div className="flex gap-6">
@@ -145,68 +164,50 @@ export default function Home() {
                       <div className="flex flex-col justify-between">
                         <div className="flex flex-col gap-2">
                           <div>{item.productId.productName}</div>
-                          <div>Size:{item.size}</div>
+                          <div>Size: {item.size}</div>
                           <div className="flex">
-                            <button className="w-8 h-8 border rounded-2xl bg-white">
+                            <button
+                              className="w-8 h-8 border rounded-2xl bg-white"
+                              onClick={() => handleDecrement(item._id)}
+                            >
                               -
                             </button>
                             <div className="w-8 h-8 flex justify-center items-center">
-                              {item.count}
+                              {counts[item._id] || item.count}{" "}
+                              {/* Displaying count from state */}
                             </div>
-                            <button className="w-8 h-8 border rounded-2xl bg-white">
+                            <button
+                              className="w-8 h-8 border rounded-2xl bg-white"
+                              onClick={() => handleIncrement(item._id)}
+                            >
                               +
                             </button>
                           </div>
                         </div>
-                        <div className="font-bold">
-                          {item.price * item.count}₮
+                        <div>
+                          {item.price * (counts[item._id] || item.count)}₮
                         </div>
                       </div>
                     </div>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => deleteOrder(item._id)}
-                    >
-                      <DeleteIcon />
+                    <div className="flex justify-center items-center">
+                      <button
+                        onClick={() => deleteOrder(item._id)}
+                        className="flex justify-center items-center w-10 h-10 hover:bg-gray-100 rounded-full"
+                      >
+                        <DeleteIcon />
+                      </button>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center text-gray-500">
-                  Сагс хоосон байна.
-                </div>
+                <div>Сагс хоосон байна</div>
               )}
             </div>
-            <div className="flex justify-between border-t-[2px] border-dashed border-b-[2px] py-[24px]">
-              <div>Үнийн дүн:</div>
-              <div className="font-bold">{totalSum}₮</div>
-            </div>
           </div>
-          <Link href={`/hurgelt2`} className="self-end">
-            <div
-              onClick={() => {
-                if (userMe?.id) {
-                  const products = filteredOrderData.map((item) => ({
-                    product: item.productId._id, // Pass only the product ID (string)
-                    price: item.price, // Use the updated price
-                    count: item.count, // Use the updated count
-                    selectedSize: item.size, // Pass the selected size
-                  }));
-
-                  createOrderPack({
-                    userId: userMe.id, // Pass the user ID
-                    status: "new", // Order status
-                    products, // Array of products with updated count
-                  });
-                } else {
-                  console.error("User ID is undefined");
-                }
-              }}
-              className="text-white bg-[#2563EB] px-9 py-2 text-sm rounded-2xl w-fit self-end"
-            >
-              Худалдан авах
-            </div>
-          </Link>
+          <div className="flex justify-between text-lg font-bold">
+            <div>Нийт дүн:</div>
+            <div>{totalSum}₮</div>
+          </div>
         </div>
       </div>
     </div>

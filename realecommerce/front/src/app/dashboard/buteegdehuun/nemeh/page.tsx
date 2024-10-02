@@ -83,6 +83,7 @@ export default function Home() {
   const createProduct = async (addProduct: addProductType) => {
     try {
       await axios.post("http://localhost:3001/product", addProduct);
+      window.location.reload();
     } catch (error) {
       console.error("Error adding product:", error);
     }

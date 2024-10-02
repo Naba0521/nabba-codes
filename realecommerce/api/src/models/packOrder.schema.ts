@@ -11,6 +11,16 @@ const orderPackSchema = new Schema({
     ref: "User",
     required: true,
   },
+  orderPackAdress: {
+    type: String,
+    required: true,
+    default: "Хүргэлтийн дэлгэрэнгүй хаяг",
+  },
+  orderPackDetail: {
+    type: String,
+    required: true,
+    default: "Дэлгэрэнгүй мэдээлэл",
+  },
   products: [
     {
       product: {
