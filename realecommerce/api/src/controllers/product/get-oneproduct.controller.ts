@@ -13,5 +13,7 @@ export const getOneProductController: RequestHandler = async (req, res) => {
     return res.status(200).json({
       product,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -80,7 +80,6 @@ export default function Home() {
     deleteToSavedProduct,
     savedProductData,
   } = useAuthContext(); // Access userMe from AuthContext
-  const token = localStorage.getItem("token");
 
   const [savedHeart, setSavedHeart] = useState(false);
 
@@ -103,6 +102,8 @@ export default function Home() {
   const [notification, setNotification] = useState("");
 
   const getProducts = async () => {
+    const token = localStorage.getItem("token");
+
     try {
       const response = await axios.get("http://localhost:3001/product");
       setProductsa(response.data);
@@ -121,6 +122,8 @@ export default function Home() {
   };
 
   const getOneReview = async (id: string) => {
+    const token = localStorage.getItem("token");
+
     try {
       const response = await axios.get(`http://localhost:3001/review/${id}`, {
         headers: {
@@ -134,6 +137,8 @@ export default function Home() {
     }
   };
   const createReview = async (addReview: addReviewType) => {
+    const token = localStorage.getItem("token");
+
     try {
       const response = await axios.post(
         "http://localhost:3001/review",
@@ -151,6 +156,8 @@ export default function Home() {
     }
   };
   const createOrder = async (addOrder: AddOrderResponse) => {
+    const token = localStorage.getItem("token");
+
     try {
       const response = await axios.post(
         "http://localhost:3001/order",

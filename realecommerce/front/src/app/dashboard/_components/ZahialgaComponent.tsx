@@ -5,9 +5,56 @@ import { DooshooSum } from "@/assets/DooshooSum";
 import { RightDirectionIcon } from "@/assets/RightDirectionIcon";
 import { Search } from "@/assets/Search";
 import { Zahialga } from "@/assets/ZahialgaIcon";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
 
+type orderPackDataResponse = {
+  _id: string;
+  orderPackAdress: string;
+  orderPackDetail: string;
+  status: string;
+  createdAt: string;
+  products: productsResponse[];
+  userId: UserResponse;
+};
+type UserResponse = {
+  _id: string;
+  userName: string;
+  email: string;
+};
+type productsResponse = {
+  count: number;
+  price: number;
+  selectedSize: string;
+  product: ProductResponse;
+};
+type ProductResponse = {
+  _id: string;
+  productName: string;
+  image: string[];
+  price: number;
+};
 export const ZahialgaComponent = () => {
+  const [orderPackData, setOrderPackData] = useState<orderPackDataResponse[]>(
+    []
+  );
   const [selectedTolow, setSelectedTolow] = useState(0);
   const Tolowuud = [
     "Бүгд",
@@ -17,71 +64,31 @@ export const ZahialgaComponent = () => {
     "Хүргэгдсэн",
     "Цуцлагдсан",
   ];
-  const ZahialgaData = [
-    {
-      id: "#12345678",
-      name: "Zoloo soko",
-      email: "Zoloosoko@gmail.com",
-      date: "2023-01-09",
-      time: "10:58",
-      price: 12000,
-      status: "Хүргэгдсэн",
-    },
-    {
-      id: "#12345678",
-      name: "Zoloo soko",
-      email: "Zoloosoko@gmail.com",
-      date: "2023-01-09",
-      time: "10:58",
-      price: 12000,
-      status: "Хүргэгдсэн",
-    },
-    {
-      id: "#12345678",
-      name: "Zoloo soko",
-      email: "Zoloosoko@gmail.com",
-      date: "2023-01-09",
-      time: "10:58",
-      price: 12000,
-      status: "Хүргэгдсэн",
-    },
-    {
-      id: "#12345678",
-      name: "Zoloo soko",
-      email: "Zoloosoko@gmail.com",
-      date: "2023-01-09",
-      time: "10:58",
-      price: 12000,
-      status: "Хүргэгдсэн",
-    },
-    {
-      id: "#12345678",
-      name: "Zoloo soko",
-      email: "Zoloosoko@gmail.com",
-      date: "2023-01-09",
-      time: "10:58",
-      price: 12000,
-      status: "Хүргэгдсэн",
-    },
-    {
-      id: "#12345678",
-      name: "Zoloo soko",
-      email: "Zoloosoko@gmail.com",
-      date: "2023-01-09",
-      time: "10:58",
-      price: 12000,
-      status: "Хүргэгдсэн",
-    },
-    {
-      id: "#12345678",
-      name: "Zoloo soko",
-      email: "Zoloosoko@gmail.com",
-      date: "2023-01-09",
-      time: "10:58",
-      price: 12000,
-      status: "Хүргэгдсэн",
-    },
+  const Tolowuud1 = [
+    "Шинэ захиалга",
+    "Бэлтгэгдэж байна",
+    "Хүргэлтэнд гарсан",
+    "Хүргэгдсэн",
+    "Цуцлагдсан",
   ];
+
+  const getOrderPack = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get("http://localhost:3001/orderPack", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrderPackData(response.data.orderPacks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getOrderPack();
+  }, []);
   return (
     <div className="flex flex-col  w-full gap-8">
       <div className="flex border-b">
@@ -131,41 +138,67 @@ export const ZahialgaComponent = () => {
       </div>
       <div className="flex flex-col px-6 bg-white py-5 rounded-2xl">
         <div className="font-bold text-lg px-6 bg-white">Захиалга</div>
-        <div className="flex text-[12px] text-[#3F4145] bg-[#f7f7f7] font-semibold">
-          <div className="flex-1 py-[14px] pl-6  ">Захиалгын ID дугаар</div>
-          <div className="flex-1 py-[14px] pl-6 ">Үйлчлүүлэгч</div>
-          <div className="flex-1 py-[14px] pl-12">Огноо</div>
-          <div className="flex-1 py-[14px] pl-6">Цаг</div>
-          <div className="flex-1 py-[14px] pl-6">Төлбөр</div>
-          <div className="flex-1 py-[14px] pl-10 flex">Статус</div>
-          <div className="flex-1 py-[14px] pl-6 flex justify-center">
-            Дэлгэрэнгүй
-          </div>
-        </div>
-        {ZahialgaData.map((item, index) => {
-          return (
-            <div className="flex border-t items-center justify-center text-sm">
-              <div className="flex-1 py-[14px] pl-6 font-semibold  ">
-                {item.id}
-              </div>
-              <div className="flex-1 py-[14px] pl-6 flex flex-col ">
-                <div className="font-semibold">{item.name}</div>
-                <div>{item.email}</div>
-              </div>
-              <div className="flex-1 py-[14px] pl-6  ">{item.date}</div>
-              <div className="flex-1 py-[14px] pl-6  ">{item.time}</div>
-              <div className="flex-1 py-[14px] pl-6  ">{item.price}₮</div>
-              <div className="flex-1 py-[14px] pl-6 flex justify-center items-center ">
-                <div className="bg-[#C1E6CF] text-[#0A4E22] py-2 px-4 rounded-full">
-                  {item.status}
-                </div>
-              </div>
-              <div className="flex-1 py-[14px] pl-6 flex justify-center ">
-                <RightDirectionIcon />
-              </div>
-            </div>
-          );
-        })}
+        <Table>
+          <TableCaption>Захиалгын мэдээлэл</TableCaption>
+          <TableHeader>
+            <TableRow className=" text-[12px] text-[#3F4145] bg-[#f7f7f7] font-semibold">
+              <TableHead className="w-[200px]">Захиалгын ID дугаар</TableHead>
+              <TableHead>Үйлчлүүлэгч</TableHead>
+              <TableHead>Огноо</TableHead>
+              <TableHead>Цаг</TableHead>
+              <TableHead>Төлбөр</TableHead>
+              <TableHead>Статус</TableHead>
+              <TableHead className="text-center">Дэлгэрэнгүй</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {orderPackData.map((item, index) => {
+              const TotalPrice = item.products.reduce((acc, product) => {
+                return acc + product.count * product.price;
+              }, 0);
+              return (
+                <TableRow key={index} className="py-4">
+                  <TableCell className="font-medium w-[200px]">
+                    {item._id}
+                  </TableCell>
+                  <TableCell>
+                    <div>{item.userId.userName}</div>
+                    <div>{item.userId.email}</div>
+                  </TableCell>
+                  <TableCell>{item.createdAt.slice(0, 10)}</TableCell>
+                  <TableCell>{item.createdAt.slice(11, 16)}</TableCell>
+                  <TableCell>{TotalPrice}₮</TableCell>
+                  <TableCell>
+                    <div className="bg-[#C1E6CF] text-[#0A4E22] py-2 px-4 h-fit w-fit text-center rounded-full flex self-center">
+                      <Select>
+                        <SelectTrigger className="w-[180px] outline-none border-none shadow-none">
+                          <SelectValue placeholder={item.status} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Tolowuud1.map((item, index) => {
+                            return (
+                              <SelectItem key={index} value={item}>
+                                {item}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/dashboard/zahialga/${item._id}`}
+                      className="flex justify-center items-center"
+                    >
+                      <RightDirectionIcon />
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

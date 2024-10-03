@@ -3,10 +3,16 @@ import { orderPackModel } from "../../models";
 
 export const getOrderPackController: RequestHandler = async (req, res) => {
   try {
-    const orderPacks = await orderPackModel.find({}).populate({
-      path: "products.product", // Populate the product field within the products array
-      model: "Product", // Ensure you reference the correct model
-    });
+    const orderPacks = await orderPackModel.find({}).populate([
+      {
+        path: "products.product", // Populate the product field within the products array
+        model: "Product", // Ensure you reference the correct model
+      },
+      {
+        path: "userId", // Populate the userId field
+        model: "User", // Ensure you reference the correct model for users
+      },
+    ]);
 
     return res.status(200).json({
       orderPacks,

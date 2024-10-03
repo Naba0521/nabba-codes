@@ -1,8 +1,35 @@
 import { CarIcon } from "@/assets/CarIcon";
 import { DooshooSum } from "@/assets/DooshooSum";
 import { LeftDirectionArrow } from "@/assets/LeftDirectionArrow";
+import axios from "axios";
 import Image from "next/image";
-
+import Link from "next/link";
+type orderPackDataResponse = {
+  _id: string;
+  orderPackAdress: string;
+  orderPackDetail: string;
+  status: string;
+  createdAt: string;
+  products: productsResponse[];
+  userId: UserResponse;
+};
+type UserResponse = {
+  _id: string;
+  userName: string;
+  email: string;
+};
+type productsResponse = {
+  count: number;
+  price: number;
+  selectedSize: string;
+  product: ProductResponse;
+};
+type ProductResponse = {
+  _id: string;
+  productName: string;
+  image: string[];
+  price: number;
+};
 export default function home() {
   const zahialgaData = [
     {
@@ -42,12 +69,28 @@ export default function home() {
       price: 225700,
     },
   ];
+  const getOneOrderPack = async (id: string) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/orderPack/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the token in the headers
+          },
+        }
+      );
+    } catch (error) {}
+  };
   return (
     <div className="flex-1 flex flex-col gap-6">
       <div className="flex gap-4 items-center p-4 bg-white">
-        <div className="">
-          <LeftDirectionArrow />
-        </div>
+        <Link href={`/dashboard/zahialga`}>
+          <div className="">
+            <LeftDirectionArrow />
+          </div>
+        </Link>
         <div>Захиалгын дэлгэрэнгүй</div>
       </div>
       <div className="flex gap-6">
