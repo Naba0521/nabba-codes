@@ -79,6 +79,7 @@ export default function Home() {
     createToSavedProduct,
     deleteToSavedProduct,
     savedProductData,
+    getOneUserOrderForHeader,
   } = useAuthContext(); // Access userMe from AuthContext
 
   const [savedHeart, setSavedHeart] = useState(false);
@@ -173,6 +174,7 @@ export default function Home() {
       setTimeout(() => {
         setNotification("");
       }, 3000);
+      getOneUserOrderForHeader();
     } catch (error) {
       // Check if the error response exists and has a status code of 409
       if (axios.isAxiosError(error) && error.response?.status === 409) {

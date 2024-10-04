@@ -16,8 +16,13 @@ interface AddOrderResponse {
 }
 
 export default function Home() {
-  const { userMe, savedProductData, loading, deleteToSavedProduct } =
-    useAuthContext();
+  const {
+    userMe,
+    savedProductData,
+    loading,
+    deleteToSavedProduct,
+    getOneUserOrderForHeader,
+  } = useAuthContext();
   const [notification, setNotification] = useState("");
   const [productNumbers, setProductNumbers] = useState<{
     [key: string]: number;
@@ -56,6 +61,7 @@ export default function Home() {
       setTimeout(() => {
         setNotification("");
       }, 3000);
+      getOneUserOrderForHeader();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         setNotification("Энэ бүтээгдэхүүн сагсанд нэмэгдсэн байна");

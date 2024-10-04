@@ -17,24 +17,9 @@ type addOrderPackResponse = {
   orderPackAdress: string;
   orderPackDetail: string;
 };
-type orderDataResponse = {
-  _id: string;
-  productId: ProductResponse;
-  userId: string;
-  size: string;
-  count: number;
-  price: number;
-}[];
-type ProductResponse = {
-  _id: string;
-  productName: string;
-  image: string[];
-  price: number;
-};
-// Home компонент
+
 export default function Home() {
-  const { userMe } = useAuthContext(); // Access userMe from AuthContext
-  const [orderData, setOrderData] = useState<orderDataResponse>([]);
+  const { userMe, orderData, getOneUserOrderForHeader } = useAuthContext(); // Access userMe from AuthContext
   const [notification, setNotification] = useState("");
   const [addOrderPackAdress, setAddOrderPackAdress] = useState<string>("");
   const [addOrderPackDetail, setAddOrderPackDetail] = useState<string>("");
@@ -59,7 +44,7 @@ export default function Home() {
       }, 2000);
 
       // Fetch the updated order data to refresh the UI
-      getOrder();
+      getOneUserOrderForHeader();
     } catch (error) {
       console.error("Error removing all orders:", error);
     }
@@ -89,27 +74,13 @@ export default function Home() {
       console.error("Error adding orderPack:", error); // Log order creation errors
     }
   };
-  const getOrder = async () => {
-    const token = localStorage.getItem("token");
 
-    try {
-      const response = await axios.get("http://localhost:3001/order", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setOrderData(response.data.orders);
-      console.log(response.data.orders);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const filteredOrderData = orderData.filter(
     (orderData) => orderData.userId === userMe?.id
   );
   // Компонент анхдагчаар ачааллах үед getOrderPack функцыг дуудаж байна
   useEffect(() => {
-    getOrder();
+    getOneUserOrderForHeader();
   }, []);
 
   // Бүх барааны нийт үнийг тооцоолох функц
@@ -249,7 +220,7 @@ export default function Home() {
 
                       createOrderPack({
                         userId: userMe.id, // Pass the user ID
-                        status: "Төлбөр төлөгдсөн", // Order status
+                        status: "Шинэ захиалга", // Order status
                         products, // Array of products with updated count
                         orderPackAdress: addOrderPackAdress,
                         orderPackDetail: addOrderPackDetail,

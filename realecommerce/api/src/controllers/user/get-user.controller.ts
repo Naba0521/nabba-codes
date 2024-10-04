@@ -16,9 +16,12 @@ const login: RequestHandler = async (req, res) => {
 
   const token = jwt.sign(
     {
-      username: user.userName,
-      email: user.email,
       id: user._id,
+      userName: user.userName,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+      owog: user.owog,
     },
     process.env.JWT_SECRET as string
   );
@@ -26,9 +29,12 @@ const login: RequestHandler = async (req, res) => {
   return res.status(200).json({
     token,
     user: {
-      username: user.userName,
-      email: user.email,
       id: user._id,
+      userName: user.userName,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+      owog: user.owog,
     },
   });
 };

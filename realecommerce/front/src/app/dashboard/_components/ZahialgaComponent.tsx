@@ -85,7 +85,22 @@ export const ZahialgaComponent = () => {
       console.log(error);
     }
   };
-
+  const editOrderPackStatus = async (_id: string, newStatus: string) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.put(
+        "http://localhost:3001/orderPack",
+        { _id, newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getOrderPack();
   }, []);
@@ -170,15 +185,19 @@ export const ZahialgaComponent = () => {
                   <TableCell>{TotalPrice}₮</TableCell>
                   <TableCell>
                     <div className="bg-[#C1E6CF] text-[#0A4E22] py-2 px-4 h-fit w-fit text-center rounded-full flex self-center">
-                      <Select>
+                      <Select
+                        onValueChange={(newStatus) =>
+                          editOrderPackStatus(item._id, newStatus)
+                        }
+                      >
                         <SelectTrigger className="w-[180px] outline-none border-none shadow-none">
                           <SelectValue placeholder={item.status} />
                         </SelectTrigger>
                         <SelectContent>
-                          {Tolowuud1.map((item, index) => {
+                          {Tolowuud1.map((statusItem, index) => {
                             return (
-                              <SelectItem key={index} value={item}>
-                                {item}
+                              <SelectItem key={index} value={statusItem}>
+                                {statusItem}
                               </SelectItem>
                             );
                           })}

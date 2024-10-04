@@ -8,6 +8,7 @@ import {
   useEffect,
 } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 // Define your types in a separate file for better organization
 type UserMeResponse = {
@@ -46,11 +47,14 @@ type SavedProductDataResponse = {
 
 type AuthContextType = {
   userMe: UserMeResponse | undefined;
+  orderData: orderDataResponse;
   setUserMe: (userMe: UserMeResponse | undefined) => void; // Change null to undefined
   loading: boolean;
   savedProductData: SavedProductDataResponse[];
   createToSavedProduct: (productId: string) => Promise<void>; // Add this line
   deleteToSavedProduct: (productId: string) => Promise<void>; // Add this line
+  getOneUserOrderForHeader: () => Promise<void>;
+  LogOut: () => Promise<void>;
 };
 
 type addUserToSavedProduct = {
@@ -64,20 +68,35 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 type AuthProviderProps = {
   children: ReactNode;
 };
-
+type orderDataResponse = {
+  _id: string;
+  productId: ProductResponse;
+  userId: string;
+  size: string;
+  count: number;
+  price: number;
+}[];
+type ProductResponse = {
+  _id: string;
+  productName: string;
+  image: string[];
+  price: number;
+};
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [userMe, setUserMe] = useState<UserMeResponse>();
+  const [userMe, setUserMe] = useState<UserMeResponse | undefined>();
   const [loading, setLoading] = useState(true);
   const [savedProductData, setSavedProductData] = useState<
     SavedProductDataResponse[]
   >([]);
+  const [orderData, setOrderData] = useState<orderDataResponse>([]);
+  const router = useRouter();
+
   const userId = userMe?.id || ""; // Use userMe ID
 
   // const token = localStorage.getItem("token");
 
   const getMe = async () => {
     const token = localStorage.getItem("token");
-
     try {
       const response = await axios.get("http://localhost:3001/users/me", {
         headers: {
@@ -89,25 +108,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log("Error fetching user data", error);
     }
   };
-
-  // const getToSavedProduct = async () => {
-  //   const token = localStorage.getItem("token");
-
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.get("http://localhost:3001/savedProducts", {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     setSavedProductData(response.data.savedProducts);
-  //   } catch (error) {
-  //     console.error("Error fetching user's saved products:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  console.log("asdaasd", userMe);
 
   const getToSavedProduct = async () => {
     const token = localStorage.getItem("token");
@@ -184,14 +184,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoading(false); // Reset loading state
     }
   };
+  const getOneUserOrderForHeader = async () => {
+    const token = localStorage.getItem("token");
 
+    try {
+      const response = await axios.get("http://localhost:3001/order/oneUser", {
+        params: { userId },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrderData(response.data.orders);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const LogOut = async () => {
+    try {
+      localStorage.removeItem("token");
+      setUserMe(undefined);
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout error", error);
+    }
+  };
   useEffect(() => {
-    getToSavedProduct();
-  }, [userMe]);
-
-  useEffect(() => {
-    getMe();
+    getMe(); // Хэрэглэгчийн мэдээллийг татаж авч байна
   }, []);
+
+  useEffect(() => {
+    if (userMe) {
+      // userMe-ийн утга байгаа эсэхийг шалга
+      getToSavedProduct();
+      getOneUserOrderForHeader();
+    }
+  }, [userMe]);
 
   return (
     <AuthContext.Provider
@@ -202,6 +229,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         createToSavedProduct,
         deleteToSavedProduct,
         setUserMe,
+        orderData,
+        getOneUserOrderForHeader,
+        LogOut,
       }}
     >
       {children}

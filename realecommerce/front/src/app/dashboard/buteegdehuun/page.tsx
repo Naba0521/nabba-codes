@@ -52,6 +52,15 @@ export default function Home() {
   const [dateSort, setDateSort] = useState<string>("");
   const [searchInput, setSearchInput] = useState<string>("");
 
+  const deleteProduct = async (_id: string) => {
+    try {
+      await axios.delete("http://localhost:3001/product", { data: { _id } });
+      getProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getProducts = async () => {
     try {
       const response = await axios.get("http://localhost:3001/product");
@@ -206,7 +215,7 @@ export default function Home() {
             <div className="flex-1 pr-[100px]">Нэмсэн огноо</div>
           </div>
 
-          {filteredProducts.slice(0, 11).map((item, index) => (
+          {filteredProducts.map((item, index) => (
             <div key={index} className="flex border-t h-[72px] text-sm">
               <div className="flex-[2] flex items-center gap-[80px] justify-center pl-4">
                 <input
@@ -241,7 +250,12 @@ export default function Home() {
                 {new Date(item.createdAt).toLocaleDateString()}
               </div>
               <div className="flex-1 flex items-center justify-center gap-3">
-                <GrayDeleteIcon />
+                <div
+                  className="cursor-pointer"
+                  onClick={() => deleteProduct(item._id)}
+                >
+                  <GrayDeleteIcon />
+                </div>
                 <GrayEditIcon />
               </div>
             </div>

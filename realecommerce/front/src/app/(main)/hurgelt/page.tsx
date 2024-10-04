@@ -23,16 +23,17 @@ type ProductResponse = {
 };
 
 export default function Home() {
-  const { userMe } = useAuthContext(); // Access userMe from AuthContext
+  const { userMe, getOneUserOrderForHeader } = useAuthContext(); // Access userMe from AuthContext
   const [orderData, setOrderData] = useState<orderDataResponse>([]);
   const [counts, setCounts] = useState<{ [key: string]: number }>({});
   const [notification, setNotification] = useState("");
 
-  const getOrder = async () => {
+  const getOneUserOrder = async () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://localhost:3001/order", {
+      const response = await axios.get("http://localhost:3001/order/oneUser", {
+        params: { userId: userMe?.id },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -54,10 +55,6 @@ export default function Home() {
       console.log(error);
     }
   };
-
-  const filteredOrderData = orderData.filter(
-    (orderData) => orderData.userId === userMe?.id
-  );
 
   const editOrderCount = async (_id: string, newCount: number) => {
     const token = localStorage.getItem("token");
@@ -90,14 +87,15 @@ export default function Home() {
       setTimeout(() => {
         setNotification("");
       }, 2000);
-      getOrder();
+      getOneUserOrder();
+      getOneUserOrderForHeader();
     } catch (error) {
       console.error("Error removing product from saved:", error);
     }
   };
 
   useEffect(() => {
-    getOrder();
+    getOneUserOrder();
   }, []);
 
   const handleIncrement = (id: string) => {
@@ -116,7 +114,7 @@ export default function Home() {
     });
   };
 
-  const totalSum = filteredOrderData.reduce(
+  const totalSum = orderData.reduce(
     (acc, item) => acc + item.price * (counts[item._id] || item.count),
     0
   );
@@ -148,13 +146,11 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <div className="flex">
               <div className="font-bold text-xl">1. Сагс</div>
-              <div className="text-xl text-[#71717A]">
-                ({filteredOrderData.length})
-              </div>
+              <div className="text-xl text-[#71717A]">({orderData.length})</div>
             </div>
             <div className="flex flex-col gap-4">
-              {filteredOrderData.length > 0 ? (
-                filteredOrderData.map((item) => (
+              {orderData.length > 0 ? (
+                orderData.map((item) => (
                   <div
                     key={item._id}
                     className="flex justify-between border rounded-2xl p-4"

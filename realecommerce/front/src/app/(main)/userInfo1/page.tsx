@@ -79,11 +79,15 @@ export default function Home() {
   const getOrderPack = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("http://localhost:3001/orderPack", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:3001/orderPack/oneUser",
+        {
+          params: { userId: userMe?.id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setOrderPackData(response.data.orderPacks);
     } catch (error) {
       console.log(error);
@@ -96,7 +100,7 @@ export default function Home() {
 
   return (
     <div
-      className=" bg-white flex justify-center items-center "
+      className=" bg-white flex justify-center  "
       style={{ minHeight: "calc(100vh - 320.5px - 74px)" }}
     >
       <div className="px-[278px] pt-[100px] w-[1440px] pb-[76px] flex gap-5">

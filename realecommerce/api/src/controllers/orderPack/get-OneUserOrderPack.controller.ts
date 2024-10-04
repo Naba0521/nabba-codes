@@ -1,10 +1,13 @@
 import { RequestHandler } from "express";
 import { orderPackModel } from "../../models";
 
-export const getOneOrderPackController: RequestHandler = async (req, res) => {
-  const { id } = req.params;
+export const getOneUserOrderPackController: RequestHandler = async (
+  req,
+  res
+) => {
   try {
-    const orderPack = await orderPackModel.findById(id).populate([
+    const { userId } = req.query;
+    const orderPacks = await orderPackModel.find({ userId }).populate([
       {
         path: "products.product", // Populate the product field within the products array
         model: "Product", // Ensure you reference the correct model
@@ -14,15 +17,12 @@ export const getOneOrderPackController: RequestHandler = async (req, res) => {
         model: "User", // Ensure you reference the correct model for users
       },
     ]);
-    if (!orderPack) {
-      return res.status(404).json({
-        message: "Iim id tai orderPack algaa",
-      });
-    }
     return res.status(200).json({
-      orderPack,
+      orderPacks,
     });
   } catch (error) {
-    console.log(error);
+    return res.status(500).json({
+      message: "Order packs авахад алдаа гарлаа",
+    });
   }
 };

@@ -12,7 +12,9 @@ import { useAuthContext } from "@/components/utils/authProvider"; // Import the 
 
 export const Header = () => {
   const [searchTerm, setSearchTerm] = useState<string>(""); // User input for search
-  const { userMe } = useAuthContext(); // Access userMe from AuthContext
+  const { userMe, savedProductData, orderData, LogOut } = useAuthContext(); // Access userMe from AuthContext
+
+  console.log("Header", userMe);
 
   return (
     <div className="py-4 px-6 bg-black flex flex-col items-center justify-center w-full relative">
@@ -47,12 +49,30 @@ export const Header = () => {
 
         <div className="flex items-center gap-6">
           <Link href={`/saved`}>
-            <div>
+            <div className="relative h-6">
+              <div
+                className={`${
+                  savedProductData?.length
+                    ? "absolute left-3.5 bottom-4 bg-[#2563EB] text-white rounded-full text-[10px] w-4 h-4 flex justify-center items-center"
+                    : "hidden"
+                }   `}
+              >
+                {savedProductData?.length}
+              </div>
               <Heart />
             </div>
           </Link>
           <Link href={`/hurgelt`}>
-            <div>
+            <div className="relative h-6">
+              <div
+                className={`${
+                  orderData?.length
+                    ? "absolute left-3.5 bottom-4 bg-[#2563EB] text-white rounded-full text-[10px] w-4 h-4 flex justify-center items-center"
+                    : "hidden"
+                }   `}
+              >
+                {orderData?.length}
+              </div>
               <Tereg />
             </div>
           </Link>
@@ -75,8 +95,14 @@ export const Header = () => {
               </Link>
             </div>
           ) : (
-            <div className="text-white">
-              Сайн байна уу, {userMe.userName} {/* Show the user name */}
+            <div className="text-white flex gap-2 items-center">
+              <div> Сайн байна уу, {userMe.userName}</div>
+              <div
+                className="cursor-pointer border-white border font-bold  p-2 rounded-lg"
+                onClick={() => LogOut()}
+              >
+                Log out
+              </div>
             </div>
           )}
         </div>
