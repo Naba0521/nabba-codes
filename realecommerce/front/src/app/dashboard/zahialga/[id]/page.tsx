@@ -1,3 +1,4 @@
+"use client";
 import { CarIcon } from "@/assets/CarIcon";
 import { DooshooSum } from "@/assets/DooshooSum";
 import { LeftDirectionArrow } from "@/assets/LeftDirectionArrow";
@@ -5,6 +6,11 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+
+type ParamsType = {
+  id: string;
+};
 type orderPackDataResponse = {
   _id: string;
   orderPackAdress: string;
@@ -33,6 +39,8 @@ type ProductResponse = {
 };
 export default function home() {
   const [orderPackData, setOrderPackData] = useState<orderPackDataResponse>();
+  const { id } = useParams<ParamsType>();
+
   const zahialgaData = [
     {
       productName: "WOMEN'S HORSEBIT MULE Women’s",
@@ -91,7 +99,7 @@ export default function home() {
   };
   useEffect(() => {
     getOneOrderPack(id);
-  }, []);
+  }, [id]);
   return (
     <div className="flex-1 flex flex-col gap-6">
       <div className="flex gap-4 items-center p-4 bg-white">
