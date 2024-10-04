@@ -1,6 +1,7 @@
 "use client";
 import { DeesheeSum } from "@/assets/DeesheeSum";
 import { DooshooSum } from "@/assets/DooshooSum";
+import { DialogClose } from "@/components/ui/dialog";
 import { useAuthContext } from "@/components/utils/authProvider";
 import axios from "axios";
 import Image from "next/image";
@@ -170,7 +171,10 @@ export default function Home() {
                           <div className="relative w-9 h-9 flex justify-center items-center">
                             <Image
                               fill
-                              src={`${product.product.image[0]}`}
+                              src={
+                                product.product.image[0] ||
+                                "https://res.cloudinary.com/dgivvztkg/image/upload/v1726459017/cld-sample-2.jpg"
+                              }
                               alt="Product Image"
                               className="rounded-md"
                             />

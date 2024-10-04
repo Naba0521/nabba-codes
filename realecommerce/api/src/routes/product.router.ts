@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createProductController,
   DeleteProductController,
+  editProductController,
   getOneProductController,
   getProductsController,
 } from "../controllers";
@@ -11,6 +12,7 @@ productRouter
   .post("/", createProductController)
   .get("/", getProductsController)
   .get("/:id", getOneProductController)
-  .delete("/", DeleteProductController);
+  .delete("/", DeleteProductController)
+  .put("/", editProductController);
 
 export { productRouter };

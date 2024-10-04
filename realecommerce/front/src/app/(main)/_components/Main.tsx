@@ -18,7 +18,7 @@ export const Main = () => {
     salePercent: number;
   }
   interface category {
-    id: string;
+    _id: string;
     categoryName: string;
   }
   interface ProductsResponse {

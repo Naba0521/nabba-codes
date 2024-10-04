@@ -19,8 +19,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Value } from "@radix-ui/react-select";
-
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 type ProductType = {
   productName: string;
   price: number;
@@ -51,6 +69,37 @@ export default function Home() {
   const [priceSort, setPriceSort] = useState<string>("");
   const [dateSort, setDateSort] = useState<string>("");
   const [searchInput, setSearchInput] = useState<string>("");
+  const [addNewProductName, setAddNewProductName] = useState<
+    string | undefined
+  >(undefined);
+  const [addNewPrice, setAddNewPrice] = useState<string | undefined>(undefined);
+  const [addNewQuantity, setAddNewQuantity] = useState<string | undefined>(
+    undefined
+  );
+
+  const editProduct = async ({
+    _id,
+    newProductName,
+    newPrice,
+    newQuantity,
+  }: {
+    _id: string;
+    newProductName: string | undefined;
+    newPrice: string | undefined;
+    newQuantity: string | undefined;
+  }) => {
+    try {
+      await axios.put("http://localhost:3001/product", {
+        _id,
+        newProductName,
+        newPrice,
+        newQuantity,
+      });
+      getProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const deleteProduct = async (_id: string) => {
     try {
@@ -250,13 +299,96 @@ export default function Home() {
                 {new Date(item.createdAt).toLocaleDateString()}
               </div>
               <div className="flex-1 flex items-center justify-center gap-3">
-                <div
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <GrayDeleteIcon />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Та энэ бүтээгдэхүүнийг усгахдаа итгэлтэй байна уу?{" "}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription></AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Үгүй</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="cursor-pointer"
+                        onClick={() => deleteProduct(item._id)}
+                      >
+                        Тийм
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                {/* <div
                   className="cursor-pointer"
                   onClick={() => deleteProduct(item._id)}
                 >
                   <GrayDeleteIcon />
-                </div>
-                <GrayEditIcon />
+                </div> */}
+                <Dialog>
+                  <DialogTrigger>
+                    <GrayEditIcon />
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="flex flex-col gap-8">
+                      <DialogTitle className="font-bold">
+                        Бүтээгдэхүүн засварлах
+                      </DialogTitle>
+                      <DialogDescription className="flex flex-col gap-6">
+                        <div className="flex flex-col gap-2">
+                          <div className="font-semibold text-black">
+                            Бүтээгдэхүүний нэр засварлах
+                          </div>
+                          <input
+                            placeholder={`${item.productName}`}
+                            value={addNewProductName}
+                            onChange={(e) =>
+                              setAddNewProductName(e.target.value)
+                            }
+                          ></input>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <div className="font-semibold text-black">
+                            Үнэ засварлах
+                          </div>
+                          <input
+                            placeholder={`${item.price}`}
+                            value={addNewPrice}
+                            onChange={(e) => setAddNewPrice(e.target.value)}
+                          ></input>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <div className="font-semibold text-black">
+                            Үлдэгдэл засварлах
+                          </div>
+                          <input
+                            placeholder={`${item.quantity}`}
+                            value={addNewQuantity}
+                            onChange={(e) => setAddNewQuantity(e.target.value)}
+                          ></input>
+                        </div>
+                        <DialogClose>
+                          <div
+                            onClick={() =>
+                              editProduct({
+                                _id: item._id,
+                                newProductName: addNewProductName,
+                                newQuantity: addNewQuantity,
+                                newPrice: addNewPrice,
+                              })
+                            }
+                            className="self-center cursor-pointer py-2 px-4 bg-green-400 text-black font-semibold rounded-lg"
+                          >
+                            Өөрчлөх
+                          </div>
+                        </DialogClose>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           ))}

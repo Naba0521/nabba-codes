@@ -84,7 +84,27 @@ export const MainProductCard = ({ item, index }: MainProductCardProps) => {
 
       <div className="flex flex-col relative">
         <div>{item.productName}</div>
-        <div className="font-bold">{item.price}₮</div>
+        <div className="font-bold flex gap-3 items-center">
+          {item.salePercent > 0 ? (
+            <div className="font-bold">
+              {(
+                item.price -
+                (item.price * item.salePercent) / 100
+              ).toLocaleString()}
+              ₮
+            </div>
+          ) : null}
+
+          <div
+            className={`${item.salePercent > 0 ? "line-through text-sm" : ""}`}
+          >
+            {item.price.toLocaleString()}₮
+          </div>
+
+          {item.salePercent > 0 ? (
+            <div className="text-red-600">{item.salePercent}%</div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
