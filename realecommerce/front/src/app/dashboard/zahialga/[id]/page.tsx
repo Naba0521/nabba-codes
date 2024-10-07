@@ -13,6 +13,9 @@ type ParamsType = {
 };
 type orderPackDataResponse = {
   _id: string;
+  owog: string;
+  userName: string;
+  phoneNumber: string;
   orderPackAdress: string;
   orderPackDetail: string;
   status: string;
@@ -95,11 +98,9 @@ export default function home() {
           <div className="flex flex-col gap-1">
             <div className="text-[#3F4145]">Захиалагч: Хувь хүн </div>
             <div className="flex">
-              <div className="font-semibold">
-                {orderPackData?.userId.userName}-
-              </div>
+              <div className="font-semibold">{orderPackData?.userName}-</div>
               <div className="text-[#3F4145]">
-                {orderPackData?.userId?.email},{orderPackData?.userId.phone}
+                {orderPackData?.userId?.email},{orderPackData?.phoneNumber}
               </div>
             </div>
           </div>
@@ -148,9 +149,15 @@ export default function home() {
             <div className="py-5 px-6">Хүргэлтийн мэдээлэл</div>
             <div className="h-[1px] w-full bg-gray-300"></div>
             <div className="flex flex-col py-5 px-6 ">
-              <div>Гэр</div>
+              <div>Хаяг</div>
               <div className="pb-5 font-semibold">
                 {orderPackData?.orderPackAdress}
+              </div>
+            </div>
+            <div className="flex flex-col py-5 px-6 ">
+              <div>Хүргэлтийн дэлгэрэнгүй мэдээлэл</div>
+              <div className="pb-5 font-semibold">
+                {orderPackData?.orderPackDetail}
               </div>
             </div>
           </div>

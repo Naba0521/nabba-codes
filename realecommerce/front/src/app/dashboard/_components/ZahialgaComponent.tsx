@@ -27,6 +27,9 @@ import Link from "next/link";
 
 type orderPackDataResponse = {
   _id: string;
+  owog: string;
+  userName: string;
+  phoneNumber: string;
   orderPackAdress: string;
   orderPackDetail: string;
   status: string;
@@ -177,7 +180,7 @@ export const ZahialgaComponent = () => {
                     {item._id}
                   </TableCell>
                   <TableCell>
-                    <div>{item.userId.userName}</div>
+                    <div>{item.userName}</div>
                     <div>{item.userId.email}</div>
                   </TableCell>
                   <TableCell>{item.createdAt.slice(0, 10)}</TableCell>

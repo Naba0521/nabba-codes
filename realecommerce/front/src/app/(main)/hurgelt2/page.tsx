@@ -14,6 +14,9 @@ type addOrderPackResponse = {
     selectedSize: string;
   }[];
   status: string;
+  owog: string;
+  userName: string;
+  phoneNumber: string;
   orderPackAdress: string;
   orderPackDetail: string;
 };
@@ -23,6 +26,9 @@ export default function Home() {
   const [notification, setNotification] = useState("");
   const [addOrderPackAdress, setAddOrderPackAdress] = useState<string>("");
   const [addOrderPackDetail, setAddOrderPackDetail] = useState<string>("");
+  const [addOrderPackOwog, setAddOrderPackOwog] = useState<string>("");
+  const [addUserName, setAddUserName] = useState<string>("");
+  const [addPhoneNumber, setAddPhoneNumber] = useState<string>("");
 
   const deleteAllOrder = async (userId: string) => {
     const token = localStorage.getItem("token");
@@ -161,6 +167,8 @@ export default function Home() {
                 <input
                   className="rounded-[18px] border w-full pl-2 text-[14px]"
                   placeholder={`${userMe?.userName}`}
+                  value={addOrderPackOwog}
+                  onChange={(e) => setAddOrderPackOwog(e.target.value)}
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -168,6 +176,8 @@ export default function Home() {
                 <input
                   className="rounded-[18px] border w-full pl-2 text-[14px] py-1"
                   placeholder={`${userMe?.userName}`}
+                  value={addUserName}
+                  onChange={(e) => setAddUserName(e.target.value)}
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -175,6 +185,8 @@ export default function Home() {
                 <input
                   className="rounded-[18px] border w-full pl-2 text-[14px]"
                   placeholder={userMe?.phone || "Утасны дугаар оруулна уу"}
+                  value={addPhoneNumber}
+                  onChange={(e) => setAddPhoneNumber(e.target.value)}
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -222,6 +234,9 @@ export default function Home() {
                         userId: userMe.id, // Pass the user ID
                         status: "Шинэ захиалга", // Order status
                         products, // Array of products with updated count
+                        owog: addOrderPackOwog,
+                        userName: addUserName,
+                        phoneNumber: addPhoneNumber,
                         orderPackAdress: addOrderPackAdress,
                         orderPackDetail: addOrderPackDetail,
                       });

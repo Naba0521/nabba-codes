@@ -21,7 +21,6 @@ body {
   width: fit-content;
   margin: auto;
   padding-top: 120px;
-  border: 5px solid red;
 }
 .landing h1 {
   font-size: 72px;
@@ -46,12 +45,10 @@ body {
 .tours {
   margin: auto;
   width: fit-content;
-  border: 5px solid red;
   position: relative;
   margin-top: 240px;
 }
 .left {
-  border: 5px solid blue;
   width: 358px;
   height: 796px;
   margin-top: 0px;
@@ -113,7 +110,6 @@ body {
   vertical-align: top;
 }
 #right {
-  border: 5px solid red;
   display: inline-block;
   margin-left: 85px;
 }
@@ -127,7 +123,6 @@ body {
   width: fit-content;
   height: fit-content;
   margin-top: 240px;
-  border: 5px solid red;
   position: relative;
 }
 .price h3 {
@@ -139,12 +134,10 @@ body {
   font-size: 48px;
 }
 .pricetext {
-  border: 5px solid red;
   text-align: center;
 }
 .songolt {
   margin-top: 80px;
-  border: 5px solid red;
 }
 .songolt h1 {
   font-size: 24px;
@@ -231,6 +224,7 @@ body {
   border-top: 1px solid #303030;
   background-color: #101010;
   position: relative;
+  color: white;
 }
 .footer :first-child {
   position: absolute;

@@ -11,6 +11,21 @@ const orderPackSchema = new Schema({
     ref: "User",
     required: true,
   },
+  owog: {
+    type: String,
+    required: true,
+    default: "Овог оруулаагүй байна",
+  },
+  userName: {
+    type: String,
+    required: true,
+    default: "Нэр оруулаагүй байна",
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
+    default: "Утасны дугаар оруулаагүй байна",
+  },
   orderPackAdress: {
     type: String,
     required: true,
