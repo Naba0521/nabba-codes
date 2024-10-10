@@ -2,6 +2,7 @@
 
 import { BHeart } from "@/assets/BHeart";
 import { useAuthContext } from "@/components/utils/authProvider";
+import { api } from "@/lib/axios";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,15 +49,11 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/order",
-        addOrder,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.post("/order", addOrder, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setNotification("Захиалга амжилттай сагсанд нэмэгдлээ");
       setTimeout(() => {
         setNotification("");

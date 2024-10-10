@@ -1,9 +1,8 @@
 "use client";
 import { DeesheeSum } from "@/assets/DeesheeSum";
 import { DooshooSum } from "@/assets/DooshooSum";
-import { DialogClose } from "@/components/ui/dialog";
 import { useAuthContext } from "@/components/utils/authProvider";
-import axios from "axios";
+import { api } from "@/lib/axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -62,8 +61,8 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      await axios.put(
-        "http://localhost:3001/auth/edit",
+      await api.put(
+        "/auth/edit",
         { _id, newOwog, newUserName, newPhone, newEmail, newAddress },
         {
           headers: {
@@ -80,15 +79,12 @@ export default function Home() {
   const getOrderPack = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(
-        "http://localhost:3001/orderPack/oneUser",
-        {
-          params: { userId: userMe?.id },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/orderPack/oneUser", {
+        params: { userId: userMe?.id },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setOrderPackData(response.data.orderPacks);
     } catch (error) {
       console.log(error);

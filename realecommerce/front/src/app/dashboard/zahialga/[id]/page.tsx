@@ -2,11 +2,11 @@
 import { CarIcon } from "@/assets/CarIcon";
 import { DooshooSum } from "@/assets/DooshooSum";
 import { LeftDirectionArrow } from "@/assets/LeftDirectionArrow";
-import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { api } from "@/lib/axios";
 
 type ParamsType = {
   id: string;
@@ -41,7 +41,7 @@ type ProductResponse = {
   image: string[];
   price: number;
 };
-export default function home() {
+export default function Home() {
   const [orderPackData, setOrderPackData] = useState<orderPackDataResponse>();
   const { id } = useParams<ParamsType>();
 
@@ -49,14 +49,11 @@ export default function home() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get(
-        `http://localhost:3001/orderPack/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Add the token in the headers
-          },
-        }
-      );
+      const response = await api.get(`/orderPack/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token in the headers
+        },
+      });
       setOrderPackData(response.data.orderPack);
       console.log(response.data.orderPack);
     } catch (error) {

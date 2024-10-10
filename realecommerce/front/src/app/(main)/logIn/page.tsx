@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthContext } from "@/components/utils/authProvider";
-import axios from "axios";
+import { api } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -20,18 +20,20 @@ export default function Home() {
 
   const logIn = async (addUser: AddUserResponse) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3001/auth/login",
-        addUser
-      );
+      const response = await api.post("/auth/login", addUser);
       localStorage.setItem("token", response.data.token);
       setUserMe(response.data.user);
 
       // Redirect the user after successful login
       router.push("/");
-    } catch (error: any) {
-      console.error(error);
-      setError("Login failed. Please check your credentials.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+        setError("Login failed. Please check your credentials.");
+      } else {
+        console.error("An unexpected error occurred");
+        setError("An unexpected error occurred.");
+      }
     }
   };
 

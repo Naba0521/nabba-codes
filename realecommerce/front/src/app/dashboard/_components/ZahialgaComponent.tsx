@@ -3,9 +3,7 @@ import { BlackSearchIcon } from "@/assets/BlackSearchIcon";
 import { CalendarIcon } from "@/assets/CalendarIcon";
 import { DooshooSum } from "@/assets/DooshooSum";
 import { RightDirectionIcon } from "@/assets/RightDirectionIcon";
-import { Search } from "@/assets/Search";
-import { Zahialga } from "@/assets/ZahialgaIcon";
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -24,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { api } from "@/lib/axios";
 
 type orderPackDataResponse = {
   _id: string;
@@ -78,7 +77,7 @@ export const ZahialgaComponent = () => {
   const getOrderPack = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("http://localhost:3001/orderPack", {
+      const response = await api.get("/orderPack", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -91,8 +90,8 @@ export const ZahialgaComponent = () => {
   const editOrderPackStatus = async (_id: string, newStatus: string) => {
     const token = localStorage.getItem("token");
     try {
-      await axios.put(
-        "http://localhost:3001/orderPack",
+      await api.put(
+        "/orderPack",
         { _id, newStatus },
         {
           headers: {

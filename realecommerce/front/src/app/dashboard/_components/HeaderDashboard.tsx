@@ -1,7 +1,6 @@
 import { DashboardProfileIcon } from "@/assets/DashboardProfile";
 import { HonhIcon } from "@/assets/HonhIcon";
 import { Logo } from "@/assets/logo";
-import { ProfileIcon } from "@/assets/ProfileIcon";
 
 export const HeaderDashboard = () => {
   return (

@@ -1,17 +1,13 @@
 "use client";
 import { BHeart } from "@/assets/BHeart";
-import { HalfStar } from "@/assets/HalfStar";
-import { Heart } from "@/assets/Heart";
-import { Star } from "@/assets/Star";
 import axios from "axios";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { MainProductCard } from "../../_components/MainProductCard";
 import { FaStar } from "react-icons/fa";
 import { useAuthContext } from "@/components/utils/authProvider"; // Import the useAuthContext hook
+import { api } from "@/lib/axios";
 
 type ParamsType = {
   id: string;
@@ -103,10 +99,8 @@ export default function Home() {
   const [notification, setNotification] = useState("");
 
   const getProducts = async () => {
-    const token = localStorage.getItem("token");
-
     try {
-      const response = await axios.get("http://localhost:3001/product");
+      const response = await api.get("/product");
       setProductsa(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -115,7 +109,7 @@ export default function Home() {
 
   const getOneProduct = async (id: string) => {
     try {
-      const response = await axios.get(`http://localhost:3001/product/${id}`);
+      const response = await api.get(`/product/${id}`);
       setProduct(response.data.product);
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -126,7 +120,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get(`http://localhost:3001/review/${id}`, {
+      const response = await api.get(`/review/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Add the token in the headers
         },
@@ -141,8 +135,8 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/review",
+      await api.post(
+        "/review",
         addReview, // Pass the review data as the second parameter
         {
           headers: {
@@ -160,8 +154,8 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/order",
+      await api.post(
+        "/order",
         addOrder, // Pass the review data as the second parameter
         {
           headers: {
@@ -354,6 +348,7 @@ export default function Home() {
                     .map((item, index) => {
                       return (
                         <FaStar
+                          key={index}
                           className={`text-xl ${
                             (product?.averageRating ?? 0) > index
                               ? "text-[#FDE047]"
@@ -392,6 +387,7 @@ export default function Home() {
                         .map((item, index) => {
                           return (
                             <FaStar
+                              key={index}
                               className={`text-xl ${
                                 ratingSelect > index
                                   ? "text-[#FDE047]"
@@ -453,6 +449,7 @@ export default function Home() {
                             .map((_, index) => {
                               return (
                                 <FaStar
+                                  key={index}
                                   className={`text-xl ${
                                     item.rating > index
                                       ? "text-[#FDE047]"

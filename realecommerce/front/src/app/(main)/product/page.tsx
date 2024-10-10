@@ -1,11 +1,8 @@
 "use client";
 
-import { BHeart } from "@/assets/BHeart";
-import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MainProductCard } from "../_components/MainProductCard";
+import { api } from "@/lib/axios";
 const sizeData = ["Free", "S", "M", "L", "XL", "2XL", "3XL", "10XL"];
 
 export default function Home() {
@@ -31,7 +28,7 @@ export default function Home() {
     categories: category[];
   }
 
-  const [savedHearts, setSavedHearts] = useState<number[]>([]);
+  // const [savedHearts, setSavedHearts] = useState<number[]>([]);
   const [productsa, setproductsa] = useState<ProductsResponse | null>(null);
   const [categoriesa, setCategoriesa] = useState<CategoriesResponse | null>(
     null
@@ -42,18 +39,18 @@ export default function Home() {
   const [total, setTotal] = useState<number>(0);
   const limit = 6;
 
-  const toggleHeart = (index: number) => {
-    if (savedHearts.includes(index)) {
-      setSavedHearts(savedHearts.filter((i) => i !== index));
-    } else {
-      setSavedHearts([...savedHearts, index]);
-    }
-  };
+  // const toggleHeart = (index: number) => {
+  //   if (savedHearts.includes(index)) {
+  //     setSavedHearts(savedHearts.filter((i) => i !== index));
+  //   } else {
+  //     setSavedHearts([...savedHearts, index]);
+  //   }
+  // };
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/product", {
+        const response = await api.get("/product", {
           params: { page, limit, selectedCategory, size },
         });
         setproductsa(response.data);
@@ -68,23 +65,13 @@ export default function Home() {
 
   const getCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/category");
+      const response = await api.get("/category");
       setCategoriesa(response.data);
     } catch (error) {
       console.log("category awahad aldaa garlaa");
     }
   };
-  // const filteredCategoryProducts = productsa?.products
-  //   .filter((product) => {
-  //     if (selectedCategory === "") return true; // Show all products if no category is selected
-  //     return product.category.some(
-  //       (cat) => cat.categoryName === selectedCategory
-  //     );
-  //   })
-  //   .filter((product) => {
-  //     if (size === "" || size === null) return true;
-  //     return product.size.includes(size);
-  //   });
+
   useEffect(() => {
     getCategories();
   }, []);

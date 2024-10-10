@@ -1,5 +1,5 @@
 "use client";
-import axios from "axios";
+import { api } from "@/lib/axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -30,7 +30,7 @@ export const SearchCard = ({ searchTerm }: SearchCardProps) => {
   // Fetch all products when the component mounts
   const getProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/product");
+      const response = await api.get("/product");
       setProduct(response.data.products);
     } catch (error) {
       console.error("Error fetching products:", error);

@@ -1,7 +1,7 @@
 "use client"; // Next.js-д 'client component'-ийг зааж өгдөг
 import { Check } from "@/assets/Check"; // Check компонентыг импортолдог
 import { useAuthContext } from "@/components/utils/authProvider";
-import axios from "axios"; // Axios-г импортолдож, HTTP хүсэлтүүдийг хийхэд ашиглана
+import { api } from "@/lib/axios";
 import Image from "next/image"; // Next.js-ийн Image компонентыг импортолдож, зураг оруулахад ашиглана
 import Link from "next/link"; // Link компонентыг импортолдож, хуудас хооронд шилжихэд ашиглана
 import { useEffect, useState } from "react"; // React-ийн useEffect болон useState функцүүдийг импортолдож, компонентын төрлийг удирдахад ашиглана
@@ -34,7 +34,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
     try {
       // Send DELETE request to remove all orders
-      const response = await axios.delete("http://localhost:3001/order/all", {
+      const response = await api.delete("/order/all", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,10 +57,7 @@ export default function Home() {
   };
   const createOrderPack = async (addOrderPack: addOrderPackResponse) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3001/orderPack",
-        addOrderPack
-      );
+      const response = await api.post("/orderPack", addOrderPack);
 
       // Log the full response for debugging
       console.log("Order pack creation response:", response);
@@ -99,6 +96,12 @@ export default function Home() {
   return (
     <div className="py-4 px-6 flex justify-center w-full bg-[#f7f7f7]">
       <div className="w-[1440px] px-[200px] py-16 flex flex-col items-center gap-8">
+        {/* Notification хэсэг */}
+        {notification && (
+          <div className="bg-green-200 text-green-800 px-4 py-2 rounded-lg">
+            {notification}
+          </div>
+        )}
         <div className="flex items-center justify-center">
           <Link href={`/hurgelt`}>
             <div className="w-8 h-8 bg-[#2563EB] rounded-2xl flex justify-center items-center text-white">

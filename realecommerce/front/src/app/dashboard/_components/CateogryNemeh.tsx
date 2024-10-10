@@ -4,12 +4,11 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import axios from "axios";
+import { api } from "@/lib/axios";
 import { useState } from "react";
 
 type addCategoryType = {
@@ -24,10 +23,7 @@ export const CategoryNemeh = ({ getCategories }: CategoryNemehProps) => {
 
   const createCategory = async (addCategory: addCategoryType) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3001/category",
-        addCategory
-      );
+      await api.post("/category", addCategory);
       getCategories();
       window.location.reload();
     } catch (error) {

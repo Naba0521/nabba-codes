@@ -7,8 +7,7 @@ import {
   useContext,
   useEffect,
 } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import { api } from "@/lib/axios";
 
 // Define your types in a separate file for better organization
 type UserMeResponse = {
@@ -19,10 +18,7 @@ type UserMeResponse = {
   address: string;
   owog: string;
 };
-type deleteUserToSavedProduct = {
-  productId: string;
-  userId: string;
-};
+
 interface Product {
   _id: string;
   productName: string;
@@ -61,6 +57,7 @@ type addUserToSavedProduct = {
   productId: string;
   userId: string;
 };
+
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
@@ -68,6 +65,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 type AuthProviderProps = {
   children: ReactNode;
 };
+
 type orderDataResponse = {
   _id: string;
   productId: ProductResponse;
@@ -76,12 +74,14 @@ type orderDataResponse = {
   count: number;
   price: number;
 }[];
+
 type ProductResponse = {
   _id: string;
   productName: string;
   image: string[];
   price: number;
 };
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userMe, setUserMe] = useState<UserMeResponse | undefined>();
   const [loading, setLoading] = useState(true);
@@ -89,16 +89,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     SavedProductDataResponse[]
   >([]);
   const [orderData, setOrderData] = useState<orderDataResponse>([]);
-  const router = useRouter();
 
   const userId = userMe?.id || ""; // Use userMe ID
-
-  // const token = localStorage.getItem("token");
 
   const getMe = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("http://localhost:3001/users/me", {
+      const response = await api.get("/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -114,15 +111,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        "http://localhost:3001/savedProducts/oneUser",
-        {
-          params: { userId },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/savedProducts/oneUser", {
+        params: { userId },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setSavedProductData(response.data.savedProducts);
     } catch (error) {
       console.error("Error fetching user's saved products:", error);
@@ -137,15 +131,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const addUserToSavedProduct: addUserToSavedProduct = { productId, userId };
     setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:3001/savedProducts",
-        addUserToSavedProduct,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.post("/savedProducts", addUserToSavedProduct, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       await getToSavedProduct();
     } catch (error) {
       console.error("Error adding product to saved:", error);
@@ -161,16 +151,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     setLoading(true); // Set loading state
     try {
-      const response = await axios.delete(
-        "http://localhost:3001/savedProducts",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: deleteUserToSavedProduct,
-        }
-      );
-      console.log("Product removed:", response.data);
+      await api.delete("/savedProducts", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: deleteUserToSavedProduct,
+      });
 
       // Update the savedProductData state
       setSavedProductData((prevData) =>
@@ -184,11 +170,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoading(false); // Reset loading state
     }
   };
+
   const getOneUserOrderForHeader = async () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://localhost:3001/order/oneUser", {
+      const response = await api.get("/order/oneUser", {
         params: { userId },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -199,6 +186,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log(error);
     }
   };
+
   const LogOut = async () => {
     try {
       localStorage.removeItem("token");
@@ -208,6 +196,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.error("Logout error", error);
     }
   };
+
   useEffect(() => {
     getMe(); // Хэрэглэгчийн мэдээллийг татаж авч байна
   }, []);

@@ -8,12 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CategoryNemeh } from "../../_components/CateogryNemeh";
+import { api } from "@/lib/axios";
 
 type addProductType = {
   productName: string;
@@ -41,7 +41,6 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
   const [uploadedUrl, setUploadedUrl] = useState<string[]>([]);
-  const token = localStorage.getItem("token");
 
   const handleChangeFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
@@ -55,11 +54,13 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append("image", file);
+    const token = localStorage.getItem("token");
 
     try {
-      const res = await axios.post("http://localhost:3001/upload", formData, {
+      const res = await api.post("/upload", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       });
       const uploadedUrls = [...uploadedUrl, res.data.secure_url];
@@ -73,7 +74,7 @@ export default function Home() {
 
   const getCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/category");
+      const response = await api.get("/category");
       setCategory(response.data.categories);
     } catch (error) {
       console.log("Failed to fetch categories:", error);
@@ -82,7 +83,7 @@ export default function Home() {
 
   const createProduct = async (addProduct: addProductType) => {
     try {
-      await axios.post("http://localhost:3001/product", addProduct);
+      await api.post("/product", addProduct);
       window.location.reload();
     } catch (error) {
       console.error("Error adding product:", error);
@@ -156,6 +157,11 @@ export default function Home() {
                   </div>
                 </label>
               </div>
+              {loading && (
+                <div className="absolute flex justify-center items-center w-full h-full bg-white opacity-75 rounded-lg">
+                  <span className="text-sm font-semibold">Loading...</span>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex p-6 gap-4 bg-white rounded-lg">
@@ -231,9 +237,9 @@ export default function Home() {
                     size: selectedSizes,
                   });
                 }}
-                className="bg-black text-white font-semibold cursor-pointer rounded-lg w-fit px-5 py-4 text-lg"
+                className="cursor-pointer text-white bg-black rounded-lg px-8 py-3 text-center"
               >
-                Бараа нэмэх
+                Бүтээгдэхүүн нэмэх
               </div>
             </div>
           </div>

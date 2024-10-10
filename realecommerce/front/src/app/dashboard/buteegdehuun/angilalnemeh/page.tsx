@@ -1,5 +1,4 @@
 "use client";
-import { WhitePlusIcon } from "@/assets/WhitePlus";
 import Link from "next/link";
 import {
   Table,
@@ -11,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { CategoryNemeh } from "../../_components/CateogryNemeh";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "@/lib/axios";
 
 interface Category {
   _id: string;
@@ -39,7 +38,7 @@ export default function Home() {
 
   const getCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/category");
+      const response = await api.get("/category");
       setCategories(response.data.categories);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -48,7 +47,7 @@ export default function Home() {
 
   const getProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/product");
+      const response = await api.get("/product");
       setProducts(response.data.products);
     } catch (error) {
       console.error("Error fetching products:", error);

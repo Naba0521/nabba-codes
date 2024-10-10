@@ -1,9 +1,8 @@
 "use client";
-import { BHeart } from "@/assets/BHeart";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { MainProductCard } from "./MainProductCard";
-import axios from "axios";
+import { api } from "@/lib/axios";
 
 export const Main = () => {
   interface Product {
@@ -29,7 +28,7 @@ export const Main = () => {
 
   const getProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/product");
+      const response = await api.get("/product");
       setProductsa(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);

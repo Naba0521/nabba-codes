@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { DeleteIcon } from "@/assets/DeleteIcon";
 import Image from "next/image";
 import { useAuthContext } from "@/components/utils/authProvider";
+import { api } from "@/lib/axios";
 
 type orderDataResponse = {
   _id: string;
@@ -32,7 +32,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://localhost:3001/order/oneUser", {
+      const response = await api.get("/order/oneUser", {
         params: { userId: userMe?.id },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -59,8 +59,8 @@ export default function Home() {
   const editOrderCount = async (_id: string, newCount: number) => {
     const token = localStorage.getItem("token");
     try {
-      await axios.put(
-        "http://localhost:3001/order",
+      await api.put(
+        "/order",
         { _id, newCount },
         {
           headers: {
@@ -77,7 +77,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      await axios.delete("http://localhost:3001/order", {
+      await api.delete("/order", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

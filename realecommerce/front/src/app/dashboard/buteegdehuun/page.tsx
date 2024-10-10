@@ -2,11 +2,9 @@
 import { AngilalIcon } from "@/assets/AngilalIcon";
 import { BlackSearchIcon } from "@/assets/BlackSearchIcon";
 import { CalendarIcon } from "@/assets/CalendarIcon";
-import { DooshooSum } from "@/assets/DooshooSum";
 import { GrayEditIcon } from "@/assets/GrayEditButton";
 import { GrayDeleteIcon } from "@/assets/GreyDeleteIcon";
 import { WhitePlusIcon } from "@/assets/WhitePlus";
-import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -15,7 +13,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -39,6 +36,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { api } from "@/lib/axios";
 type ProductType = {
   productName: string;
   price: number;
@@ -89,7 +87,7 @@ export default function Home() {
     newQuantity: string | undefined;
   }) => {
     try {
-      await axios.put("http://localhost:3001/product", {
+      await api.put("/product", {
         _id,
         newProductName,
         newPrice,
@@ -103,7 +101,7 @@ export default function Home() {
 
   const deleteProduct = async (_id: string) => {
     try {
-      await axios.delete("http://localhost:3001/product", { data: { _id } });
+      await api.delete("/product", { data: { _id } });
       getProducts();
     } catch (error) {
       console.log(error);
@@ -112,7 +110,7 @@ export default function Home() {
 
   const getProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/product");
+      const response = await api.get("/product");
       setProduct(response.data.products);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -155,7 +153,7 @@ export default function Home() {
 
   const getCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/category");
+      const response = await api.get("/category");
       setCategoriesa(response.data);
     } catch (error) {
       console.log("category awahad aldaa garlaa");

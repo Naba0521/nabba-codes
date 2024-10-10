@@ -1,5 +1,5 @@
 "use client";
-import axios from "axios";
+import { api } from "@/lib/axios";
 import Link from "next/link";
 import { useState } from "react";
 type addUserRespponse = {
@@ -7,13 +7,13 @@ type addUserRespponse = {
   email: string;
   password: string;
 };
-export default function home() {
+export default function Home() {
   const [addUserName, setAddUserName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const createUser = async (addUser: addUserRespponse) => {
     try {
-      const response = await axios.post("http://localhost:3001/user", addUser);
+      await api.post("/user", addUser);
     } catch (error) {
       console.log(error);
     }
