@@ -75,7 +75,7 @@ export function CircleChart() {
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Pie Chart - {showIncome ? "Income" : "Expense"}</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardDescription>January 2024 - Now</CardDescription>
         <button
           onClick={() => setShowIncome(!showIncome)}
           className="px-4 py-2 bg-blue-500 text-white rounded"

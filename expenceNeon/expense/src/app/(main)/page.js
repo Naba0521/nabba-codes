@@ -38,89 +38,62 @@ export default function Home() {
     selectedAccountId,
     setSelectedAccountId,
   } = useContext(AccountContext);
-  // const { totalAmount, setTotalAmount } = useAuth();
-  // const handleTotalAmountChange = (amount) => {
-  //   setTotalAmount(amount);
-  // };
-  const getStartAndEndOfMonth = () => {
-    const now = new Date();
-    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
+  const getStartAndEndOfMonth = (monthOffset = 0) => {
+    const now = new Date();
+    const startDate = new Date(
+      now.getFullYear(),
+      now.getMonth() + monthOffset,
+      1
+    );
+    const endDate = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1 + monthOffset,
+      0
+    );
     return { startDate, endDate };
   };
 
-  const { startDate, endDate } = getStartAndEndOfMonth();
-
-  const thisMonthAccounts = accounts.filter((account) => {
-    const accountDate = new Date(account.date || "2024-01-01");
-    return accountDate >= startDate && accountDate <= endDate;
-  });
-  const getStartAndEndOfLastMonth = () => {
-    const now = new Date();
-    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-
-    return { startOfLastMonth, endOfLastMonth };
+  const getMonthlyAccountData = (monthOffset = 0) => {
+    const { startDate, endDate } = getStartAndEndOfMonth(monthOffset);
+    return accounts.filter((account) => {
+      const accountDate = new Date(account.date || "2024-01-01");
+      return accountDate >= startDate && accountDate <= endDate;
+    });
   };
 
-  const { startOfLastMonth, endOfLastMonth } = getStartAndEndOfLastMonth();
-  const lastMonthAccounts = accounts.filter((account) => {
-    const accountDate = new Date(account.date || "2024-01-01");
-    return accountDate >= startOfLastMonth && accountDate <= endOfLastMonth;
+  const calculateIncomeExpense = (monthOffset = 0) => {
+    const monthAccounts = getMonthlyAccountData(monthOffset);
+    const incomeSum = monthAccounts
+      .filter((account) => account.type === "inc")
+      .reduce((acc, account) => acc + (account.amount || 0), 0);
+    const expenseSum = monthAccounts
+      .filter((account) => account.type === "exp")
+      .reduce((acc, account) => acc + (account.amount || 0), 0);
+    return { incomeSum, expenseSum };
+  };
+
+  const last5MonthsData = Array.from({ length: 5 }, (_, index) => {
+    const monthOffset = -(4 - index);
+    const { incomeSum, expenseSum } = calculateIncomeExpense(monthOffset);
+    const date = new Date();
+    date.setMonth(date.getMonth() + monthOffset);
+    const monthName = date.toLocaleString("default", { month: "long" });
+    return { month: monthName, Income: incomeSum, Expense: expenseSum };
   });
-  const incomeSumLastMonth = lastMonthAccounts
-    .filter((account) => account.type === "inc") // Filter accounts where type is "inc"
-    .reduce((acc, account) => acc + (account.amount || 0), 0); // Sum the amount of filtered accounts
-
-  const incomeSum = thisMonthAccounts
-    .filter((account) => account.type === "inc") // Filter accounts where type is "inc"
-    .reduce((acc, account) => acc + (account.amount || 0), 0); // Sum the amount of filtered accounts
-
-  const expenseSumLastMonth = lastMonthAccounts
-    .filter((account) => account.type === "exp") // Filter accounts where type is "inc"
-    .reduce((acc, account) => acc + (account.amount || 0), 0);
-  const expenseSum = thisMonthAccounts
-    .filter((account) => account.type === "exp") // Filter accounts where type is "inc"
-    .reduce((acc, account) => acc + (account.amount || 0), 0); // Sum the amount of filtered accounts
-
-  const incPercentage = (
-    ((incomeSum - incomeSumLastMonth) / incomeSumLastMonth) *
-    100
-  ).toFixed(2);
-  const expPercentage = (
-    ((expenseSum - expenseSumLastMonth) / expenseSumLastMonth) *
-    100
-  ).toFixed(2);
-  const last5Accounts = accounts
-    .slice(-5) // Get the last 5 elements
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const totalAmount = accounts.reduce(
     (acc, account) =>
       acc + (account.type === "exp" ? -account.amount : account.amount),
     0
   );
+
   const formatter = new Intl.NumberFormat("mn-MN", {
-    // style: "currency",
-    // currency: "MNT", // Use the appropriate currency code
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-  const formattedtotalAmount = formatter.format(totalAmount);
-  const formattedincomeSum = formatter.format(incomeSum);
-  const formattedexpenseSum = formatter.format(expenseSum);
 
-  const chartData = [
-    // { month: "January", Income: 186, Expense: 80 },
-    // { month: "February", Income: 305, Expense: 200 },
-    // { month: "March", Income: 237, Expense: 120 },
-    { month: "April", Income: 2730, Expense: 1900 },
-    { month: "May", Income: 2000, Expense: 1300 },
-    { month: "June", Income: 3500, Expense: 4000 },
-    { month: "July", Income: incomeSumLastMonth, Expense: expenseSumLastMonth },
-    { month: "August", Income: incomeSum, Expense: expenseSum },
-  ];
+  const formattedtotalAmount = formatter.format(totalAmount);
   const chartConfig = {
     Income: {
       label: "Income",
@@ -131,12 +104,17 @@ export default function Home() {
       color: "hsl(var(--chart-1))",
     },
   };
+
+  const last5Accounts = accounts
+    .slice(-5)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
   return (
     <main className="">
       <div className="bg-gray-100 h-full">
         <div className="flex flex-col lg:w-[1220px] w-[390px] font-normal text-[16px] items-center justify-between m-auto pt-[32px] pb-[40px] gap-6">
           <div className="flex flex-row w-full gap-[24px]">
-            <div className="flex-1 flex flex-col bg-[#0166FF] h-[216px] rounded-2xl  justify-between relative">
+            <div className="flex-1 flex flex-col bg-[#0166FF] h-[216px] rounded-2xl justify-between relative">
               <div className="px-8 py-8">
                 <CardLogo />
               </div>
@@ -151,7 +129,6 @@ export default function Home() {
                   <Circle />
                 </div>
                 <div className="absolute bottom-4 right-6">
-                  {" "}
                   <Payway />
                 </div>
               </div>
@@ -164,21 +141,16 @@ export default function Home() {
                 </div>
                 <div className="font-semibold">Your Income This month</div>
               </div>
-              <div className="flex flex-col  pt-[16px]">
+              <div className="flex flex-col pt-[16px]">
                 <div className="text-[36px] font-semibold">
-                  {formattedincomeSum}₮
+                  {formatter.format(last5MonthsData[4].Income)}₮
                 </div>
                 <div className="text-[18px] text-[#64748B]">
                   Your Income Amount
                 </div>
-                <div className="flex gap-2">
-                  <div>{incPercentage < 0 ? <GreenDown /> : <GreenUp />}</div>
-                  <div className="text-[18px]">
-                    {incPercentage}% from last month
-                  </div>
-                </div>
               </div>
             </div>
+
             <div className="flex-1 flex flex-col bg-white h-[216px] rounded-2xl px-[24px] py-[24px]">
               <div className="flex pb-[16px] border-b-slate-400 border-b-[1px] gap-[8px]">
                 <div className="flex items-center">
@@ -186,82 +158,74 @@ export default function Home() {
                 </div>
                 <div className="font-semibold">Total Expenses This month</div>
               </div>
-              <div className="flex flex-col  pt-[16px]">
+              <div className="flex flex-col pt-[16px]">
                 <div className="text-[36px] font-semibold">
-                  -{formattedexpenseSum}₮
+                  -{formatter.format(last5MonthsData[4].Expense)}₮
                 </div>
                 <div className="text-[18px] text-[#64748B]">
                   Your Expense Amount
                 </div>
-                <div className="flex gap-2">
-                  <div>{expPercentage < 0 ? <GreenDown /> : <GreenUp />}</div>
-                  <div className="text-[18px]">
-                    {expPercentage}% from last month
-                  </div>
-                </div>
               </div>
             </div>
           </div>
+
           <div className="flex w-full gap-6">
             <div className="flex flex-1 flex-col">
-              <div>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Income - Expense</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ChartContainer config={chartConfig}>
-                      <BarChart accessibilityLayer data={chartData}>
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                          dataKey="month"
-                          tickLine={false}
-                          tickMargin={10}
-                          axisLine={false}
-                          tickFormatter={(value) => value.slice(0, 3)}
-                        />
-                        <ChartTooltip
-                          cursor={false}
-                          content={<ChartTooltipContent indicator="dashed" />}
-                        />
-                        <Bar
-                          dataKey="Income"
-                          fill="var(--color-Income)"
-                          radius={4}
-                        />
-                        <Bar
-                          dataKey="Expense"
-                          fill="var(--color-Expense)"
-                          radius={4}
-                        />
-                      </BarChart>
-                    </ChartContainer>
-                  </CardContent>
-                </Card>
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Income - Expense</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={chartConfig}>
+                    <BarChart data={last5MonthsData}>
+                      <CartesianGrid vertical={false} />
+                      <XAxis
+                        dataKey="month"
+                        tickLine={false}
+                        tickMargin={10}
+                        axisLine={false}
+                        tickFormatter={(value) => value.slice(0, 3)}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent indicator="dashed" />}
+                      />
+                      <Bar
+                        dataKey="Income"
+                        fill="var(--color-Income)"
+                        radius={4}
+                      />
+                      <Bar
+                        dataKey="Expense"
+                        fill="var(--color-Expense)"
+                        radius={4}
+                      />
+                    </BarChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
             </div>
-            <div className="flex flex-1 flex-col ">
-              <div>
-                <CircleChart />
-              </div>
+            <div className="flex flex-1 flex-col">
+              <CircleChart />
             </div>
           </div>
+
           <div className="flex w-full flex-col gap-3 bg-white py-[16px] px-[24px] rounded-lg">
             <div className="text-[16px] font-semibold">Last Records</div>
-            <div className="flex flex-col gap-3 ">
+            <div className="flex flex-col gap-3">
               {last5Accounts.map((item) => {
                 const Icon = Icons[item.category?.icon];
                 return (
                   <div
                     key={item.category?.id}
-                    className="flex justify-between bg-white items-center px-6 py-3  border-t-slate-200 border-t-[1px]"
+                    className="flex justify-between bg-white items-center px-6 py-3 border-t-slate-200 border-t-[1px]"
                   >
                     <div className="flex gap-4 items-center">
                       <div>
                         {Icon ? (
                           <Icon
                             color={item.category?.color}
-                            className="w-8 h-8 "
+                            className="w-8 h-8"
                           />
                         ) : (
                           <Eye />
@@ -269,7 +233,7 @@ export default function Home() {
                       </div>
                       <div>
                         <div className="font-semibold">
-                          {/* {item.category?.title} */}
+                          {item.category?.title}
                         </div>
                         <div className="text-[12px] text-[#6B7280]">
                           {item.date}
@@ -278,12 +242,11 @@ export default function Home() {
                     </div>
                     <div
                       className={`${
-                        item.type === "inc"
-                          ? "text-[#23E01F]"
-                          : "text-[#F54949]"
+                        item.type === "inc" ? "text-green-500" : "text-red-500"
                       }`}
                     >
-                      {item.type === "exp" ? -item.amount : item.amount}₮
+                      {item.type === "inc" ? "+" : "-"}
+                      {formatter.format(item.amount)}
                     </div>
                   </div>
                 );
