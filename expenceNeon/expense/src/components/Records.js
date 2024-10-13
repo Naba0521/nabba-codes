@@ -31,7 +31,7 @@ import { AddCategoryDialog2 } from "./AddCategoryDialog2";
 import { useAuth } from "./providers/AuthProvider";
 import { Input } from "./ui/input";
 const minValue = 0;
-const maxValue = 10000;
+const maxValue = 1000000;
 export const Records = () => {
   const [filterType, setFilterType] = useState("all");
   // const [totalAmount, setTotalAmount] = useState(0);
