@@ -54,28 +54,35 @@ export const SearchCard = ({ searchTerm }: SearchCardProps) => {
   }, [searchTerm, product]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6 p-4 bg-white shadow-md rounded-md">
       {/* Display filtered products */}
       {filteredProducts.length > 0 ? (
         filteredProducts.map((item, index) => (
           <Link
             key={index}
             href={`/product/${item._id}`}
-            className="w-[500px] border-t"
+            className="w-full border-b border-gray-300 hover:bg-gray-100 transition duration-200"
           >
-            <div className="flex gap-6 text-sm ">
-              <div className="relative h-[60px] w-[60px] rounded-full overflow-hidden">
-                <Image src={item.image[0]} fill alt={item.productName} />
+            <div className="flex items-center gap-4 py-4">
+              <div className="relative h-[80px] w-[80px] rounded-full overflow-hidden border border-gray-200 shadow-sm">
+                <Image
+                  src={item.image[0]}
+                  fill
+                  alt={item.productName}
+                  className="object-cover"
+                />
               </div>
-              <div className="flex flex-col gap-4">
-                <div className="font-semibold text-sm">{item.productName}</div>
-                <div className="flex-1">{item.price}₮</div>
+              <div className="flex flex-col justify-center">
+                <div className="font-semibold text-lg text-gray-800">
+                  {item.productName}
+                </div>
+                <div className="text-gray-600 text-sm">{item.price}₮</div>
               </div>
             </div>
           </Link>
         ))
       ) : (
-        <p>No products found</p>
+        <p className="text-gray-500 text-center py-4">No products found</p>
       )}
     </div>
   );

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { MainProductCard } from "./MainProductCard";
 import { api } from "@/lib/axios";
+import Link from "next/link";
 
 export const Main = () => {
   interface Product {
@@ -42,13 +43,15 @@ export const Main = () => {
     <div className="w-full flex flex-col items-center py-11 px-[200px] gap-11">
       <div className="relative w-[1040px] h-[446px] rounded-2xl overflow-hidden">
         {productsa ? (
-          <Image
-            quality={100}
-            src={productsa.products[0].image[0]} // Ensure the image array exists
-            fill
-            alt="a"
-            className="object-cover"
-          />
+          <Link href={`/product/${productsa.products[0]._id}`}>
+            <Image
+              quality={100}
+              src={productsa.products[0].image[0]} // Ensure the image array exists
+              fill
+              alt="a"
+              className="object-cover"
+            />
+          </Link>
         ) : (
           <div className="flex justify-center items-center h-full text-3xl font-bold">
             Loading...
@@ -57,7 +60,7 @@ export const Main = () => {
         <div className="flex flex-col absolute bottom-8 left-8">
           <div className="text-lg">{productsa?.products[0].productName}</div>
           <div className="text-4xl font-bold">
-            {productsa?.products[0].price}₮
+            {productsa?.products[0].price.toLocaleString()}
           </div>
         </div>
       </div>

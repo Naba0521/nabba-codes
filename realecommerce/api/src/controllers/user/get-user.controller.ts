@@ -22,6 +22,7 @@ const login: RequestHandler = async (req, res) => {
       phone: user.phone,
       address: user.address,
       owog: user.owog,
+      role: user.role,
     },
     process.env.JWT_SECRET as string
   );
@@ -35,6 +36,7 @@ const login: RequestHandler = async (req, res) => {
       phone: user.phone,
       address: user.address,
       owog: user.owog,
+      role: user.role,
     },
   });
 };

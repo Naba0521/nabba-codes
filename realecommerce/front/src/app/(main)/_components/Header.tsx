@@ -7,12 +7,29 @@ import { Search } from "@/assets/Search";
 import { Tereg } from "@/assets/Tereg";
 import Link from "next/link";
 import { SearchCard } from "./SearchCard";
-import { useState } from "react";
-import { useAuthContext } from "@/components/utils/authProvider"; // Import the useAuthContext hook
+import { useState, useEffect } from "react";
+import { useAuthContext } from "@/components/utils/authProvider";
 
 export const Header = () => {
-  const [searchTerm, setSearchTerm] = useState<string>(""); // User input for search
-  const { userMe, savedProductData, orderData, LogOut } = useAuthContext(); // Access userMe from AuthContext
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const { userMe, savedProductData, orderData, LogOut } = useAuthContext();
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleSavedProductsClick = () => {
+    if (!userMe?.userName) {
+      setMessage("Та нэвтрэх шаардлагатай");
+    }
+  };
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage(null);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   return (
     <div className="py-4 px-6 bg-black flex flex-col items-center justify-center w-full relative">
@@ -41,44 +58,70 @@ export const Header = () => {
             placeholder="Бүтээгдэхүүн хайх"
             className="bg-[#71717A] outline-none"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm as user types
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         <div className="flex items-center gap-6">
-          <Link href={`/saved`}>
-            <div className="relative h-6">
+          {userMe?.userName ? (
+            <Link href="/saved" className="relative h-6 cursor-pointer">
               <div
                 className={`${
                   savedProductData?.length
                     ? "absolute left-3.5 bottom-4 bg-[#2563EB] text-white rounded-full text-[10px] w-4 h-4 flex justify-center items-center"
                     : "hidden"
-                }   `}
+                }`}
               >
                 {savedProductData?.length}
               </div>
               <Heart />
+            </Link>
+          ) : (
+            <div
+              className="relative h-6 cursor-pointer"
+              onClick={handleSavedProductsClick}
+            >
+              <Heart />
             </div>
-          </Link>
-          <Link href={`/hurgelt`}>
-            <div className="relative h-6">
-              <div
-                className={`${
-                  orderData?.length
-                    ? "absolute left-3.5 bottom-4 bg-[#2563EB] text-white rounded-full text-[10px] w-4 h-4 flex justify-center items-center"
-                    : "hidden"
-                }   `}
-              >
-                {orderData?.length}
+          )}
+
+          {userMe?.userName ? (
+            <Link href="/hurgelt">
+              <div className="relative h-6">
+                <div
+                  className={`${
+                    orderData?.length
+                      ? "absolute left-3.5 bottom-4 bg-[#2563EB] text-white rounded-full text-[10px] w-4 h-4 flex justify-center items-center"
+                      : "hidden"
+                  }`}
+                >
+                  {orderData?.length}
+                </div>
+                <Tereg />
               </div>
+            </Link>
+          ) : (
+            <div
+              className="relative h-6 cursor-pointer"
+              onClick={() => setMessage("Та нэвтрэх шаардлагатай")}
+            >
               <Tereg />
             </div>
-          </Link>
-          <Link href={`/userInfo1`}>
-            <ProfileIcon />
-          </Link>
+          )}
 
-          {/* Conditionally show login/signup buttons or user information */}
+          {userMe?.userName ? (
+            <Link href="/userInfo1" className="relative h-6">
+              <ProfileIcon />
+            </Link>
+          ) : (
+            <div
+              className="relative h-6 cursor-pointer"
+              onClick={() => setMessage("Та нэвтрэх шаардлагатай")}
+            >
+              <ProfileIcon />
+            </div>
+          )}
+
           {!userMe?.userName ? (
             <div className="flex gap-2 text-white">
               <Link href={`/signUp`}>
@@ -106,10 +149,15 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Conditionally render SearchCard based on searchTerm */}
       {searchTerm && (
-        <div className="bg-white flex absolute top-20 rounded-lg w-[30%] h-fit justify-center z-50 p-8 border">
+        <div className="bg-white flex absolute top-20 rounded-lg h-fit justify-center z-50 p-8 border">
           <SearchCard searchTerm={searchTerm} />
+        </div>
+      )}
+
+      {message && (
+        <div className="absolute top-6 right-6 bg-red-500 text-white p-2 rounded-lg shadow-md z-50">
+          {message}
         </div>
       )}
     </div>

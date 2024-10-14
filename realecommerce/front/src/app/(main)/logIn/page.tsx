@@ -14,7 +14,7 @@ export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const { setUserMe } = useAuthContext(); // Access userMe from AuthContext
+  const { setUserMe } = useAuthContext();
 
   const router = useRouter();
 
@@ -24,8 +24,11 @@ export default function Home() {
       localStorage.setItem("token", response.data.token);
       setUserMe(response.data.user);
 
-      // Redirect the user after successful login
-      router.push("/");
+      if (response.data.user.role === "admin") {
+        router.push("/dashboard");
+      } else {
+        router.push("/");
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
