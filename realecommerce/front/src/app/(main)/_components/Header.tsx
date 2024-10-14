@@ -14,8 +14,6 @@ export const Header = () => {
   const [searchTerm, setSearchTerm] = useState<string>(""); // User input for search
   const { userMe, savedProductData, orderData, LogOut } = useAuthContext(); // Access userMe from AuthContext
 
-  console.log("Header", userMe);
-
   return (
     <div className="py-4 px-6 bg-black flex flex-col items-center justify-center w-full relative">
       <div className="w-[1440px] flex justify-between text-white">
