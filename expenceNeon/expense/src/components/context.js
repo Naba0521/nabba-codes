@@ -25,15 +25,27 @@ export const AccountContextProvider = ({ children, userId }) => {
   };
   const deleteAccount = async () => {
     if (selectedAccountId) {
-      await api.delete(`/${selectedAccountId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setAccounts(
-        accounts?.filter((account) => account.id !== selectedAccountId)
-      );
-      setSelectedAccountId(null); // Clear selection after deletion
+      try {
+        // Correct URL with '/accounts/' path
+        await api.delete(`/accounts/${selectedAccountId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        // Filter out the deleted account from the state
+        setAccounts((prevAccounts) =>
+          prevAccounts?.filter((account) => account.id !== selectedAccountId)
+        );
+
+        // Clear the selected account after deletion
+        setSelectedAccountId(null);
+      } catch (error) {
+        console.error(
+          "Error deleting account:",
+          error.response?.data || error.message
+        );
+      }
     }
   };
 
