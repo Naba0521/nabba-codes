@@ -3,17 +3,13 @@
 import { Plus } from "@/assets/plus";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { AddIcon } from "@/assets/addIcon";
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+
+import { useContext, useState } from "react";
 
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { AddCategory } from "./addCategory";
@@ -60,7 +56,7 @@ export const AddComponent = ({ name }) => {
             <div className="flex-1 flex flex-col gap-4 ">
               <div className="flex relative">
                 <div
-                  className={`py-2 px-14 rounded-3xl z-10 transition-colors ${
+                  className={`py-2 px-14 cursor-pointer rounded-3xl z-10 transition-colors ${
                     activeButton === "expense"
                       ? "bg-blue-600 text-white"
                       : "bg-gray-200 rounded-r-none"
@@ -73,7 +69,7 @@ export const AddComponent = ({ name }) => {
                   Expense
                 </div>
                 <div
-                  className={`py-2 px-14 absolute top-0 left-40 rounded-r-3xl duration-1000 transition-colors ${
+                  className={`py-2 px-14 cursor-pointer absolute top-0 left-40 rounded-r-3xl duration-1000 transition-colors ${
                     activeButton === "income"
                       ? "bg-green-600 text-white z-10 rounded-l-3xl"
                       : "bg-gray-200"

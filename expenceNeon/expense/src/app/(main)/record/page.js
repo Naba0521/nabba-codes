@@ -4,8 +4,8 @@ import { Records } from "@/components/Records";
 
 export default function Home() {
   return (
-    <main className="bg-gray-100 h-screen">
-      <div className="bg-gray-100 h-full">
+    <main className="bg-gray-100 h-fit">
+      <div className="bg-gray-100 h-fit">
         <Records />
       </div>
     </main>

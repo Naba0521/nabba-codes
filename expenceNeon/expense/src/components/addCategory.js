@@ -1,78 +1,72 @@
 "use client";
-import { HeaderLogo } from "@/assets/headerlogo";
-import { Plus } from "@/assets/plus";
+
 import { useContext, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { AddIcon } from "@/assets/addIcon";
-import { HomeIcon } from "@/assets/homeIcon";
-import { FoodIcon } from "@/assets/foodIcon";
-import { AddGift } from "@/assets/addGift";
-import { AddFood } from "@/assets/addFood";
-import { AddDrink } from "@/assets/addDrink";
-import { AddTaxi } from "@/assets/addTaxi";
-import { AddShopping } from "@/assets/addShopping";
-import { AddHome } from "@/assets/addHome";
-import { FaCashRegister } from "react-icons/fa";
-import * as Icons from "react-icons/fa";
+import * as Icons from "react-icons/fa"; // Import all FontAwesome icons
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { AddCategoryDialog } from "./AddCategoryDialog";
-import { AccountContext } from "./context";
-import axios from "axios";
-import { Eye } from "@/assets/eye";
-import { LogIn } from "lucide-react";
-import { api } from "@/lib/axios";
+} from "@/components/ui/select"; // Ensure these imports are correct
+import { AddCategoryDialog } from "./AddCategoryDialog"; // Ensure correct import/export
+import { AccountContext } from "./context"; // Ensure correct context import
+import { api } from "@/lib/axios"; // Ensure correct axios setup
 
 export const AddCategory = () => {
-  const { newTransaction, setNewTransaction, setCategoryId } =
-    useContext(AccountContext);
+  const { newTransaction, setNewTransaction } = useContext(AccountContext);
   const [categories, setCategories] = useState([]);
   const [title, setTitle] = useState("");
 
+  // Fetch categories on component mount
   useEffect(() => {
     const getData = async () => {
-      const response = await api?.get("/categories", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setCategories(response.data);
+      try {
+        const response = await api.get("/categories", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
     };
     getData();
   }, []);
 
+  // Handle the category selection change
   const handleSelectChange = (event) => {
     setNewTransaction({
       ...newTransaction,
-      categoryId: event.id,
+      categoryId: event.id, // Assuming event contains id
     });
   };
-  return (
-    <Select
-      onValueChange={(event) => handleSelectChange(event)}
 
-      // value={newTransaction.category.name}
-    >
+  return (
+    <Select onValueChange={(event) => handleSelectChange(event)}>
       <SelectTrigger className="">
         <SelectValue placeholder="Choose category" />
       </SelectTrigger>
       <SelectContent className="flex flex-col">
-        <div className="flex px-4 py-4 gap-3 border-b">
+        {/* AddCategoryDialog component */}
+        {/* <div className="flex px-4 py-4 gap-3 border-b">
           <AddCategoryDialog />
-        </div>
+        </div> */}
+
+        {/* Map categories to SelectItem */}
         {categories.map((category) => {
-          const Icon = Icons[category.icon];
+          const Icon = Icons[category.icon] || Icons.FaQuestionCircle; // Fallback if icon is not found
           return (
-            <SelectItem value={category} key={category.title}>
+            <SelectItem value={category.id} key={category.id}>
+              {" "}
+              {/* Use category.id as key */}
               <div className="flex px-4 py-4 gap-3 items-center">
-                <div>{<Icon color={category.color} />}</div>
-                <div className="text-[16px]">{category.title}</div>
+                <div>
+                  <Icon color={category.color} /> {/* Render the icon */}
+                </div>
+                <div className="text-[16px]">{category.title}</div>{" "}
+                {/* Render the title */}
               </div>
             </SelectItem>
           );
