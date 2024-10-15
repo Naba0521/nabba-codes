@@ -114,6 +114,9 @@ export const ApiAddAccount = ({
     { accounts: otherRecords, label: "Other" },
   ];
 
+  // State to manage visible items
+  const [visibleCount, setVisibleCount] = useState(6);
+
   useEffect(() => {
     if (onTotalAmountChange) onTotalAmountChange(totalAmount);
   }, [totalAmount, onTotalAmountChange]);
@@ -122,10 +125,6 @@ export const ApiAddAccount = ({
     <div className="flex flex-col gap-6">
       <div className="flex justify-between bg-white py-[12px] px-[24px]">
         <div className="flex gap-4">
-          {/* <div>
-            <Checkbox height={6} width={6} />
-          </div>
-          <div>Select all</div> */}
           <div className="font-semibold">Total Amount</div>
         </div>
         <div className="text-slate-400 font-bold" id="sumAccounts">
@@ -150,7 +149,7 @@ export const ApiAddAccount = ({
                 <div key={index}>
                   <div className="font-semibold">{group.label}</div>
                   <div className="flex flex-col gap-5">
-                    {group.accounts.map((account) => {
+                    {group.accounts.slice(0, visibleCount).map((account) => {
                       const Icon = Icons[account.category?.icon];
                       return (
                         <div
@@ -214,6 +213,15 @@ export const ApiAddAccount = ({
                       );
                     })}
                   </div>
+                  {/* See More Button */}
+                  {group.accounts.length > visibleCount && (
+                    <button
+                      className="mt-4 text-green-500 hover:underline"
+                      onClick={() => setVisibleCount((prev) => prev + 6)}
+                    >
+                      See More
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
