@@ -9,7 +9,7 @@ import Link from "next/link";
 export const Landig = () => {
   return (
     <div className="w-[90%] m-auto flex flex-col   items-center h-max py-[40px] gap-[24px]">
-      <div className="flex justify-between gap-4 w-[100%] m-auto">
+      <div className="flex justify-between gap-2 w-[100%] m-auto">
         <Link href={`/`}>
           <div className="cursor-pointer text-white bg-[#080062] w-[112px] h-[34px] rounded-lg items-center flex justify-center border-[3px]  border-[#007EF2]">
             Танилцуулга
