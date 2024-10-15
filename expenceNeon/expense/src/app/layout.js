@@ -1,13 +1,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { AccountContextProvider } from "@/components/context";
-import { CategoryContextProvider } from "@/components/categoryContext";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { ToastContainer } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
-import "./globals.css";
 import dynamic from "next/dynamic";
 import Loading from "./loading";
 
@@ -19,18 +14,20 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const home = dynamic(() => import("./(main)/page"), {
+  const Home = dynamic(() => import("./(main)/page"), {
     ssr: true,
     loading: () => <Loading />,
   });
+
   return (
     <html lang="en">
-      <AuthProvider>
-        <body className={inter.className}>
+      <head>{/* Metadata, title, description, and other head elements */}</head>
+      <body className={inter.className}>
+        <AuthProvider>
           {children}
           <ToastContainer />
-        </body>
-      </AuthProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }

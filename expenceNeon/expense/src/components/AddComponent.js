@@ -91,14 +91,15 @@ export const AddComponent = ({ name }) => {
                   <input
                     className="border-none outline-none"
                     placeholder="₮ 000.00"
-                    value={newTransaction.amount}
+                    value={newTransaction.amount || ""} // Allows for an empty string
                     type="number"
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      const value = event.target.value; // Capture the input value
                       setNewTransaction({
                         ...newTransaction,
-                        amount: Number(event.target.value),
-                      })
-                    }
+                        amount: value ? Number(value) : "", // Convert to number if not empty, else keep it empty
+                      });
+                    }}
                   />
                 </div>
               </div>
