@@ -149,7 +149,7 @@ export const ZahialgaComponent = () => {
             <TableRow className=" text-[12px] text-[#3F4145] bg-[#f7f7f7] font-semibold">
               <TableHead className="w-[200px]">Захиалгын ID дугаар</TableHead>
               <TableHead>Үйлчлүүлэгч</TableHead>
-              <TableHead>Огноо</TableHead>
+              <TableHead>Огноо </TableHead>
               <TableHead>Цаг</TableHead>
               <TableHead>Төлбөр</TableHead>
               <TableHead>Статус</TableHead>
