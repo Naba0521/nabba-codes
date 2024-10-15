@@ -35,12 +35,19 @@ export const CategoryContextProvider = ({ children }) => {
   };
 
   const getCategories = async () => {
-    const response = await api.get("/categories", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    setCategories(response.data);
+    try {
+      const response = await api.get("/categories", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error(
+        "Error fetching categories:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   useEffect(() => {

@@ -4,8 +4,7 @@ import { Plus } from "@/assets/plus";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
-import { useContext, useState } from "react";
-
+import { useContext, useState, useRef } from "react";
 import {
   Dialog,
   DialogClose,
@@ -19,25 +18,29 @@ import { api } from "@/lib/axios";
 export const AddComponent = ({ name }) => {
   const { newTransaction, setNewTransaction, getAccounts } =
     useContext(AccountContext);
-  // const [accounts, setAccounts] = useState([]);
-
   const [selectedAccountId, setSelectedAccountId] = useState(null);
   const [activeButton, setActiveButton] = useState("expense");
-  // const handleButtonClick = (button) => {
-  //   setActiveButton(button);
-  // };
+
+  // Create a ref for DialogClose
+  const dialogCloseRef = useRef(null);
 
   const createAccount = async () => {
-    // const newAccount = { title, amount, time, date };
-
-    const response = await api.post("/accounts", newTransaction, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    getAccounts();
-    // setAccounts([...accounts, response.data]);
+    try {
+      const response = await api.post("/accounts", newTransaction, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      getAccounts();
+      // Programmatically close the dialog after successful API call
+      if (dialogCloseRef.current) {
+        dialogCloseRef.current.click();
+      }
+    } catch (error) {
+      console.error("Error creating account:", error);
+    }
   };
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -48,12 +51,12 @@ export const AddComponent = ({ name }) => {
         </div>
       </DialogTrigger>
       <DialogContent>
-        <div className=" flex flex-col bg-white gap-[20px]">
-          <div className="flex  pb-[20px] border-b-[1px] border-slate-400">
+        <div className="flex flex-col bg-white gap-[20px]">
+          <div className="flex pb-[20px] border-b-[1px] border-slate-400">
             <div className="text-[20px] font-semibold">Add Record</div>
           </div>
-          <div className="flex gap-[16px] ">
-            <div className="flex-1 flex flex-col gap-4 ">
+          <div className="flex gap-[16px]">
+            <div className="flex-1 flex flex-col gap-4">
               <div className="flex relative">
                 <div
                   className={`py-2 px-14 cursor-pointer rounded-3xl z-10 transition-colors ${
@@ -62,8 +65,8 @@ export const AddComponent = ({ name }) => {
                       : "bg-gray-200 rounded-r-none"
                   }`}
                   onClick={() => {
-                    setActiveButton("expense"),
-                      setNewTransaction({ ...newTransaction, type: "exp" });
+                    setActiveButton("expense");
+                    setNewTransaction({ ...newTransaction, type: "exp" });
                   }}
                 >
                   Expense
@@ -75,8 +78,8 @@ export const AddComponent = ({ name }) => {
                       : "bg-gray-200"
                   }`}
                   onClick={() => {
-                    setActiveButton("income"),
-                      setNewTransaction({ ...newTransaction, type: "inc" });
+                    setActiveButton("income");
+                    setNewTransaction({ ...newTransaction, type: "inc" });
                   }}
                 >
                   Income
@@ -88,7 +91,7 @@ export const AddComponent = ({ name }) => {
                   <input
                     className="border-none outline-none"
                     placeholder="₮ 000.00"
-                    value={newTransaction.value}
+                    value={newTransaction.amount}
                     type="number"
                     onChange={(event) =>
                       setNewTransaction({
@@ -96,7 +99,7 @@ export const AddComponent = ({ name }) => {
                         amount: Number(event.target.value),
                       })
                     }
-                  ></input>
+                  />
                 </div>
               </div>
               <div>
@@ -105,7 +108,7 @@ export const AddComponent = ({ name }) => {
                   <AddCategory />
                 </div>
               </div>
-              <div className=" flex gap-6">
+              <div className="flex gap-6">
                 <div>
                   <div>Date</div>
                   <div>
@@ -146,7 +149,7 @@ export const AddComponent = ({ name }) => {
                     : "bg-[#0166FF]"
                 }`}
               >
-                <DialogClose>
+                <DialogClose ref={dialogCloseRef}>
                   <button type="submit" onClick={createAccount}>
                     Add Record
                   </button>

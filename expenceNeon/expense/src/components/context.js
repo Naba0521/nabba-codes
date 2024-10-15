@@ -14,14 +14,20 @@ export const AccountContextProvider = ({ children, userId }) => {
   const [accounts, setAccounts] = useState([]);
   const [categoryId, setCategoryId] = useState(0);
   const { user } = useAuth();
-  console.log(accounts);
   const getAccounts = async () => {
-    const response = await api.get("/accounts", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }); //bi middlewarees minii ywuulj bui hvseltvvded token bga esehiig shalgaj bga. tegeed herew bhgvi bol minii await hiigdej bga hvdeltiig hiihgvi bolohoor
-    setAccounts(response.data);
+    try {
+      const response = await api.get("/accounts", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setAccounts(response.data);
+    } catch (error) {
+      console.error(
+        "Error fetching accounts:",
+        error.response?.data || error.message
+      );
+    }
   };
   const deleteAccount = async () => {
     if (selectedAccountId) {
