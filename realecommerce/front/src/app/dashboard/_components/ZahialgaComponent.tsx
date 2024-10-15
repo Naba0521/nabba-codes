@@ -1,7 +1,4 @@
 "use client";
-import { BlackSearchIcon } from "@/assets/BlackSearchIcon";
-import { CalendarIcon } from "@/assets/CalendarIcon";
-import { DooshooSum } from "@/assets/DooshooSum";
 import { RightDirectionIcon } from "@/assets/RightDirectionIcon";
 
 import { useEffect, useState } from "react";
