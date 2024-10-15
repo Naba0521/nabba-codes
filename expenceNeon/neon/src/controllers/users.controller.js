@@ -46,7 +46,7 @@ export const login = async (req, res) => {
         email: user.email,
         id: user.id,
       },
-      message: "orood irlee",
+      message: "Амжилттай нэвтэрлээ",
     });
   } catch (error) {
     console.error("Error logging in:", error);
