@@ -111,8 +111,8 @@ export const OrlogoComponents = () => {
       }, 0);
       return [
         item._id,
-        item.userName.slice(0, 10),
-        item.phoneNumber.slice(0, 10),
+        item.userName.slice(0, 12),
+        item.phoneNumber.slice(0, 8),
         totalPrice.toLocaleString(), // Ensure the currency symbol is part of the string
         new Date(item.createdAt).toLocaleString("en-GB"),
       ];
@@ -132,7 +132,7 @@ export const OrlogoComponents = () => {
         <div className="flex justify-between p-6">
           <div className="font-bold text-lg">Орлого</div>
           <div
-            className="flex gap-1 bg-gray-400 rounded-lg py-2 px-3 items-center cursor-pointer"
+            className="flex gap-1 bg-[#f6f6f6] hover:bg-gray-400 rounded-lg py-2 px-3 items-center cursor-pointer"
             onClick={generatePDF}
           >
             <div>
