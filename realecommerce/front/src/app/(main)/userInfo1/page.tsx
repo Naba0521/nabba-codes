@@ -36,7 +36,12 @@ export default function Home() {
   );
 
   const [hideOrder, setHideOrder] = useState("Хэрэглэгчийн хэсэг");
-  const [deeshee, setDeeshee] = useState(false);
+
+  // Store the toggle state for each order separately
+  const [expandedOrder, setExpandedOrder] = useState<{
+    [key: string]: boolean;
+  }>({});
+
   const [addNewOwog, setAddNewOwog] = useState<string>("");
   const [addNewUserName, setAddNewUserName] = useState<string>("");
   const [addNewPhone, setAddNewPhone] = useState<string>("");
@@ -95,16 +100,23 @@ export default function Home() {
     getOrderPack();
   }, []);
 
+  const toggleOrder = (orderId: string) => {
+    setExpandedOrder((prev) => ({
+      ...prev,
+      [orderId]: !prev[orderId],
+    }));
+  };
+
   return (
     <div
-      className=" bg-white flex justify-center  "
+      className="bg-white flex justify-center"
       style={{ minHeight: "calc(100vh - 320.5px - 74px)" }}
     >
       <div className="px-[278px] pt-[100px] w-[1440px] pb-[76px] flex gap-5">
         <div className="flex flex-col w-[240px gap-1]">
           <button
             onClick={() => setHideOrder("Хэрэглэгчийн хэсэг")}
-            className={` rounded-2xl px-4 py-2 w-full font-medium text-sm text-[#09090B] ${
+            className={`rounded-2xl px-4 py-2 w-full font-medium text-sm text-[#09090B] ${
               hideOrder === "Хэрэглэгчийн хэсэг" ? "bg-[#F4F4F5]" : ""
             }`}
           >
@@ -112,7 +124,7 @@ export default function Home() {
           </button>
           <button
             onClick={() => setHideOrder("Захиалгын түүх")}
-            className={` rounded-2xl px-4 py-2 w-full font-medium text-sm text-[#09090B] ${
+            className={`rounded-2xl px-4 py-2 w-full font-medium text-sm text-[#09090B] ${
               hideOrder === "Захиалгын түүх" ? "bg-[#F4F4F5]" : ""
             }`}
           >
@@ -122,7 +134,7 @@ export default function Home() {
 
         {/* Захиалгын түүх хэсэг */}
         <div
-          className={`flex-1  flex-col ${
+          className={`flex-1 flex-col ${
             hideOrder === "Захиалгын түүх" ? "flex" : "hidden"
           }`}
         >
@@ -130,12 +142,12 @@ export default function Home() {
             Захиалгын түүх
           </div>
           <div className="py-6">
-            <div className="h-[1px] w-full bg-[#E4E4E7] "></div>
+            <div className="h-[1px] w-full bg-[#E4E4E7]"></div>
           </div>
           <div className="flex flex-col gap-8">
-            {orderPackData?.map((order, index) => (
+            {orderPackData?.map((order) => (
               <div
-                key={index}
+                key={order._id}
                 className="flex flex-col gap-4 bg-[#F4F4F5] rounded-2xl"
               >
                 <div className="w-full py-8 px-6 flex flex-col gap-4">
@@ -149,22 +161,26 @@ export default function Home() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setDeeshee(!deeshee)}
+                      onClick={() => toggleOrder(order._id)}
                       className="flex justify-center items-center"
                     >
-                      {deeshee === false ? <DeesheeSum /> : <DooshooSum />}
+                      {expandedOrder[order._id] ? (
+                        <DooshooSum />
+                      ) : (
+                        <DeesheeSum />
+                      )}
                     </button>
                   </div>
                   <div className="flex flex-col gap-2 pb-4">
                     {order.products.map((product, prodIndex) => (
                       <div
                         key={prodIndex}
-                        className={` justify-between ${
-                          deeshee === false ? "flex" : "hidden"
+                        className={`justify-between ${
+                          expandedOrder[order._id] ? "flex" : "hidden"
                         }`}
                       >
                         <div className="flex gap-2">
-                          <div className="relative w-9 h-9 flex justify-center items-center">
+                          <div className="relative w-[60px] h-[60px] flex justify-center items-center">
                             <Image
                               fill
                               src={
@@ -175,7 +191,7 @@ export default function Home() {
                               className="rounded-md"
                             />
                           </div>
-                          <div className="flex flex-col text-xs">
+                          <div className="flex flex-col text-lg">
                             <div>{product.product.productName}</div>
                             <div className="flex">
                               <div>{product.count} x </div>
@@ -183,7 +199,7 @@ export default function Home() {
                             </div>
                           </div>
                         </div>
-                        <div className="font-bold text-xs flex items-center">
+                        <div className="font-bold text-lg flex items-center">
                           {product.count * product.price}₮
                         </div>
                       </div>
@@ -204,8 +220,10 @@ export default function Home() {
             ))}
           </div>
         </div>
+
+        {/* Хэрэглэгчийн хэсэг */}
         <div
-          className={`flex-1  flex-col  ${
+          className={`flex-1 flex-col ${
             hideOrder === "Хэрэглэгчийн хэсэг" ? "flex" : "hidden"
           }`}
         >
@@ -213,7 +231,7 @@ export default function Home() {
             Хэрэглэгчийн хэсэг
           </div>
           <div className="py-6">
-            <div className="h-[1px] w-full bg-[#E4E4E7] "></div>
+            <div className="h-[1px] w-full bg-[#E4E4E7]"></div>
           </div>
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-2">
@@ -224,7 +242,7 @@ export default function Home() {
                 value={addNewOwog}
                 onChange={(e) => setAddNewOwog(e.target.value)}
                 type="text"
-              ></input>
+              />
             </div>
             <div className="flex flex-col gap-2">
               <div className="text-[#09090B] text-sm font-medium">Нэр:</div>
@@ -234,57 +252,53 @@ export default function Home() {
                 value={addNewUserName}
                 onChange={(e) => setAddNewUserName(e.target.value)}
                 type="text"
-              ></input>
+              />
             </div>
             <div className="flex flex-col gap-2">
-              <div className="text-[#09090B] text-sm font-medium">
-                Утасны дугаар:
-              </div>
+              <div className="text-[#09090B] text-sm font-medium">Утас:</div>
               <input
                 placeholder={userMe?.phone}
                 className="w-full rounded-md border h-[28px] shadow-sm px-2"
-                type="text"
                 value={addNewPhone}
                 onChange={(e) => setAddNewPhone(e.target.value)}
-              ></input>
+                type="number"
+              />
             </div>
             <div className="flex flex-col gap-2">
-              <div className="text-[#09090B] text-sm font-medium">
-                Имэйл хаяг:
-              </div>
+              <div className="text-[#09090B] text-sm font-medium">И-мэйл:</div>
               <input
                 placeholder={userMe?.email}
                 className="w-full rounded-md border h-[28px] shadow-sm px-2"
-                type="e-mail"
                 value={addNewEmail}
                 onChange={(e) => setAddNewEmail(e.target.value)}
-              ></input>
+                type="email"
+              />
             </div>
             <div className="flex flex-col gap-2">
-              <div className="text-[#09090B] text-sm font-medium">Хаяг</div>
+              <div className="text-[#09090B] text-sm font-medium">Хаяг:</div>
               <input
                 placeholder={userMe?.address}
-                className="w-full rounded-md border h-[94px] shadow-sm px-2"
-                type="text"
+                className="w-full rounded-md border h-[28px] shadow-sm px-2"
                 value={addNewAddress}
                 onChange={(e) => setAddNewAddress(e.target.value)}
-              ></input>
+                type="text"
+              />
             </div>
-          </div>
-          <div
-            className="mt-6 self-end font-medium bg-[#2563EB] text-white rounded-2xl py-2 px-9 cursor-pointer"
-            onClick={() =>
-              editUserData({
-                _id: userMe?.id || "", // Хэрвээ _id байхгүй бол алдаа гарахаас сэргийлэх
-                newOwog: addNewOwog,
-                newUserName: addNewUserName,
-                newPhone: addNewPhone,
-                newEmail: addNewEmail,
-                newAddress: addNewAddress,
-              })
-            }
-          >
-            Мэдээлэл шинэчлэх
+            <button
+              onClick={() =>
+                editUserData({
+                  _id: userMe!.id,
+                  newOwog: addNewOwog,
+                  newUserName: addNewUserName,
+                  newPhone: addNewPhone,
+                  newEmail: addNewEmail,
+                  newAddress: addNewAddress,
+                })
+              }
+              className="text-white bg-[#2563EB] px-3 py-1 rounded-full w-[88px]"
+            >
+              Хадгалах
+            </button>
           </div>
         </div>
       </div>

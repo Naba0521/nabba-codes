@@ -87,6 +87,7 @@ export const ZahialgaComponent = () => {
       console.log(error);
     }
   };
+
   const editOrderPackStatus = async (_id: string, newStatus: string) => {
     const token = localStorage.getItem("token");
     try {
@@ -103,9 +104,21 @@ export const ZahialgaComponent = () => {
       console.log(error);
     }
   };
+
+  // Filter orderPackData based on selected status
+  const filteredOrderPackData = orderPackData.filter((item) => {
+    // If 'Бүгд' is selected, show all orders
+    if (selectedTolow === 0) {
+      return true;
+    }
+    // Otherwise, filter by selected status
+    return item.status === Tolowuud[selectedTolow];
+  });
+
   useEffect(() => {
     getOrderPack();
   }, []);
+
   return (
     <div className="flex flex-col  w-full gap-8">
       <div className="flex border-b">
@@ -126,32 +139,7 @@ export const ZahialgaComponent = () => {
         })}
       </div>
       <div className="flex px-4  justify-between">
-        <div className="flex gap-2 text-sm">
-          <div className="bg-[#18BA51] text-white text-sm font-semibold py-3 px-4 rounded-[8px]">
-            Өнөөдөр
-          </div>
-          <div className="bg-white text-sm font-semibold py-3 px-4 rounded-[8px]">
-            7 хоног
-          </div>
-          <div className="bg-white text-sm font-semibold py-3 px-4 rounded-[8px] flex gap-2 items-center">
-            <div>
-              <CalendarIcon />
-            </div>
-            <div>Сараар</div>
-            <div>
-              <DooshooSum />
-            </div>
-          </div>
-        </div>
-        <div className="bg-white text-sm font-semibold border py-3 px-4 rounded-[8px] flex gap-2 items-center">
-          <div>
-            <BlackSearchIcon />
-          </div>
-          <input
-            className="outline-none text-[#8B8E95] text-sm"
-            placeholder="Дугаар, Имэйл"
-          ></input>
-        </div>
+        {/* Your buttons for time range (e.g., Өнөөдөр, 7 хоног, Сараар) */}
       </div>
       <div className="flex flex-col px-6 bg-white py-5 rounded-2xl">
         <div className="font-bold text-lg px-6 bg-white">Захиалга</div>
@@ -169,7 +157,7 @@ export const ZahialgaComponent = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orderPackData.map((item, index) => {
+            {filteredOrderPackData.map((item, index) => {
               const TotalPrice = item.products.reduce((acc, product) => {
                 return acc + product.count * product.price;
               }, 0);
