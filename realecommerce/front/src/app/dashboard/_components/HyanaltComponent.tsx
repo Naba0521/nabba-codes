@@ -4,8 +4,66 @@ import { RightDirectionIcon } from "@/assets/RightDirectionIcon";
 import { Zahialga } from "@/assets/ZahialgaIcon";
 import Image from "next/image";
 import { GraphCard } from "./GraphCard";
-
+import { api } from "@/lib/axios";
+import { useEffect, useState } from "react";
+type orderPackDataResponse = {
+  _id: string;
+  owog: string;
+  userName: string;
+  phoneNumber: string;
+  orderPackAdress: string;
+  orderPackDetail: string;
+  status: string;
+  createdAt: string;
+  products: productsResponse[];
+  userId: UserResponse;
+};
+type UserResponse = {
+  _id: string;
+  userName: string;
+  email: string;
+};
+type productsResponse = {
+  count: number;
+  price: number;
+  selectedSize: string;
+  product: ProductResponse;
+};
+type ProductResponse = {
+  _id: string;
+  productName: string;
+  image: string[];
+  price: number;
+};
 export const HyanaltComponent = () => {
+  const [orderPackData, setOrderPackData] = useState<orderPackDataResponse[]>(
+    []
+  );
+  const getOrderPack = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await api.get("/orderPack", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrderPackData(response.data.orderPacks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const sumOrderPrice = () => {
+    return orderPackData.reduce((totalSum, orderPack) => {
+      const orderTotal = orderPack.products.reduce((sum, product) => {
+        return sum + product.count * product.price;
+      }, 0);
+      return totalSum + orderTotal;
+    }, 0);
+  };
+
+  useEffect(() => {
+    getOrderPack();
+  }, []);
   const Initialdata = [
     {
       number: 1,
@@ -82,8 +140,10 @@ export const HyanaltComponent = () => {
             </div>
             <div className="font-semibold">Орлого</div>
           </div>
-          <div className="font-bold text-3xl">235,000₮</div>
-          <div className="text-[#5E6166] text-sm">Өнөөдөр</div>
+          <div className="font-bold text-3xl">
+            {sumOrderPrice().toLocaleString()}₮
+          </div>
+          <div className="text-[#5E6166] text-sm">Нийт Орлого</div>
         </div>
         <div className="flex-1 bg-white rounded-xl p-4 flex flex-col gap-3">
           <div className="flex gap-2">
@@ -92,8 +152,8 @@ export const HyanaltComponent = () => {
             </div>
             <div className="font-semibold">Захиалга</div>
           </div>
-          <div className="font-bold text-3xl">58</div>
-          <div className="text-[#5E6166] text-sm">Өнөөдөр</div>
+          <div className="font-bold text-3xl">{orderPackData.length}</div>
+          <div className="text-[#5E6166] text-sm">Нийт Захиалга</div>
         </div>
       </div>
       <div className="flex gap-6">
