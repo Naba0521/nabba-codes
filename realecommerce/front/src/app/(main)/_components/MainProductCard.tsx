@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-// Unified Product interface
 interface Product {
   _id: string;
   productName: string;
@@ -35,18 +34,15 @@ export const MainProductCard = ({ item, index }: MainProductCardProps) => {
     deleteToSavedProduct,
     savedProductData,
   } = useAuthContext();
-
   const [savedHeart, setSavedHeart] = useState(false);
 
   useEffect(() => {
     const filteredSavedProducts = savedProductData.filter(
       (savedProduct) => savedProduct.userId === userMe?.id
     );
-
     const isSaved = filteredSavedProducts.some(
       (savedProduct) => savedProduct.productId._id === item._id
     );
-
     setSavedHeart(isSaved);
   }, [item._id, savedProductData, userMe]);
 
@@ -56,53 +52,60 @@ export const MainProductCard = ({ item, index }: MainProductCardProps) => {
     } else {
       createToSavedProduct(item._id);
     }
-    setSavedHeart((prev) => !prev); // Toggle savedHeart state
+    setSavedHeart((prev) => !prev);
   };
 
   return (
-    <div key={index} className={`relative flex flex-col gap-2 group h-[400px]`}>
+    <div
+      key={index}
+      className="relative flex flex-col gap-2 group h-[250px] sm:h-[350px] md:h-[400px]"
+    >
       <Link
         href={`/product/${item._id}`}
-        className={`relative h-[80%] overflow-hidden rounded-2xl`}
+        className="relative h-[80%] overflow-hidden rounded-2xl"
       >
         <Image
           quality={100}
           src={item.image?.[0] || "/placeholder.jpg"}
           fill
           alt={item.productName}
-          className="object-cover rounded-2xl transition-transform duration-700 group-hover:scale-125"
+          className="object-cover rounded-2xl transition-transform duration-700 group-hover:scale-110"
         />
       </Link>
 
       <div
         onClick={handleHeartClick}
-        className={`absolute top-4 right-4 cursor-pointer`}
+        className="absolute top-3 sm:top-4 right-3 sm:right-4 cursor-pointer"
       >
         <BHeart bgColor={savedHeart ? "red" : "#D3D3D3"} />
       </div>
 
       <div className="flex flex-col relative">
-        <div>{item.productName}</div>
-        <div className="font-bold flex gap-3 items-center">
-          {item.salePercent > 0 ? (
-            <div className="font-bold">
+        <div className="text-sm sm:text-base">{item.productName}</div>
+        <div className="font-bold flex gap-2 items-center">
+          {item.salePercent > 0 && (
+            <div className="font-bold text-sm sm:text-base">
               {(
                 item.price -
                 (item.price * item.salePercent) / 100
               ).toLocaleString()}
               ₮
             </div>
-          ) : null}
-
+          )}
           <div
-            className={`${item.salePercent > 0 ? "line-through text-sm" : ""}`}
+            className={`${
+              item.salePercent > 0
+                ? "line-through text-xs sm:text-sm"
+                : "text-sm sm:text-base"
+            }`}
           >
             {item.price.toLocaleString()}₮
           </div>
-
-          {item.salePercent > 0 ? (
-            <div className="text-red-600">{item.salePercent}%</div>
-          ) : null}
+          {item.salePercent > 0 && (
+            <div className="text-red-600 text-xs sm:text-sm">
+              {item.salePercent}%
+            </div>
+          )}
         </div>
       </div>
     </div>

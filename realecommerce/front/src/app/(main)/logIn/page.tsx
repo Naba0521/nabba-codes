@@ -2,6 +2,7 @@
 
 import { useAuthContext } from "@/components/utils/authProvider";
 import { api } from "@/lib/axios";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -70,9 +71,12 @@ export default function Home() {
             Нууц үг мартсан
           </div>
         </div>
-        <div className="bg-white border border-[#2563EB] text-[#2563EB] rounded-2xl flex justify-center items-center py-2 w-full mt-6">
+        <Link
+          href={`/signUp`}
+          className="bg-white border border-[#2563EB] text-[#2563EB] rounded-2xl flex justify-center items-center py-2 w-full mt-6"
+        >
           Бүртгүүлэх
-        </div>
+        </Link>
       </div>
     </div>
   );

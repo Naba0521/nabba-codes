@@ -22,9 +22,8 @@ export const Main = () => {
     categoryName: string;
   }
   interface ProductsResponse {
-    products: Product[]; // This represents the `products.products` structure
+    products: Product[];
   }
-  // const [productsa, setProductsa] = useState<ProductsResponse[]>([]);
   const [productsa, setProductsa] = useState<ProductsResponse | null>(null);
 
   const getProducts = async () => {
@@ -39,14 +38,15 @@ export const Main = () => {
   useEffect(() => {
     getProducts();
   }, []);
+
   return (
-    <div className="w-full flex flex-col items-center py-11 px-[200px] gap-11">
-      <div className="relative w-[1040px] h-[446px] rounded-2xl overflow-hidden">
+    <div className="w-full flex flex-col items-center py-8 px-4 md:px-10 lg:px-[100px] xl:px-[200px] gap-11">
+      <div className="relative w-full max-w-[1040px] h-[300px] sm:h-[350px] md:h-[400px] lg:h-[446px] rounded-2xl overflow-hidden">
         {productsa ? (
           <Link href={`/product/${productsa.products[0]._id}`}>
             <Image
               quality={100}
-              src={productsa.products[0].image[0]} // Ensure the image array exists
+              src={productsa.products[0].image[0]}
               fill
               alt="a"
               className="object-cover"
@@ -55,21 +55,28 @@ export const Main = () => {
         ) : (
           <div className="flex justify-center items-center h-full text-3xl font-bold">
             Loading...
-          </div> // You can replace this with a skeleton loader or any placeholder
+          </div>
         )}
-        <div className="flex flex-col absolute bottom-8 left-8">
-          <div className="text-lg">{productsa?.products[0].productName}</div>
-          <div className="text-4xl font-bold">
+        <div className="flex flex-col absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-8">
+          <div className="text-md sm:text-lg">
+            {productsa?.products[0].productName}
+          </div>
+          <div className="text-2xl sm:text-3xl md:text-4xl font-bold">
             {productsa?.products[0].price.toLocaleString()}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 grid-rows-6 w-[1040px]  gap-x-5 gap-y-12 [&>div:nth-child(7)]:col-span-2 [&>div:nth-child(7)]:row-span-2 [&>div:nth-child(7)]:h-[113%] [&>div:nth-child(8)]:col-span-2 [&>div:nth-child(8)]:row-span-2 [&>div:nth-child(8)]:h-[113.5%]">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8 sm:gap-y-12 w-full max-w-[1040px]">
+        {productsa?.products.slice(1, 19).map((item, index) => (
+          <MainProductCard key={index} item={item} index={index} />
+        ))}
+      </div>
+      {/* <div className="grid grid-cols-4 grid-rows-6 w-[1040px]  gap-x-5 gap-y-12 [&>div:nth-child(7)]:col-span-2 [&>div:nth-child(7)]:row-span-2 [&>div:nth-child(7)]:h-[113%] [&>div:nth-child(8)]:col-span-2 [&>div:nth-child(8)]:row-span-2 [&>div:nth-child(8)]:h-[113.5%]">
         {productsa?.products.slice(1, 19).map((item, index) => {
           return <MainProductCard key={index} item={item} index={index} />;
         })}
-      </div>
+      </div> */}
     </div>
   );
 };

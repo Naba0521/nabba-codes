@@ -5,6 +5,16 @@ import { useAuthContext } from "@/components/utils/authProvider";
 import { api } from "@/lib/axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type orderPackDataResponse = {
   _id: string;
@@ -47,6 +57,7 @@ export default function Home() {
   const [addNewPhone, setAddNewPhone] = useState<string>("");
   const [addNewEmail, setAddNewEmail] = useState<string>("");
   const [addNewAddress, setAddNewAddress] = useState<string>("");
+  const { LogOut } = useAuthContext();
 
   const editUserData = async ({
     _id,
@@ -130,6 +141,24 @@ export default function Home() {
           >
             Захиалгын түүх
           </button>
+          <AlertDialog>
+            <AlertDialogTrigger
+              className={`rounded-2xl px-4 py-2 w-full font-medium text-sm text-[#09090B]`}
+            >
+              Log Out
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Гарахдаа итгэлтэй байна уу?</AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => LogOut()}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
 
         {/* Захиалгын түүх хэсэг */}
