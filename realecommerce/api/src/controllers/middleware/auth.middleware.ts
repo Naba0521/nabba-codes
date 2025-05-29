@@ -14,7 +14,9 @@ const authMiddleware = (
     req.path.startsWith("/auth") ||
     req.path.startsWith("/product") ||
     req.path.startsWith("/category") ||
-    req.path.startsWith("/orderPack")
+    req.path.startsWith("/orderPack") ||
+    req.path.startsWith("/foosball")
+
     // req.path.startsWith("/upload")
   ) {
     return next(); // Skip authentication for these routes

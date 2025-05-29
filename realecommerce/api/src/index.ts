@@ -3,6 +3,7 @@ import cors from "cors";
 import { connectToDataBase } from "./database";
 import {
   categoryRouter,
+  foosBallRouter,
   getMeRouter,
   orderPackRouter,
   orderRouter,
@@ -31,6 +32,7 @@ app.use(authMiddleware);
 
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
+app.use("/foosBall", foosBallRouter);
 app.use("/order", orderRouter);
 app.use("/review", reviewRouter);
 app.use("/auth", userRouter);

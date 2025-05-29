@@ -6,3 +6,4 @@ export * from "./user.router";
 export * from "./savedProducts.router";
 export * from "./getMe.route";
 export * from "./orderPack.router";
+export * from "./foosBall.router";
