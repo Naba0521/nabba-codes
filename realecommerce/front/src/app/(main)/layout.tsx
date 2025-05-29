@@ -1,5 +1,5 @@
-import { Footer } from "./_components/Footer";
-import { Header } from "./_components/Header";
+// import { Footer } from "./_components/Footer";
+// import { Header } from "./_components/Header";
 
 export default function MainLayout({
   children,
@@ -8,12 +8,12 @@ export default function MainLayout({
 }>) {
   return (
     <div className="">
-      <Header />
+      {/* <Header /> */}
       <div style={{ minHeight: "calc(100vh - 320.5px - 70px)" }}>
         {children}
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
