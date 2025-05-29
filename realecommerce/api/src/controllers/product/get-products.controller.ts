@@ -25,12 +25,12 @@ export const getProductsController: RequestHandler = async (req, res) => {
 
     const totalCount = await productModel.countDocuments(filter);
 
-    return res.status(200).json({
+    res.status(200).json({
       products,
       totalCount,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: "Product awahad aldaatai l bndaa",
     });
   }

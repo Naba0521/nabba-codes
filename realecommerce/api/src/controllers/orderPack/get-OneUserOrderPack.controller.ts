@@ -7,22 +7,21 @@ export const getOneUserOrderPackController: RequestHandler = async (
 ) => {
   try {
     const { userId } = req.query;
+
     const orderPacks = await orderPackModel.find({ userId }).populate([
       {
-        path: "products.product", // Populate the product field within the products array
-        model: "Product", // Ensure you reference the correct model
+        path: "products.product",
+        model: "Product",
       },
       {
-        path: "userId", // Populate the userId field
-        model: "User", // Ensure you reference the correct model for users
+        path: "userId",
+        model: "User",
       },
     ]);
-    return res.status(200).json({
-      orderPacks,
-    });
+
+    // res.json дуудаад return-гүйгээр функц дуусгаж байна
+    res.status(200).json({ orderPacks });
   } catch (error) {
-    return res.status(500).json({
-      message: "Order packs авахад алдаа гарлаа",
-    });
+    res.status(500).json({ message: "Order packs авахад алдаа гарлаа" });
   }
 };

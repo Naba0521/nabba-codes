@@ -15,11 +15,11 @@ export const getOneOrderPackController: RequestHandler = async (req, res) => {
       },
     ]);
     if (!orderPack) {
-      return res.status(404).json({
+      res.status(404).json({
         message: "Iim id tai orderPack algaa",
       });
     }
-    return res.status(200).json({
+    res.status(200).json({
       orderPack,
     });
   } catch (error) {

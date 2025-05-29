@@ -14,7 +14,7 @@ export const editProductController: RequestHandler = async (req, res) => {
       { new: true }
     );
     if (!result) {
-      return res.status(404).json({ message: "product олдсонгүй" });
+      res.status(404).json({ message: "product олдсонгүй" });
     }
     res
       .status(200)

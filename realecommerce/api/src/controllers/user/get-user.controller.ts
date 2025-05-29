@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import { userModel } from "../../models/user.schema";
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-const login: RequestHandler = async (req, res) => {
+const login: RequestHandler = async (req, res): Promise<void> => {
   const { email, password } = req.body as {
     email: string;
     password: string;
@@ -11,7 +11,8 @@ const login: RequestHandler = async (req, res) => {
   const user = await userModel.findOne({ email, password });
 
   if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
+    res.status(401).json({ message: "Invalid credentials" });
+    return; // Энэ чухал! Response явсаны дараа гарах
   }
 
   const token = jwt.sign(
@@ -27,7 +28,7 @@ const login: RequestHandler = async (req, res) => {
     process.env.JWT_SECRET as string
   );
 
-  return res.status(200).json({
+  res.status(200).json({
     token,
     user: {
       id: user._id,
@@ -39,6 +40,7 @@ const login: RequestHandler = async (req, res) => {
       role: user.role,
     },
   });
+  return; // Эцсийн return, илүүдэл ч байж болно
 };
 
 export { login };

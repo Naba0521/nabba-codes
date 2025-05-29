@@ -11,11 +11,11 @@ export const CreateSavedProductsController: RequestHandler = async (
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    return res.status(201).json({
+    res.status(201).json({
       message: "Saved Product nemegdsen",
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: "Saved Product buruu l nemeed bndaa",
     });
   }

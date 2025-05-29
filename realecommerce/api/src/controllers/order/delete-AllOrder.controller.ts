@@ -9,17 +9,17 @@ export const DeleteAllOrderController: RequestHandler = async (req, res) => {
     const result = await orderModel.deleteMany({ userId });
 
     if (result.deletedCount === 0) {
-      return res.status(404).json({
+      res.status(404).json({
         message: "No orders found for this user", // Clear message if no orders are found
       });
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       message: `${result.deletedCount} orders successfully removed`, // Provide feedback on how many orders were deleted
     });
   } catch (error) {
     console.error("Error deleting orders:", error); // Log the error for debugging
-    return res.status(500).json({
+    res.status(500).json({
       message: "Internal server error", // General error response
     });
   }

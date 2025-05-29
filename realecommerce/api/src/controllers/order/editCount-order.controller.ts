@@ -7,10 +7,10 @@ export const EditCountOrderController: RequestHandler = async (req, res) => {
     const result = await orderModel.findByIdAndUpdate(
       _id,
       { count: newCount },
-      { new: true } // Return the updated document
+      { new: true } //  the updated document
     );
     if (!result) {
-      return res.status(404).json({ message: "Захиалга олдсонгүй" });
+      res.status(404).json({ message: "Захиалга олдсонгүй" });
     }
     res.status(200).json({ message: "Тоог амжилттай шинэчиллээ", result });
   } catch (error) {

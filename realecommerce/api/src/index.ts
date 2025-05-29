@@ -13,9 +13,7 @@ import {
   userRouter,
 } from "./routes";
 import dotenv from "dotenv";
-import Multer, { memoryStorage } from "multer";
 import { v2 as cloudinary } from "cloudinary";
-import { configDotenv } from "dotenv";
 import { upload } from "./config/multer";
 import { createCloudinaryController } from "./controllers";
 import authMiddleware from "./controllers/middleware/auth.middleware";

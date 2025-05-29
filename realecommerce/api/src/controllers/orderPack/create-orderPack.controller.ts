@@ -9,11 +9,11 @@ export const createOrderPackController: RequestHandler = async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    return res.status(201).json({
+    res.status(201).json({
       message: "orderPack Nemegdlee",
     });
   } catch (error) {
-    return res.status(400).json({
+    res.status(400).json({
       message: "OrderPack buruu l nemeed bndaa",
     });
   }

@@ -12,7 +12,7 @@ export const editOrderPackController: RequestHandler = async (req, res) => {
       { new: true }
     );
     if (!result) {
-      return res.status(404).json({ message: "OrderPack олдсонгүй" });
+      res.status(404).json({ message: "OrderPack олдсонгүй" });
     }
     res
       .status(200)

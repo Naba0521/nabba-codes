@@ -9,12 +9,12 @@ export const getOneUsersavedProduct: RequestHandler = async (req, res) => {
       .find({ userId })
       .populate("productId"); // Populate productId with Product documents
 
-    return res.status(200).json({
+    res.status(200).json({
       savedProducts,
     });
   } catch (error) {
     console.error("Error fetching saved products:", error);
-    return res.status(500).json({
+    res.status(500).json({
       message: "Error fetching saved products",
     });
   }

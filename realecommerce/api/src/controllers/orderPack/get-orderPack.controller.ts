@@ -14,11 +14,11 @@ export const getOrderPackController: RequestHandler = async (req, res) => {
       },
     ]);
 
-    return res.status(200).json({
+    res.status(200).json({
       orderPacks,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: "Order packs авахад алдаа гарлаа",
     });
   }

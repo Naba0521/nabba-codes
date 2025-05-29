@@ -12,15 +12,15 @@ export const getProductIdReviewController: RequestHandler = async (
       .find({ productId })
       .populate("userId", { userName: 1 });
     if (!reviews || reviews.length === 0) {
-      return res.status(404).json({
+      res.status(404).json({
         message: "No reviews found for this product",
       });
     }
-    return res.status(200).json({
+    res.status(200).json({
       reviews,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: "Error fetching reviews",
     });
   }

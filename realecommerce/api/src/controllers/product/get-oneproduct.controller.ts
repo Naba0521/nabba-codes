@@ -6,11 +6,11 @@ export const getOneProductController: RequestHandler = async (req, res) => {
   try {
     const product = await productModel.findById(id);
     if (!product) {
-      return res.status(404).json({
+      res.status(404).json({
         message: "Iim id tai product algaa",
       });
     }
-    return res.status(200).json({
+    res.status(200).json({
       product,
     });
   } catch (error) {

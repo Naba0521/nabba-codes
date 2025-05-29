@@ -8,11 +8,11 @@ export const createProductController: RequestHandler = async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    return res.status(201).json({
+    res.status(201).json({
       message: "Product nemegdlee",
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: "Product buruu l nemeed bndaa",
     });
   }

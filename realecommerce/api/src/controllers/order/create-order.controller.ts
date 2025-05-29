@@ -29,7 +29,7 @@ export const createOrderController: RequestHandler = async (req, res) => {
 
     if (existingOrder) {
       // If an order exists, return a conflict status
-      return res.status(409).json({
+      res.status(409).json({
         message: "Энэ бүтээгдэхүүн аль хэдийн захиалгад байгаа.",
       });
     }
@@ -41,12 +41,12 @@ export const createOrderController: RequestHandler = async (req, res) => {
       updatedAt: new Date(),
     });
 
-    return res.status(201).json({
+    res.status(201).json({
       message: "Захиалга амжилттай нэмэгдлээ.",
     });
   } catch (error) {
     console.error(error); // Log the error for debugging
-    return res.status(400).json({
+    res.status(400).json({
       message: "Захиалга буруу байна.",
     });
   }

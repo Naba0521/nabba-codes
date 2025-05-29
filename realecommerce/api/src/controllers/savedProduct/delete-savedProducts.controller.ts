@@ -14,17 +14,17 @@ export const DeleteSavedProductController: RequestHandler = async (
     });
 
     if (result.deletedCount === 0) {
-      return res.status(404).json({
+      res.status(404).json({
         message: "Saved product not found",
       });
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Saved product successfully removed",
     });
   } catch (error) {
     console.error("Error deleting saved product:", error); // Log the error for debugging
-    return res.status(500).json({
+    res.status(500).json({
       message: "Internal server error",
     });
   }

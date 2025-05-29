@@ -12,12 +12,12 @@ export const createReviewController: RequestHandler = async (req, res) => {
       updatedAt: new Date(),
     });
 
-    if (!product) return;
-    await productModel.findOneAndUpdate(
-      { _id: req.body.productId },
-      { $inc: { reviewCount: 1 } },
-      { new: true }
-    );
+    if (!product)
+      await productModel.findOneAndUpdate(
+        { _id: req.body.productId },
+        { $inc: { reviewCount: 1 } },
+        { new: true }
+      );
     const reviews = await reviewModel.find({ productId });
     const validReviews = reviews.filter((review) => review.rating != null);
     const totalRating = validReviews.reduce(
@@ -32,11 +32,11 @@ export const createReviewController: RequestHandler = async (req, res) => {
       { averageRating: averageRating },
       { new: true }
     );
-    return res.status(200).json({
+    res.status(200).json({
       message: "review amljilttai nemegdlee",
     });
   } catch (error) {
-    return res.status(400).json({
+    res.status(400).json({
       message: "Review buruu l nemeed bndaa",
     });
   }

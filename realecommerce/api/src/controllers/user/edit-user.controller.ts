@@ -17,7 +17,7 @@ export const editUserController: RequestHandler = async (req, res) => {
       { new: true }
     );
     if (!result) {
-      return res.status(404).json({ message: "user олдсонгүй" });
+      res.status(404).json({ message: "user олдсонгүй" });
     }
     res
       .status(200)
