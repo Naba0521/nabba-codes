@@ -22,6 +22,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "formik": "^2.4.6",
+    "graphql-request": "^7.2.0",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
     "lucide-react": "^0.439.0",

@@ -61,7 +61,7 @@ const SignupForm: FC = () => {
   });
 
   return (
-    <div className="w-full flex justify-center bg-[#f0f1f3] py-10">
+    <div className="w-full flex justify-center bg-[#f0f1f3] py-10 min-h-[100vh]">
       <div className="flex flex-col gap-6 w-[334px]">
         <h1 className="text-2xl font-semibold text-center">Бүртгүүлэх</h1>
         {successMessage && (

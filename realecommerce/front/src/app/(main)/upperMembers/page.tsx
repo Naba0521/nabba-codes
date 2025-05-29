@@ -78,7 +78,7 @@ export default function Home() {
                   {index + 1}
                 </td>
                 <td className="px-4 py-2 border">
-                  <Link href={player.image}>
+                  <Link href={player.image} target="blank">
                     <Image
                       width={200}
                       height={200}
