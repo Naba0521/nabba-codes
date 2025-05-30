@@ -40,14 +40,11 @@ export default function Home() {
         🏆 Бамбар лигийн бүртгэл
       </div>
       <div className="flex justify-between gap-5">
-        {/* <Link href={"/bet"} target="blank"> */}
-        <Button
-          className="text-xl font-bold mb-4 text-white self-center"
-          disabled
-        >
-          Бооцоо тавих
-        </Button>
-        {/* </Link> */}
+        <Link href={"/betTest"} target="blank">
+          <Button className="text-xl font-bold mb-4 text-white self-center">
+            Бооцоо тавих
+          </Button>
+        </Link>
         <Link href={"/upperMembers"} target="blank">
           <Button className="text-xl font-bold mb-4 text-white self-center">
             Дээд лигийн гишүүд
