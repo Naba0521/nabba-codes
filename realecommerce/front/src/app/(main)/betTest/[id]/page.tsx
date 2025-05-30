@@ -144,7 +144,9 @@ export default function Home() {
         })
       );
 
-      setGames(gamesWithOdds.filter(Boolean));
+      setGames(
+        gamesWithOdds.filter(Boolean).filter((game) => game?.id === gamingId)
+      );
     } catch (error) {
       console.error("Error fetching games or odds:", error);
     }
@@ -158,7 +160,7 @@ export default function Home() {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [gamingId]);
 
   const selectedTeamObj = games
     .flatMap((game) => [
