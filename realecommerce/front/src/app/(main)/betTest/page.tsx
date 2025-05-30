@@ -94,10 +94,8 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* VS */}
                   <div className="text-xl font-bold text-blue-600">VS</div>
 
-                  {/* Team B */}
                   <div className="flex flex-col items-center gap-2">
                     <Image
                       src={game.teamB.image}

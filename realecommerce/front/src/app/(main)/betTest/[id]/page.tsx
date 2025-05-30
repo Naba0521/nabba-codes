@@ -224,7 +224,7 @@ export default function Home() {
         🏆 Дээд лигийн бооцоо
       </div>
 
-      {games.length > 0 ? (
+      {games.length > 0 && (
         <div className="flex justify-between items-center">
           {games.map((game) => (
             <div
@@ -260,69 +260,73 @@ export default function Home() {
             </div>
           ))}
         </div>
-      ) : (
-        <div>Түр хүлээнэ үү... Эхлээгүй байна аа</div>
       )}
 
-      <div className="text-center text-lg font-medium text-blue-900">
-        Өнөөдөр • 19:00 • <span className="font-bold">VS</span>
-      </div>
+      {games[0] && games[0].isStarted === false ? (
+        <>
+          <div className="text-center text-lg font-medium text-blue-900">
+            Өнөөдөр • 19:00 • <span className="font-bold">VS</span>
+          </div>
 
-      <div className="w-full max-w-md">
-        <label className="block mb-1 font-medium text-gray-700 mt-4">
-          Бооцоо тавих дүн:
-        </label>
-        <div className="flex flex-wrap gap-3 justify-evenly">
-          {mockBets.map((bet, index) => (
-            <Button
-              key={index}
-              variant={selectedBet === bet ? "default" : "outline"}
-              onClick={() => setSelectedBet(bet)}
-            >
-              {bet.toLocaleString()}₮
-            </Button>
-          ))}
-        </div>
-      </div>
+          <div className="w-full max-w-md">
+            <label className="block mb-1 font-medium text-gray-700 mt-4">
+              Бооцоо тавих дүн:
+            </label>
+            <div className="flex flex-wrap gap-3 justify-evenly">
+              {mockBets.map((bet, index) => (
+                <Button
+                  key={index}
+                  variant={selectedBet === bet ? "default" : "outline"}
+                  onClick={() => setSelectedBet(bet)}
+                >
+                  {bet.toLocaleString()}₮
+                </Button>
+              ))}
+            </div>
+          </div>
 
-      {selectedTeam && selectedBet && (
-        <div className="mt-4 text-blue-800 text-sm text-center">
-          {name && (
-            <div>
-              <strong>{name}</strong> та{" "}
+          {selectedTeam && selectedBet && (
+            <div className="mt-4 text-blue-800 text-sm text-center">
+              {name && (
+                <div>
+                  <strong>{name}</strong> та{" "}
+                </div>
+              )}
+              Та <strong>{selectedTeam}</strong> багт{" "}
+              <strong>{selectedBet.toLocaleString()}₮</strong> бооцоо тавих гэж
+              байна. <br />
+              Хожвол <strong>{winniblePrice?.toLocaleString()}₮</strong> авах
+              боломжтой.
             </div>
           )}
-          Та <strong>{selectedTeam}</strong> багт{" "}
-          <strong>{selectedBet.toLocaleString()}₮</strong> бооцоо тавих гэж
-          байна. <br />
-          Хожвол <strong>{winniblePrice?.toLocaleString()}₮</strong> авах
-          боломжтой.
-        </div>
-      )}
-      <div className="w-full max-w-md mt-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Таны нэр:
-        </label>
-        <select
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-800"
-        >
-          <option value="">Нэрээ сонгоно уу</option>
-          {allowedNames.map((person) => (
-            <option key={person} value={person}>
-              {person}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="w-full max-w-md mt-6">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Таны нэр:
+            </label>
+            <select
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-800"
+            >
+              <option value="">Нэрээ сонгоно уу</option>
+              {allowedNames.map((person) => (
+                <option key={person} value={person}>
+                  {person}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <Button
-        onClick={handleBet}
-        className="bg-blue-600 hover:bg-blue-700 text-white mt-4"
-      >
-        Бооцоо тавих
-      </Button>
+          <Button
+            onClick={handleBet}
+            className="bg-blue-600 hover:bg-blue-700 text-white mt-4"
+          >
+            Бооцоо тавих
+          </Button>
+        </>
+      ) : (
+        <div>Тоглолт эхэлсэн байна</div>
+      )}
     </div>
   );
 }
