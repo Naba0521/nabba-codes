@@ -13,8 +13,12 @@ export default function Home() {
 
   const [selectedTeam, setSelectedTeam] = useState<string>("");
   const [selectedBet, setSelectedBet] = useState<number | null>(null);
-
+  const [name, setName] = useState<string>("");
   const handleBet = () => {
+    if (!name.trim()) {
+      alert("Нэрээ оруулна уу.");
+      return;
+    }
     if (!selectedTeam || !selectedBet) {
       alert("Баг болон бооцооны үнийн дүнг сонгоно уу.");
       return;
@@ -27,6 +31,7 @@ export default function Home() {
 
     setSelectedTeam("");
     setSelectedBet(null);
+    setName("");
   };
 
   const selectedTeamObj = mockTeams.find((team) => team.name === selectedTeam);
@@ -97,6 +102,7 @@ export default function Home() {
           className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-800 placeholder-gray-400"
         />
       </div>
+
       <Button
         onClick={handleBet}
         className="bg-blue-600 hover:bg-blue-700 text-white mt-4"
